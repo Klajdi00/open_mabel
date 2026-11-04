@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0d0c0b" />
+<title>MABEL · Control Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/studio.css" />
+<link rel="stylesheet" href="css/control.css" />
+<script type="importmap">
+{ "imports": {
+  "three": "/website-assets/three/three.module.js",
+  "three/addons/": "/website-assets/three/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="studio cc">
+  <!-- ░░ TOP BAR ░░ -->
+  <header class="topbar">
+    <!-- LEFT: brand · SLAM/maps. SLAM sits to the LEFT of the power button
+         (the operator asked for mapping on the left, not crowding the right). -->
+    <div class="topleft">
+      <div class="brand">
+        <span class="mark">MABEL</span><span class="sub">Control&nbsp;Center</span>
+      </div>
+      <!-- SLAM: live mapping, the saved-room library, and reset — one menu.
+           The rooms come from the GATEWAY's store (server/map_library.py over
+           the teleop wire), the same one iOS + Vision Pro read. -->
+      <div class="slam-wrap">
+        <button class="gbtn slam-btn on" id="slamBtn" title="SLAM is mapping live">
+          <span class="slam-dot"></span>SLAM<span class="slam-state mono">live</span></button>
+        <div class="slam-menu hidden" id="slamMenu"></div>
+      </div>
+    </div>
+    <!-- center: the ONE power decision (iOS parity). MABEL boots LIMP, so this
+         is a single button: "Torque ON" energises the robot and REVEALS every
+         control; once live it becomes a red "E-STOP" that de-energises and the
+         controls fold away again (the viewer becomes a pure visualiser). No
+         second button — torque and e-stop are two faces of the same switch.
+         Stiff|Soft rides beside it (a property of the robot, like torque). -->
+    <div class="transport safety-cluster" id="ccTop">
+      <button class="gbtn power big" id="powerBtn" title="Energise the robot (Esc Esc = hard stop)">⚡&nbsp;Torque&nbsp;ON</button>
+      <!-- ⌂ Home rides with the power button because it is the same kind of
+           decision — a whole-robot state change, not a control mode. Hidden
+           while limp: gliding a dead actuator just looks broken. -->
+      <button class="gbtn hidden" id="homeBtn" title="Glide every joint to the rest pose — arms hanging naturally down (speed-capped, no snap)">⌂<span class="gb-lab">&nbsp;Home</span></button>
+      <div class="seg tb-seg hidden" id="feelSeg" title="Stiff = the robot tracks your commands · Soft = it yields, the app is a viewer">
+        <button class="on" data-v="stiff">Stiff</button>
+        <button data-v="soft">Soft</button>
+      </div>
+      <!-- Gravity feed-forward. Its own control, not part of Stiff/Soft: those pick a
+           control LAW, this decides whether the arm's own weight is carried for it. Sent as
+           control_mode.gravityComp (server/wire_protocol.py), merged by the gateway. -->
+      <div class="seg tb-seg hidden" id="gravSeg" title="Gravity Comp ON = the robot carries its own arm weight (measured feed-forward) · OFF = pure PD, the arm sags under load">
+        <button class="on" data-v="on">Grav&nbsp;Comp</button>
+        <button data-v="off">Pure&nbsp;PD</button>
+      </div>
+    </div>
+    <!-- right: session tools (record · layout) + link status -->
+    <div class="topright">
+      <button class="gbtn" id="recordBtn" title="Start recording a new episode">●&nbsp;Record</button>
+      <span class="rec-task" id="recTask" title="Task for new episodes">task: default</span>
+      <span class="tb-sep"></span>
+      <div class="addwin-wrap">
+        <button class="gbtn" id="addWinBtn" title="Add a visualization window">+<span class="gb-lab">&nbsp;Window</span></button>
+        <div class="addwin-menu hidden" id="addWinMenu"></div>
+      </div>
+      <span class="tb-sep"></span>
+      <span class="conn" id="conn" title="robot server">●</span>
+      <span class="conn-label mono" id="connLabel">offline</span>
+    </div>
+  </header>
+
+  <!-- ░░ LEFT — networking / skill library (auto-switches with the timeline) ░░ -->
+  <aside class="browser" id="netRail">
+    <div class="panel-h rail-tabs">
+      <button class="rail-tab on" data-rail="network">Network</button>
+      <button class="lib-refresh" id="netRefresh" title="Refresh">↻</button>
+      <button class="pane-hide" data-hide="left" title="Hide this panel">‹</button>
+    </div>
+    <div class="browser-body" id="netBody"></div>
+  </aside>
+  <div class="vsplit" data-split="browser"></div>
+
+  <!-- ░░ CENTER — 3D viewer + overlays ░░ -->
+  <main class="center">
+    <section class="viewport3d" id="viewport3d">
+      <!-- top-center: the ONE control decision, and nothing else.
+           There is NO "Start Teleop" gate — Drive and Joint go live the moment
+           you pick the space (visionOS parity: "operator feedback: Drive/Joint
+           controls appear the moment the space is picked — no Start gate").
+           Nothing lurches, because the robot boots LIMP by design: torque is
+           the top bar's explicit decision, so a live stick on a limp robot
+           moves nothing until you mean it. Only TASK keeps a start button —
+           webcam teleop — because whole-body retargeting needs the operator to
+           be standing clear first. -->
+      <div class="vp-teleop" id="vpTeleop">
+        <div class="tp-row">
+          <div class="seg tp-seg" id="spaceSeg">
+            <button class="on" data-v="drive" title="Drive the swerve base">Drive</button>
+            <button data-v="task" title="Task space — drag the green wrist ball, IK solves the joints">Task</button>
+            <button data-v="joint" title="Joint space — command the selected module's joints directly">Joint</button>
+          </div>
+          <div class="seg tp-seg" id="povSeg">
+            <button class="on" data-v="third" id="povThird">3rd</button>
+            <button data-v="first" id="povFirst">1st</button>
+          </div>
+        </div>
+      </div>
+      <!-- WEBCAM OPERATOR dock — the body-teleop live view lives in its own
+           corner panel (like the dexterity dock), NOT over the 3D robot -->
+      <div class="bt-dock hidden" id="btStatus">
+        <div class="bt-dock-head">
+          <span class="bt-title mono">WEBCAM · OPERATOR</span>
+          <span class="bt-chip mono" id="btRegion">REGION: —</span>
+          <span class="bt-chip mono" id="btParts">tracking: —</span>
+          <button class="bt-size" id="btSizeBtn" title="Toggle preview size">⤢</button>
+        </div>
+        <div class="bt-preview hidden" id="btPreview">
+          <video id="btVideo" muted playsinline></video>
+          <canvas id="btCanvas"></canvas>
+        </div>
+      </div>
+      <!-- TASK space, and ONLY Task space: how far down the chain IK may reach,
+           and the whole-body webcam teleop it gates. Webcam teleop lives here
+           because it IS task-space control — the webcam retargets your body
+           onto the wrists, which is what Task space means. It is inert in Drive
+           and Joint space, so it does not sit there implying otherwise. -->
+      <div class="vp-manip hidden" id="vpManip">
+        <button class="tp-start" id="webcamTeleopBtn" title="Whole-body webcam teleop: MediaPipe body+hand tracking retargeted onto the wrists">▶&nbsp;Webcam&nbsp;Teleop</button>
+        <span class="vp-manip-lab mono">IK&nbsp;reach</span>
+        <div class="seg tp-seg" id="regionSeg" title="Which chain the wrist target may move">
+          <button class="on" data-v="arm" title="Arms only">Arm</button>
+          <button data-v="upper_body" title="Arms + torso + lift">Upper</button>
+          <button data-v="whole_body" title="Arms + torso + lift + base — the base creeps toward out-of-reach targets">Whole</button>
+        </div>
+      </div>
+      <!-- every "what do I see / where do I look" control, one compact column
+           down the left edge; sub-options expand RIGHTWARD (js/viewrail.js) -->
+      <div class="vp-rail" id="vpRail"></div>
+      <!-- MODULE rail + the focused module's controls: the manipulate surface
+           (iOS parity — a hand is just a module, so there is no hand panel) -->
+      <div class="mod-rail hidden" id="modRail"></div>
+      <div class="mod-panel hidden" id="vpJoints"></div>
+      <div class="vp-camctl" id="vpCamCtl"></div>
+      <!-- first-person layer: head cam + PiP model -->
+      <div class="fpv hidden" id="fpv">
+        <img class="fpv-img" id="fpvImg" alt="head cam" />
+        <div class="fpv-pip" id="fpvPip"></div>
+        <div class="fpv-tag mono">HEAD · POV</div>
+      </div>
+      <!-- virtual joysticks (teleop engaged only) -->
+      <div class="stick left hidden" id="stickL"><div class="stick-knob"></div><span class="stick-tag">TRANSLATE</span></div>
+      <div class="stick-ud left hidden" id="udL" title="left wrist height">
+        <button data-ud="1">▲</button><button data-ud="-1">▼</button></div>
+      <div class="stick right hidden" id="stickR"><div class="stick-knob"></div><span class="stick-tag">ROTATE · LIFT</span></div>
+      <div class="stick-ud right hidden" id="udR" title="right wrist height">
+        <button data-ud="1">▲</button><button data-ud="-1">▼</button></div>
+      <!-- NAV GOAL — no arming button: click the floor and the goal drops
+           (iOS parity: "tap the floor to send a Nav2 goal"). This bar is the
+           CONSEQUENCE of that click, so it only exists once a goal is placed:
+           GO dispatches it, and turns into STOP NAV while the robot drives. -->
+      <div class="vp-goalbar hidden" id="goalBar">
+        <span class="gb-where mono" id="goalWhere"></span>
+        <button class="vp-chip go" id="goBtn" title="Drive to the placed goal">➤&nbsp;GO</button>
+        <button class="vp-chip" id="goalClear" title="Discard the goal">✕</button>
+      </div>
+      <!-- TASK-SPACE PLAN — MoveIt-style. Dragging the wrist ball POSES a
+           preview on the rig but does not move the robot; this bar is the
+           consequence, exactly like the nav GO bar. Execute runs the planned
+           wrist-tracking motion; Cancel drops it and the rig snaps back to the
+           live pose. -->
+      <div class="vp-planbar hidden" id="planBar">
+        <span class="pb-tag mono">WRIST&nbsp;PLAN</span>
+        <span class="pb-where mono" id="planWhere"></span>
+        <button class="vp-chip go" id="planExec" title="Run the previewed wrist motion">▶&nbsp;Execute</button>
+        <button class="vp-chip" id="planCancel" title="Discard the plan">✕</button>
+      </div>
+      <div class="vp-subtitle" id="vpSubtitle"></div>
+      <div class="speed-cap mono hidden" id="speedCap">
+        <label for="speedSl">MAX SPEED</label>
+        <input type="range" id="speedSl" min="0.2" max="1.04" step="0.02" value="0.6">
+        <output id="speedOut">0.60 m/s</output>
+      </div>
+      <div class="kbd-hint mono" id="kbdHint">WASD drive · QE turn · RF lift · arrows nudge wrist</div>
+    </section>
+  </main>
+  <div class="vsplit" data-split="dock"></div>
+
+  <!-- ░░ RIGHT — robot status: rows + joint state + trends ░░
+       The joint-state bars and the trends graph live HERE now (moved off the
+       bottom band), as collapsible sections of the Status tab — click a header
+       to show/hide. The bottom of the viewer keeps ONLY the cameras. -->
+  <aside class="dock" id="dock">
+    <div class="dock-tabs">
+      <button class="dock-tab on" data-tab="status">Status</button>
+      <button class="dock-tab" data-tab="data">Data</button>
+      <button class="dock-tab" data-tab="skills">Skills</button>
+      <button class="pane-hide" data-hide="right" title="Hide this panel">›</button>
+    </div>
+    <div class="dock-body">
+      <div class="dock-pane on" data-pane="status" id="statusPane"></div>
+      <!-- joint + trends telemetry — a second Status-tab pane so it shows/hides
+           with the Status rows above it -->
+      <div class="dock-pane on dock-telemetry" data-pane="status" id="dockTelemetry">
+        <section class="dt-sec" id="jointSec">
+          <div class="dt-head" data-sec="joints">
+            <span class="dt-caret">▾</span>
+            <span class="dt-title" id="jsDof">Joint State · 59 DOF</span>
+            <div class="seg dt-mode" id="plotMode">
+              <button class="on" data-m="pos">pos</button>
+              <button data-m="vel">vel</button>
+              <button data-m="torque">torque</button>
+            </div>
+          </div>
+          <div class="dt-body">
+            <div class="dt-legend">
+              <span class="plots-legend"><i class="meas"></i>current&nbsp;&nbsp;<i class="tgt"></i>target</span>
+              <span class="plots-legend temp-legend"><i class="t-ok"></i>&lt;55°<i class="t-warn"></i>–70°<i class="t-hot"></i>&gt;70°</span>
+              <span class="plots-hint" id="plotsHint">hover a bar → detail</span>
+            </div>
+            <canvas id="jointCanvas"></canvas>
+          </div>
+        </section>
+        <section class="dt-sec" id="trendsSec">
+          <div class="dt-head" data-sec="trends">
+            <span class="dt-caret">▾</span>
+            <span class="dt-title">Trends · joint history</span>
+          </div>
+          <div class="dt-body">
+            <div class="hist-band" id="histBand"></div>
+          </div>
+        </section>
+      </div>
+      <div class="dock-pane" data-pane="data" id="dataPane"></div>
+      <div class="dock-pane" data-pane="skills" id="skillsPane"></div>
+    </div>
+  </aside>
+
+  <!-- ░░ BOTTOM — cameras only ░░
+       Just the camera strip now; the joint bars + trends moved to the right
+       Status panel. Drag the divider above to resize (or collapse) it. -->
+  <div class="hsplit" data-split="plots"></div>
+  <section class="plots plots-cams" id="plots">
+    <div class="cam-strip" id="camStrip"></div>
+  </section>
+
+  <!-- ░░ TIMELINE — choreography: NAVIGATION + MANIPULATION lanes ░░ -->
+  <div class="hsplit" data-split="timeline"></div>
+  <section class="timeline" id="timeline">
+    <div class="tl-toolbar" id="tlToolbar">
+      <button class="pane-hide" data-hide="tl" title="Hide the timeline">▾</button>
+      <span class="tl-name" id="tlName">choreography</span>
+      <div class="tl-tools">
+        <!-- ADD — one menu per action family -->
+        <span class="tl-grp action-wrap">
+          <button data-tool="add-nav" class="tl-add" title="Navigation primitives — base motion">+&nbsp;Nav</button>
+          <button data-tool="add-policy" class="tl-add" title="Task policies — scripted today, learned tomorrow">+&nbsp;Policy</button>
+          <button data-tool="add-anim" class="tl-add" title="Expressive animations and dances">+&nbsp;Animation</button>
+          <button data-tool="add-pose" class="tl-add" title="Static poses and pose keyframes">+&nbsp;Pose</button>
+          <button data-tool="note" class="tl-add" title="Language annotation at the playhead">+&nbsp;Text</button>
+          <button data-tool="skill" class="tl-add" title="Save the whole timeline as a reusable skill (Library + Skills panels)">⊕&nbsp;Skill</button>
+        </span>
+        <span class="tl-sep"></span>
+        <!-- EDIT -->
+        <span class="tl-grp">
+          <button data-tool="blade" class="tl-ico" title="Blade — cut the selected block at the playhead (B)">✂</button>
+          <button data-tool="dup" class="tl-ico" title="Duplicate selected (or alt-drag)">⧉</button>
+          <button data-tool="del" class="tl-ico" title="Delete selected (⌫)">⌫</button>
+        </span>
+        <span class="tl-sep"></span>
+        <!-- VIEW -->
+        <span class="tl-grp">
+          <button data-tool="preview" class="tl-ico on" title="3D preview follows the playhead while editing">👁</button>
+          <button data-tool="autofix" class="tl-ico on" title="Auto-fix: insert move-to-goal blocks on location gaps AND safety pose-blend transitions on pose jumps">🧭</button>
+          <span class="tl-zoom">
+            <button data-tool="zoomout">−</button><button data-tool="zoomfit" title="Fit">fit</button><button data-tool="zoomin">+</button>
+          </span>
+        </span>
+        <span class="tl-sep"></span>
+        <!-- TRANSPORT -->
+        <span class="tl-grp">
+          <button data-tool="play" id="tlPlayBtn" title="PHYSICS preview: run the plan in an isolated MuJoCo world (window opens) — the live robot is untouched. Space = instant kinematic preview.">▶&nbsp;Preview</button>
+          <button data-tool="execute" class="tl-execute" title="Execute the choreography on the robot">⚡&nbsp;Execute</button>
+          <button data-tool="stop" class="tl-ico" title="Stop preview / execution">■</button>
+          <span class="tl-chip mono hidden" id="tlPvChip"></span>
+        </span>
+      </div>
+    </div>
+    <div class="tl-scroll" id="tlScroll">
+      <canvas id="rulerCanvas" class="tl-ruler"></canvas>
+      <div class="tl-tracks" id="tlTracks"></div>
+      <div class="tl-playhead" id="tlPlayhead"><div class="tl-ph-grab" title="drag to scrub"></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- restore stubs: a collapsed panel leaves its own way back, so there is no
+     separate toggle bar to learn (and nothing to get out of sync with) -->
+<button class="pane-show left"  data-show="left"  title="Show the network panel"><span class="ps-ic">›</span><span class="ps-lab">Network</span></button>
+<button class="pane-show right" data-show="right" title="Show the status panel"><span class="ps-ic">‹</span><span class="ps-lab">Status</span></button>
+<button class="pane-show tl"    data-show="tl"    title="Show the timeline"><span class="ps-ic">▴</span><span class="ps-lab">Timeline</span></button>
+
+<div class="toast" id="toast"></div>
+<script>
+// e2e screenshot hook: ?e2e=<seconds> keeps the load event pending so
+// headless --screenshot captures the app AFTER the rig + links come up.
+(function(){
+  var s = new URLSearchParams(location.search).get('e2e');
+  if (!s) return;
+  document.write('<img src="/api/delay?s=' + (+s || 6) +
+    '" style="display:none" alt="">');
+  if (new URLSearchParams(location.search).get('nobf')){
+    document.write('<style>*{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}</style>');
+  }
+  var hud = document.createElement('pre');
+  hud.style.cssText = 'position:fixed;left:8px;top:56px;z-index:9999;color:#f66;' +
+    'font:11px monospace;background:rgba(0,0,0,.7);max-width:60vw;white-space:pre-wrap';
+  document.addEventListener('DOMContentLoaded', function(){ document.body.appendChild(hud); });
+  window.addEventListener('error', function(e){
+    hud.textContent += 'ERR ' + e.message + ' @' +
+      (e.filename || '').split('/').pop() + ':' + e.lineno + '\n';
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    hud.textContent += 'REJ ' + (e.reason && e.reason.message || e.reason) + '\n';
+  });
+  // ?click=sel1,sel2 — programmatic clicks after boot (UI-state screenshots).
+  // Each is a CSS selector, falling back to an element id, so the segmented
+  // controls and the module rail (which carry data-attrs, not ids) are reachable.
+  var clicks = new URLSearchParams(location.search).get('click');
+  if (clicks) setTimeout(function(){
+    clicks.split(',').forEach(function(sel){
+      var el = null;
+      try { el = document.querySelector(sel); } catch (e){ /* not a selector */ }
+      if (!el) el = document.getElementById(sel);
+      if (el) el.click(); else hud.textContent += 'no ' + sel + '\n';
+    });
+  }, Math.max(2000, (+s || 6) * 1000 - 6000));
+  // ?stageplan=1 — e2e only: stage a demo task-space wrist plan so the MoveIt
+  // ghost preview is visible in a screenshot (a real plan needs a pointer drag,
+  // which --screenshot cannot perform). Offsets a couple of right-arm joints.
+  if (new URLSearchParams(location.search).get('stageplan')){
+    var stage = function(){
+      var vp = window.__cc && window.__cc.viewport;
+      if (!vp || !vp.setPlanHold) return;
+      vp.ensureGhost && vp.ensureGhost();
+      vp.setPlanHold({ right_arm_2: -0.7, right_arm_4: 1.1 });   // shows once ghost loads
+    };
+    // stage repeatedly so a still-loading ghost is caught on a later tick
+    setTimeout(stage, Math.max(2200, (+s || 6) * 1000 - 5500));
+    setTimeout(stage, Math.max(3000, (+s || 6) * 1000 - 3000));
+    setTimeout(stage, Math.max(4000, (+s || 6) * 1000 - 1500));
+  }
+  setTimeout(function(){
+    try {
+      var cc = window.__cc, vp = cc && cc.viewport;
+      if (!vp){ hud.textContent += 'no __cc.viewport\n'; return; }
+      var c = vp.stage.canvas, r = vp.stage.renderer.info.render;
+      hud.textContent += 'canvas ' + c.width + 'x' + c.height +
+        ' | calls ' + r.calls + ' tris ' + r.triangles +
+        ' | meshLive ' + vp._meshLive.children.length +
+        ' | robotState ' + !!vp._haveRobotState + '\n' +
+        'lastBase ' + JSON.stringify(vp._lastBase) + '\n';
+      if (vp.rig){
+        var bp = vp.rig.base.getWorldPosition(new (vp.rig.base.position.constructor)());
+        hud.textContent += 'base world ' + bp.toArray().map(function(v){ return v.toFixed(2); }).join(',') +
+          ' | cam ' + vp.stage.camera.position.toArray().map(function(v){ return v.toFixed(2); }).join(',') + '\n';
+      }
+      // pixel probe: force a render, then sample the drawing buffer
+      vp.stage.render();
+      var probe = document.createElement('canvas');
+      probe.width = 64; probe.height = 64;
+      var px = probe.getContext('2d');
+      px.drawImage(c, 0, 0, 64, 64);
+      var d = px.getImageData(0, 0, 64, 64).data;
+      var sum = 0, mx = 0;
+      for (var i = 0; i < d.length; i += 4){ var v = d[i] + d[i+1] + d[i+2]; sum += v; if (v > mx) mx = v; }
+      hud.textContent += 'buffer mean ' + (sum / (d.length / 4)).toFixed(1) +
+        ' max ' + mx + ' (0=black buffer, >0=composite bug)\n';
+      // headless firefox never composites the WebGL canvas into --screenshot;
+      // blit the (verified non-black) buffer into a 2D <img> that does show
+      var full = document.createElement('canvas');
+      full.width = c.width; full.height = c.height;
+      full.getContext('2d').drawImage(c, 0, 0);
+      var im = new Image();
+      im.src = full.toDataURL('image/png');
+      var rc = c.getBoundingClientRect();
+      im.style.cssText = 'position:fixed;left:' + rc.left + 'px;top:' + rc.top +
+        'px;width:' + rc.width + 'px;height:' + rc.height + 'px;z-index:5';
+      document.body.appendChild(im);
+    } catch (err){ hud.textContent += 'diag fail: ' + err.message + '\n'; }
+  }, (+s || 6) * 1000 - 1500);
+})();
+</script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

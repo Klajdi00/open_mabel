@@ -1,0 +1,16 @@
+{
+ "shipped": {
+  "rise": 190.0,
+  "settle": 364.0,
+  "overshoot": 0.0,
+  "droop": 1.0010953191706362,
+  "headroom": 0.0
+ },
+ "tuned": {
+  "rise": 66.0,
+  "settle": 120.0,
+  "overshoot": 2.3003897095837056,
+  "droop": 1.8575742099870507,
+  "headroom": 0.0
+ }
+}

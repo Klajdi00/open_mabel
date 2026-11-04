@@ -1,0 +1,84 @@
+<mujoco model="mabel_lift_standalone">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002"/>
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    <default class="l_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="l_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    
+    <default class="l_slide">
+      <joint type="slide" axis="0 0 1" range="0 0.3175" damping="10" armature="1"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh file="../assets/meshes/lift/lift_base_link.stl" name="m_lift_base"/>
+    <mesh file="../assets/meshes/lift/lift_mid_link.stl"  name="m_lift_mid"/>
+    <mesh file="../assets/meshes/lift/lift_top_link.stl"  name="m_lift_top"/>
+
+    <material name="mat_base"  rgba="0.2 0.2 0.2 1"/>
+    <material name="mat_mid"   rgba="0.4 0.4 0.4 1"/>
+    <material name="mat_top"   rgba="0.6 0.6 0.6 1"/>
+    <material name="invisible" rgba="1 1 1 0"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.7 0.7 0.7 1"/>
+
+    <body name="lift_base" pos="0 0 0">
+      <geom class="l_visual"    mesh="m_lift_base" material="mat_base"/>
+      <geom class="l_collision" mesh="m_lift_base"/> 
+
+      <body name="lift_mid" pos="0 0 0.17575">
+        <joint name="lift_j1" class="l_slide" ref="0.15875"/>
+        <geom class="l_visual" mesh="m_lift_mid" material="mat_mid"/>
+        
+        <body name="lift_top" pos="0 0 0.16575">
+          <joint name="lift_j2" class="l_slide" ref="0.15875"/>
+          <geom class="l_visual" mesh="m_lift_top" material="mat_top"/>
+          <geom type="cylinder" size="0.05 0.1" pos="0 0 -0.1" 
+                mass="2.0" contype="0" conaffinity="0" material="invisible"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="lift_base" body2="lift_mid"/>
+    <exclude body1="lift_base" body2="lift_top"/>
+    <exclude body1="lift_mid"  body2="lift_top"/>
+  </contact>
+
+<equality>
+    <joint name="sync_lift" joint1="lift_j2" joint2="lift_j1" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <tendon>
+    <fixed name="t_total_lift">
+      <joint joint="lift_j1" coef="1"/>
+      <joint joint="lift_j2" coef="1"/>
+    </fixed>
+  </tendon>
+
+  <keyframe>
+    <!-- Same default as mabel_full.xml: the stages are assembled at mid-travel, and
+         the lift command is seeded to match so the position servo holds it there
+         instead of dragging it to the bottom on the first step. -->
+    <key name="home" ctrl="0.31750"/>
+  </keyframe>
+
+  <actuator>
+    <position name="act_lift" tendon="t_total_lift" 
+              kp="80000" kv="3000" 
+              ctrlrange="0 0.635" ctrllimited="true" 
+              forcerange="-5000 5000"/>
+  </actuator>
+
+</mujoco>

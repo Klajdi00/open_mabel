@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# mabel-disarm — immediately DISARM the real MABEL swerve robot.
+# Removes ~/.mabel_armed; the bridge zeroes drive on the next control tick (~20 ms)
+# and refuses motion until armed again with `mabel-arm`.
+set -euo pipefail
+rm -f ~/.mabel_armed
+echo "🛑 Robot DISARMED — all motion blocked until re-armed (mabel-arm)."

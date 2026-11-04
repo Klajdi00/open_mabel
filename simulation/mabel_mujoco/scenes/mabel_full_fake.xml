@@ -1,0 +1,1033 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  MABEL — Full Digital Twin  (MuJoCo)                               ║
+  ║  Mobile Animated Bimanual Extensible cLinked Loveable robot        ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+
+  Full kinematic chain (63+ DOF):
+  ─────────────────────────────────────────────────────────────────────
+  MOBILE BASE     chassis (freejoint 6-DOF)
+                  ├─ swerve_fl  steer_fl + drive_fl
+                  ├─ swerve_fr  steer_fr + drive_fr
+                  └─ swerve_bc  steer_bc + drive_bc
+
+  LIFT            lift_column_outer (rigid to chassis)
+                  └─ lift_stage_1  (slide, 400 mm)
+                     └─ lift_stage_2  (equality-coupled to stage 1)
+
+  TORSO           torso_base  (rigid to lift_stage_2)
+                  └─ torso  (1-DOF tilt ±20°)
+                     ├─ LEFT ARM  (7-DOF)
+                     │   └─ left_link6 (J7)
+                     │       └─ left_tower → left_palm → fingers (17-DOF ORCA)
+                     ├─ RIGHT ARM  (7-DOF, mirror)
+                     │   └─ right_link6 (J7)
+                     │       └─ right_tower → right_palm → fingers (17-DOF ORCA)
+                     └─ NECK  (3-DOF pan/tilt/roll)
+                         └─ head  (camera, LED eyes)
+
+  Actuator count:
+    Base swerve:  6  (3 steer + 3 drive)
+    Lift:         1
+    Torso tilt:   1
+    Left arm:     7
+    Left hand:   17
+    Right arm:    7
+    Right hand:  17
+    Neck:         3
+    ─────────────
+    TOTAL:       59 position/velocity actuators
+                 (+ 6-DOF freejoint = 65 total DOF)
+
+  Launch:  python -m mujoco.viewer mjcf scenes/mabel_full.xml
+           python scripts/viewer.py
+-->
+<mujoco model="mabel_full">
+
+  <!-- ================================================================= -->
+  <!-- COMPILER + PHYSICS                                                 -->
+  <!-- ================================================================= -->
+  <compiler angle="radian" eulerseq="XYZ"
+            meshdir="../assets/meshes/hands"/>
+
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <size njmax="2000" nconmax="1000"/>
+
+  <!-- ================================================================= -->
+  <!-- VISUAL SETTINGS                                                    -->
+  <!-- ================================================================= -->
+  <visual>
+    <map force="0.1" zfar="50"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <quality shadowsize="2048"/>
+    <global offwidth="1920" offheight="1080"/>
+  </visual>
+
+  <!-- ================================================================= -->
+  <!-- ASSETS  (materials + all ORCA hand meshes)                        -->
+  <!-- ================================================================= -->
+  <default>
+    <!-- Scale all ORCA hand STL meshes from mm → m -->
+    <mesh scale="0.001 0.001 0.001"/>
+  </default>
+
+  <asset>
+
+    <!-- ── Materials ── -->
+    <material name="chassis_mat"    rgba="0.20 0.20 0.22 1"/>
+    <material name="chassis_accent" rgba="0.85 0.85 0.90 1"/>
+    <material name="steer_motor"    rgba="0.10 0.35 0.75 1"/>
+    <material name="drive_motor"    rgba="0.75 0.20 0.20 1"/>
+    <material name="wheel_mat"      rgba="0.10 0.10 0.10 1"/>
+    <material name="lift_outer"     rgba="0.15 0.15 0.15 1"/>
+    <material name="lift_middle"    rgba="0.45 0.45 0.45 1"/>
+    <material name="lift_inner"     rgba="0.75 0.75 0.75 1"/>
+    <material name="torso_shell"    rgba="0.18 0.18 0.20 1"/>
+    <material name="torso_accent"   rgba="0.90 0.90 0.95 1"/>
+    <material name="screen_mat"     rgba="0.05 0.05 0.08 0.95"/>
+    <material name="arm_body_l"     rgba="0.15 0.40 0.75 1"/>
+    <material name="arm_joint_l"    rgba="0.10 0.25 0.55 1"/>
+    <material name="arm_body_r"     rgba="0.15 0.70 0.30 1"/>
+    <material name="arm_joint_r"    rgba="0.10 0.45 0.20 1"/>
+    <material name="arm_tip"        rgba="0.90 0.90 0.95 1"/>
+    <material name="neck_mat"       rgba="0.20 0.20 0.22 1"/>
+    <material name="head_shell"     rgba="0.95 0.95 0.97 1"/>
+    <material name="eye_mat"        rgba="0.05 0.60 1.00 1"/>
+    <material name="camera_mat"     rgba="0.08 0.08 0.08 1"/>
+    <material name="servo_mat"      rgba="0.80 0.55 0.10 1"/>
+    <material name="floor_mat"      rgba="0.82 0.82 0.82 1"/>
+    <material name="white"          rgba="1.00 1.00 1.00 1" shininess="0.5" specular="0.1"/>
+    <material name="black"          rgba="0.25 0.25 0.25 1" shininess="0.2" specular="0.05"/>
+    <material name="invisible"      rgba="1 1 1 0"/>
+
+    <!-- ── LEFT hand visual meshes ── -->
+    <mesh file="left/visual/left_visual_tower_main.stl"     name="lv_tower_main"/>
+    <mesh file="left/visual/left_visual_tower_hull.stl"     name="lv_tower_hull"/>
+    <mesh file="left/visual/left_visual_tower_text.stl"     name="lv_tower_text"/>
+    <mesh file="left/visual/left_visual_tower_fans.stl"     name="lv_tower_fans"/>
+    <mesh file="left/visual/left_visual_tower_u2d2.stl"     name="lv_tower_u2d2"/>
+    <mesh file="left/visual/left_visual_tower_camera.stl"   name="lv_tower_camera"/>
+    <mesh file="left/visual/left_visual_palm.stl"           name="lv_palm"/>
+    <mesh file="left/visual/left_visual_palm_skin.stl"      name="lv_palm_skin"/>
+    <mesh file="left/visual/left_visual_thumb_mp.stl"       name="lv_thumb_mp"/>
+    <mesh file="left/visual/left_visual_thumb_pp.stl"       name="lv_thumb_pp"/>
+    <mesh file="left/visual/left_visual_thumb_ip.stl"       name="lv_thumb_ip"/>
+    <mesh file="left/visual/left_visual_thumb_ip_skin.stl"  name="lv_thumb_ip_skin"/>
+    <mesh file="left/visual/left_visual_thumb_dp.stl"       name="lv_thumb_dp"/>
+    <mesh file="left/visual/left_visual_thumb_dp_skin.stl"  name="lv_thumb_dp_skin"/>
+    <mesh file="left/visual/left_visual_index_mp.stl"       name="lv_index_mp"/>
+    <mesh file="left/visual/left_visual_index_pp.stl"       name="lv_index_pp"/>
+    <mesh file="left/visual/left_visual_index_pp_skin.stl"  name="lv_index_pp_skin"/>
+    <mesh file="left/visual/left_visual_index_ip.stl"       name="lv_index_ip"/>
+    <mesh file="left/visual/left_visual_index_ip_skin.stl"  name="lv_index_ip_skin"/>
+    <mesh file="left/visual/left_visual_middle_mp.stl"      name="lv_middle_mp"/>
+    <mesh file="left/visual/left_visual_middle_pp.stl"      name="lv_middle_pp"/>
+    <mesh file="left/visual/left_visual_middle_pp_skin.stl" name="lv_middle_pp_skin"/>
+    <mesh file="left/visual/left_visual_middle_ip.stl"      name="lv_middle_ip"/>
+    <mesh file="left/visual/left_visual_middle_ip_skin.stl" name="lv_middle_ip_skin"/>
+    <mesh file="left/visual/left_visual_ring_mp.stl"        name="lv_ring_mp"/>
+    <mesh file="left/visual/left_visual_ring_pp.stl"        name="lv_ring_pp"/>
+    <mesh file="left/visual/left_visual_ring_pp_skin.stl"   name="lv_ring_pp_skin"/>
+    <mesh file="left/visual/left_visual_ring_ip.stl"        name="lv_ring_ip"/>
+    <mesh file="left/visual/left_visual_ring_ip_skin.stl"   name="lv_ring_ip_skin"/>
+    <mesh file="left/visual/left_visual_pinky_mp.stl"       name="lv_pinky_mp"/>
+    <mesh file="left/visual/left_visual_pinky_pp.stl"       name="lv_pinky_pp"/>
+    <mesh file="left/visual/left_visual_pinky_pp_skin.stl"  name="lv_pinky_pp_skin"/>
+    <mesh file="left/visual/left_visual_pinky_ip.stl"       name="lv_pinky_ip"/>
+    <mesh file="left/visual/left_visual_pinky_ip_skin.stl"  name="lv_pinky_ip_skin"/>
+
+    <!-- ── LEFT hand collision meshes ── -->
+    <mesh file="left/collision/left_collision_tower_main.stl"     name="lc_tower_main"/>
+    <mesh file="left/collision/left_collision_tower_hull.stl"     name="lc_tower_hull"/>
+    <mesh file="left/collision/left_collision_tower_text.stl"     name="lc_tower_text"/>
+    <mesh file="left/collision/left_collision_tower_fans.stl"     name="lc_tower_fans"/>
+    <mesh file="left/collision/left_collision_tower_u2d2.stl"     name="lc_tower_u2d2"/>
+    <mesh file="left/collision/left_collision_tower_camera.stl"   name="lc_tower_camera"/>
+    <mesh file="left/collision/left_collision_palm.stl"           name="lc_palm"/>
+    <mesh file="left/collision/left_collision_palm_skin.stl"      name="lc_palm_skin"/>
+    <mesh file="left/collision/left_collision_thumb_mp.stl"       name="lc_thumb_mp"/>
+    <mesh file="left/collision/left_collision_thumb_pp.stl"       name="lc_thumb_pp"/>
+    <mesh file="left/collision/left_collision_thumb_ip.stl"       name="lc_thumb_ip"/>
+    <mesh file="left/collision/left_collision_thumb_ip_skin.stl"  name="lc_thumb_ip_skin"/>
+    <mesh file="left/collision/left_collision_thumb_dp.stl"       name="lc_thumb_dp"/>
+    <mesh file="left/collision/left_collision_thumb_dp_skin.stl"  name="lc_thumb_dp_skin"/>
+    <mesh file="left/collision/left_collision_index_mp.stl"       name="lc_index_mp"/>
+    <mesh file="left/collision/left_collision_index_pp.stl"       name="lc_index_pp"/>
+    <mesh file="left/collision/left_collision_index_pp_skin.stl"  name="lc_index_pp_skin"/>
+    <mesh file="left/collision/left_collision_index_ip.stl"       name="lc_index_ip"/>
+    <mesh file="left/collision/left_collision_index_ip_skin.stl"  name="lc_index_ip_skin"/>
+    <mesh file="left/collision/left_collision_middle_mp.stl"      name="lc_middle_mp"/>
+    <mesh file="left/collision/left_collision_middle_pp.stl"      name="lc_middle_pp"/>
+    <mesh file="left/collision/left_collision_middle_pp_skin.stl" name="lc_middle_pp_skin"/>
+    <mesh file="left/collision/left_collision_middle_ip.stl"      name="lc_middle_ip"/>
+    <mesh file="left/collision/left_collision_middle_ip_skin.stl" name="lc_middle_ip_skin"/>
+    <mesh file="left/collision/left_collision_ring_mp.stl"        name="lc_ring_mp"/>
+    <mesh file="left/collision/left_collision_ring_pp.stl"        name="lc_ring_pp"/>
+    <mesh file="left/collision/left_collision_ring_pp_skin.stl"   name="lc_ring_pp_skin"/>
+    <mesh file="left/collision/left_collision_ring_ip.stl"        name="lc_ring_ip"/>
+    <mesh file="left/collision/left_collision_ring_ip_skin.stl"   name="lc_ring_ip_skin"/>
+    <mesh file="left/collision/left_collision_pinky_mp.stl"       name="lc_pinky_mp"/>
+    <mesh file="left/collision/left_collision_pinky_pp.stl"       name="lc_pinky_pp"/>
+    <mesh file="left/collision/left_collision_pinky_pp_skin.stl"  name="lc_pinky_pp_skin"/>
+    <mesh file="left/collision/left_collision_pinky_ip.stl"       name="lc_pinky_ip"/>
+    <mesh file="left/collision/left_collision_pinky_ip_skin.stl"  name="lc_pinky_ip_skin"/>
+
+    <!-- ── RIGHT hand visual meshes ── -->
+    <mesh file="right/visual/right_visual_tower_main.stl"     name="rv_tower_main"/>
+    <mesh file="right/visual/right_visual_tower_hull.stl"     name="rv_tower_hull"/>
+    <mesh file="right/visual/right_visual_tower_text.stl"     name="rv_tower_text"/>
+    <mesh file="right/visual/right_visual_palm.stl"           name="rv_palm"/>
+    <mesh file="right/visual/right_visual_palm_skin.stl"      name="rv_palm_skin"/>
+    <mesh file="right/visual/right_visual_thumb_mp.stl"       name="rv_thumb_mp"/>
+    <mesh file="right/visual/right_visual_thumb_pp.stl"       name="rv_thumb_pp"/>
+    <mesh file="right/visual/right_visual_thumb_ip.stl"       name="rv_thumb_ip"/>
+    <mesh file="right/visual/right_visual_thumb_ip_skin.stl"  name="rv_thumb_ip_skin"/>
+    <mesh file="right/visual/right_visual_thumb_dp.stl"       name="rv_thumb_dp"/>
+    <mesh file="right/visual/right_visual_thumb_dp_skin.stl"  name="rv_thumb_dp_skin"/>
+    <mesh file="right/visual/right_visual_index_mp.stl"       name="rv_index_mp"/>
+    <mesh file="right/visual/right_visual_index_pp.stl"       name="rv_index_pp"/>
+    <mesh file="right/visual/right_visual_index_pp_skin.stl"  name="rv_index_pp_skin"/>
+    <mesh file="right/visual/right_visual_index_ip.stl"       name="rv_index_ip"/>
+    <mesh file="right/visual/right_visual_index_ip_skin.stl"  name="rv_index_ip_skin"/>
+    <mesh file="right/visual/right_visual_middle_mp.stl"      name="rv_middle_mp"/>
+    <mesh file="right/visual/right_visual_middle_pp.stl"      name="rv_middle_pp"/>
+    <mesh file="right/visual/right_visual_middle_pp_skin.stl" name="rv_middle_pp_skin"/>
+    <mesh file="right/visual/right_visual_middle_ip.stl"      name="rv_middle_ip"/>
+    <mesh file="right/visual/right_visual_middle_ip_skin.stl" name="rv_middle_ip_skin"/>
+    <mesh file="right/visual/right_visual_ring_mp.stl"        name="rv_ring_mp"/>
+    <mesh file="right/visual/right_visual_ring_pp.stl"        name="rv_ring_pp"/>
+    <mesh file="right/visual/right_visual_ring_pp_skin.stl"   name="rv_ring_pp_skin"/>
+    <mesh file="right/visual/right_visual_ring_ip.stl"        name="rv_ring_ip"/>
+    <mesh file="right/visual/right_visual_ring_ip_skin.stl"   name="rv_ring_ip_skin"/>
+    <mesh file="right/visual/right_visual_pinky_mp.stl"       name="rv_pinky_mp"/>
+    <mesh file="right/visual/right_visual_pinky_pp.stl"       name="rv_pinky_pp"/>
+    <mesh file="right/visual/right_visual_pinky_pp_skin.stl"  name="rv_pinky_pp_skin"/>
+    <mesh file="right/visual/right_visual_pinky_ip.stl"       name="rv_pinky_ip"/>
+    <mesh file="right/visual/right_visual_pinky_ip_skin.stl"  name="rv_pinky_ip_skin"/>
+
+    <!-- ── RIGHT hand collision meshes ── -->
+    <mesh file="right/collision/right_collision_tower_main.stl"     name="rc_tower_main"/>
+    <mesh file="right/collision/right_collision_tower_hull.stl"     name="rc_tower_hull"/>
+    <mesh file="right/collision/right_collision_tower_text.stl"     name="rc_tower_text"/>
+    <mesh file="right/collision/right_collision_palm.stl"           name="rc_palm"/>
+    <mesh file="right/collision/right_collision_palm_skin.stl"      name="rc_palm_skin"/>
+    <mesh file="right/collision/right_collision_thumb_mp.stl"       name="rc_thumb_mp"/>
+    <mesh file="right/collision/right_collision_thumb_pp.stl"       name="rc_thumb_pp"/>
+    <mesh file="right/collision/right_collision_thumb_ip.stl"       name="rc_thumb_ip"/>
+    <mesh file="right/collision/right_collision_thumb_ip_skin.stl"  name="rc_thumb_ip_skin"/>
+    <mesh file="right/collision/right_collision_thumb_dp.stl"       name="rc_thumb_dp"/>
+    <mesh file="right/collision/right_collision_thumb_dp_skin.stl"  name="rc_thumb_dp_skin"/>
+    <mesh file="right/collision/right_collision_index_mp.stl"       name="rc_index_mp"/>
+    <mesh file="right/collision/right_collision_index_pp.stl"       name="rc_index_pp"/>
+    <mesh file="right/collision/right_collision_index_pp_skin.stl"  name="rc_index_pp_skin"/>
+    <mesh file="right/collision/right_collision_index_ip.stl"       name="rc_index_ip"/>
+    <mesh file="right/collision/right_collision_index_ip_skin.stl"  name="rc_index_ip_skin"/>
+    <mesh file="right/collision/right_collision_middle_mp.stl"      name="rc_middle_mp"/>
+    <mesh file="right/collision/right_collision_middle_pp.stl"      name="rc_middle_pp"/>
+    <mesh file="right/collision/right_collision_middle_pp_skin.stl" name="rc_middle_pp_skin"/>
+    <mesh file="right/collision/right_collision_middle_ip.stl"      name="rc_middle_ip"/>
+    <mesh file="right/collision/right_collision_middle_ip_skin.stl" name="rc_middle_ip_skin"/>
+    <mesh file="right/collision/right_collision_ring_mp.stl"        name="rc_ring_mp"/>
+    <mesh file="right/collision/right_collision_ring_pp.stl"        name="rc_ring_pp"/>
+    <mesh file="right/collision/right_collision_ring_pp_skin.stl"   name="rc_ring_pp_skin"/>
+    <mesh file="right/collision/right_collision_ring_ip.stl"        name="rc_ring_ip"/>
+    <mesh file="right/collision/right_collision_ring_ip_skin.stl"   name="rc_ring_ip_skin"/>
+    <mesh file="right/collision/right_collision_pinky_mp.stl"       name="rc_pinky_mp"/>
+    <mesh file="right/collision/right_collision_pinky_pp.stl"       name="rc_pinky_pp"/>
+    <mesh file="right/collision/right_collision_pinky_pp_skin.stl"  name="rc_pinky_pp_skin"/>
+    <mesh file="right/collision/right_collision_pinky_ip.stl"       name="rc_pinky_ip"/>
+    <mesh file="right/collision/right_collision_pinky_ip_skin.stl"  name="rc_pinky_ip_skin"/>
+  </asset>
+
+  <!-- ================================================================= -->
+  <!-- DEFAULTS                                                           -->
+  <!-- ================================================================= -->
+  <default>
+    <!-- Arm joints (limited="auto" in MuJoCo 3+: auto-enables when range is set) -->
+    <joint type="hinge" armature="0.05" damping="1.5" frictionloss="0.5"/>
+    <!-- Arm links -->
+    <default class="arm_link_l">
+      <geom type="capsule" material="arm_body_l" contype="1" conaffinity="0" mass="0.5"/>
+    </default>
+    <default class="arm_sphere_l">
+      <geom type="sphere" material="arm_joint_l" contype="0" conaffinity="0" mass="0.2"/>
+    </default>
+    <default class="arm_link_r">
+      <geom type="capsule" material="arm_body_r" contype="1" conaffinity="0" mass="0.5"/>
+    </default>
+    <default class="arm_sphere_r">
+      <geom type="sphere" material="arm_joint_r" contype="0" conaffinity="0" mass="0.2"/>
+    </default>
+    <!-- Swerve wheels -->
+    <default class="wheel">
+      <geom type="cylinder" size="0.050 0.020" euler="1.5708 0 0"
+            material="wheel_mat" friction="1.2 0.01 0.001" mass="0.5"
+            contype="1" conaffinity="1"/>
+    </default>
+    <!-- ORCA hand defaults -->
+    <default class="hd_visual">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh"/>
+      <default class="skin"> <geom material="white"/> </default>
+      <default class="bone"> <geom material="black"/> </default>
+    </default>
+    <default class="hd_collision">
+      <geom conaffinity="1" condim="3" contype="1" group="1" material="invisible" type="mesh"/>
+    </default>
+    <default class="hd_joint">
+      <joint armature="0.001" damping="0.1" frictionloss="0.001" limited="true" margin="0.01" type="hinge"/>
+    </default>
+    <default class="hd_actuator">
+      <position ctrllimited="true" forcelimited="true" forcerange="-1 1" kp="2.0"/>
+    </default>
+  </default>
+
+  <!-- ================================================================= -->
+  <!-- WORLD BODY                                                         -->
+  <!-- ================================================================= -->
+  <worldbody>
+
+    <!-- Lighting -->
+    <light name="sun"      pos="0 0 6"  dir="0 0 -1" diffuse="0.8 0.8 0.8" castshadow="true"/>
+    <light name="fill_l"   pos="-3 2 4" dir="0.5 -0.3 -1" diffuse="0.3 0.3 0.4" castshadow="false"/>
+    <light name="fill_r"   pos=" 3 2 4" dir="-0.5 -0.3 -1" diffuse="0.3 0.3 0.4" castshadow="false"/>
+
+    <!-- Ground plane -->
+    <geom name="floor" type="plane" size="10 10 0.1" material="floor_mat"
+          contype="1" conaffinity="1" friction="0.9 0.01 0.001"/>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  CHASSIS  (floats in world via freejoint)                      -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <body name="chassis" pos="0 0 0.17">
+      <freejoint name="base_freejoint"/>
+
+      <!-- Chassis plate -->
+      <geom name="chassis_plate" type="cylinder" size="0.280 0.040"
+            material="chassis_mat" mass="30" contype="1" conaffinity="0"/>
+      <geom name="compute_box"   type="box" pos="0 0 0.07" size="0.120 0.100 0.035"
+            material="chassis_accent" mass="3" contype="1" conaffinity="0"/>
+      <geom name="lip_ring"      type="cylinder" size="0.290 0.005" pos="0 0 0.045"
+            material="chassis_accent" mass="1" contype="1" conaffinity="0"/>
+      <site name="lift_attach"   pos="-0.06 0 0.04" size="0.015" rgba="0 1 0 1"/>
+
+      <!-- ── Swerve-FL ── -->
+      <body name="swerve_fl" pos="0.217 0.125 -0.06">
+        <joint name="steer_fl" type="hinge" axis="0 0 1" limited="false"
+               damping="0.5" frictionloss="0.1" armature="0.05"/>
+        <geom type="cylinder" size="0.030 0.040" pos="0 0 0.025"
+              material="steer_motor" mass="0.8" contype="1" conaffinity="0"/>
+        <geom type="box" size="0.030 0.025 0.028" pos="0 0 -0.018"
+              material="drive_motor" mass="1.0" contype="1" conaffinity="0"/>
+        <body name="wheel_fl" pos="0 0 -0.055">
+          <joint name="drive_fl" type="hinge" axis="0 1 0" damping="0.05" armature="0.01"/>
+          <geom class="wheel"/>
+        </body>
+      </body>
+
+      <!-- ── Swerve-FR ── -->
+      <body name="swerve_fr" pos="0.217 -0.125 -0.06">
+        <joint name="steer_fr" type="hinge" axis="0 0 1" limited="false"
+               damping="0.5" frictionloss="0.1" armature="0.05"/>
+        <geom type="cylinder" size="0.030 0.040" pos="0 0 0.025"
+              material="steer_motor" mass="0.8" contype="1" conaffinity="0"/>
+        <geom type="box" size="0.030 0.025 0.028" pos="0 0 -0.018"
+              material="drive_motor" mass="1.0" contype="1" conaffinity="0"/>
+        <body name="wheel_fr" pos="0 0 -0.055">
+          <joint name="drive_fr" type="hinge" axis="0 1 0" damping="0.05" armature="0.01"/>
+          <geom class="wheel"/>
+        </body>
+      </body>
+
+      <!-- ── Swerve-BC ── -->
+      <body name="swerve_bc" pos="-0.250 0.000 -0.06">
+        <joint name="steer_bc" type="hinge" axis="0 0 1" limited="false"
+               damping="0.5" frictionloss="0.1" armature="0.05"/>
+        <geom type="cylinder" size="0.030 0.040" pos="0 0 0.025"
+              material="steer_motor" mass="0.8" contype="1" conaffinity="0"/>
+        <geom type="box" size="0.030 0.025 0.028" pos="0 0 -0.018"
+              material="drive_motor" mass="1.0" contype="1" conaffinity="0"/>
+        <body name="wheel_bc" pos="0 0 -0.055">
+          <joint name="drive_bc" type="hinge" axis="0 1 0" damping="0.05" armature="0.01"/>
+          <geom class="wheel"/>
+        </body>
+      </body>
+
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!--  LIFT COLUMN  (rigid to chassis, located at rear-centre)       -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <body name="lift_column_outer" pos="-0.06 0 0.30">
+        <geom name="outer_col" type="box" size="0.040 0.040 0.260"
+              material="lift_outer" mass="1.5" contype="1" conaffinity="0"/>
+
+        <body name="lift_stage_1" pos="0 0 0">
+          <joint name="slide_stage_1" type="slide" axis="0 0 1"
+                 range="0 0.40" limited="true"
+                 armature="2.0" damping="8.0" frictionloss="4.0"/>
+          <geom name="middle_col" type="box" size="0.030 0.030 0.250"
+                material="lift_middle" mass="1.0" contype="1" conaffinity="0"/>
+
+          <body name="lift_stage_2" pos="0 0 0.10">
+            <joint name="slide_stage_2" type="slide" axis="0 0 1"
+                   range="0 0.40" limited="true"
+                   armature="2.0" damping="8.0" frictionloss="4.0"/>
+            <geom name="inner_col" type="box" size="0.020 0.020 0.240"
+                  material="lift_inner" mass="0.8" contype="1" conaffinity="0"/>
+            <geom name="top_cap"   type="box" pos="0 0 0.25" size="0.035 0.035 0.008"
+                  rgba="0.9 0.3 0.1 1" mass="0.1" contype="0" conaffinity="0"/>
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!--  TORSO BASE  (rigid to lift top)                       -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <body name="torso_base" pos="0.06 0 0.27">
+              <!-- Offset forward (+X) to centre torso over chassis CoM  -->
+
+              <!-- ════════════════════════════════════════════════════════ -->
+              <!--  TORSO  (1-DOF tilt ±20°)                              -->
+              <!-- ════════════════════════════════════════════════════════ -->
+              <body name="torso" pos="0 0 0">
+                <joint name="torso_tilt" type="hinge" axis="0 1 0"
+                       range="-0.35 0.35" limited="true"
+                       damping="5.0" armature="0.5" frictionloss="1.0"/>
+
+                <!-- Torso shell -->
+                <geom name="torso_shell" type="box" pos="0 0 0.25"
+                      size="0.190 0.100 0.250"
+                      material="torso_shell" mass="6" contype="1" conaffinity="0"/>
+                <!-- Touchscreen face plate -->
+                <geom name="screen_face" type="box" pos="0.178 0 0.20"
+                      size="0.012 0.090 0.170"
+                      material="screen_mat" mass="0.5" contype="0" conaffinity="0"/>
+                <!-- Shoulder yoke -->
+                <geom name="shoulder_yoke" type="box" pos="0 0 0.52"
+                      size="0.190 0.080 0.030"
+                      material="torso_accent" mass="1.5" contype="1" conaffinity="0"/>
+                <geom name="sh_housing_l" type="cylinder" pos="0 0.195 0.52"
+                      size="0.040 0.045"
+                      material="arm_joint_l" mass="0.8" contype="1" conaffinity="0"/>
+                <geom name="sh_housing_r" type="cylinder" pos="0 -0.195 0.52"
+                      size="0.040 0.045"
+                      material="arm_joint_r" mass="0.8" contype="1" conaffinity="0"/>
+
+                <!-- Attach sites -->
+                <site name="left_arm_attach"  pos="0 0.220 0.52"  size="0.018" rgba="0.2 0.6 1.0 1"/>
+                <site name="right_arm_attach" pos="0 -0.220 0.52" size="0.018" rgba="0.2 1.0 0.4 1"/>
+                <site name="neck_attach"      pos="0 0 0.55"      size="0.015" rgba="1 0.8 0 1"/>
+
+                <!-- ══════════════════════════════════════════════════════ -->
+                <!--  LEFT ARM  (7-DOF, mounted at left shoulder)          -->
+                <!-- ══════════════════════════════════════════════════════ -->
+                <body name="left_link0" pos="0 0.220 0.52">
+                  <joint name="left_shoulder_pan"  axis="0 0 1" range="-2.97 2.97"/>
+                  <geom class="arm_sphere_l" size="0.042"/>
+                  <body name="left_link1" pos="0 0 0">
+                    <joint name="left_shoulder_tilt" axis="0 1 0" range="-1.05 3.05"/>
+                    <geom class="arm_sphere_l" size="0.040"/>
+                    <body name="left_link2" pos="0 0 0">
+                      <joint name="left_shoulder_roll" axis="1 0 0" range="-2.97 2.97"/>
+                      <geom class="arm_link_l" fromto="0 0 0  0 0 -0.300" size="0.026" mass="0.8"/>
+                      <geom class="arm_sphere_l" size="0.038" pos="0 0 -0.300"/>
+                      <body name="left_link3" pos="0 0 -0.300">
+                        <joint name="left_elbow_flex" axis="0 1 0" range="-3.05 0.0"/>
+                        <geom class="arm_link_l" fromto="0 0 0  0 0 -0.265" size="0.023" mass="0.6"/>
+                        <geom class="arm_sphere_l" size="0.034" pos="0 0 -0.265"/>
+                        <body name="left_link4" pos="0 0 -0.265">
+                          <joint name="left_forearm_roll" axis="1 0 0" range="-2.97 2.97"/>
+                          <geom class="arm_link_l" fromto="0 0 0  0 0 -0.085" size="0.020" mass="0.3"/>
+                          <geom class="arm_sphere_l" size="0.030" pos="0 0 -0.085"/>
+                          <body name="left_link5" pos="0 0 -0.085">
+                            <joint name="left_wrist_flex" axis="0 1 0" range="-2.09 2.09"/>
+                            <geom class="arm_link_l" fromto="0 0 0  0 0 -0.060" size="0.018" mass="0.2"/>
+                            <geom class="arm_sphere_l" size="0.028" pos="0 0 -0.060"/>
+                            <body name="left_link6" pos="0 0 -0.060">
+                              <joint name="left_wrist_roll" axis="1 0 0" range="-2.97 2.97"/>
+                              <geom name="left_ee_flange" type="cylinder" size="0.030 0.008"
+                                    pos="0 0 -0.010" material="arm_tip" mass="0.1"
+                                    contype="0" conaffinity="0"/>
+                              <site name="left_hand_attach" pos="0 0 -0.018" size="0.016" rgba="0.2 0.6 1.0 1"/>
+
+                              <!-- ══════════════════════════════════════ -->
+                              <!--  LEFT HAND  (ORCA V1, 17-DOF)        -->
+                              <!--  ⚠ FILL IN: Verify euler rotation     -->
+                              <!--    after measuring arm flange align   -->
+                              <!-- ══════════════════════════════════════ -->
+                              <body name="left_tower" euler="0.0 0.0 0.0"
+                                    pos="-0.04 0.0 -0.064">
+                                <inertial diaginertia="0.00150422 0.00125262 0.0007962"
+                                          euler="-0.00261 -0.00737 -0.04145" mass="0.9"
+                                          pos="-0.04034 -0.00091 0.01912"/>
+                                <geom class="bone"         mesh="lv_tower_main"/>
+                                <geom class="hd_collision" mesh="lc_tower_main"/>
+                                <geom class="bone"         mesh="lv_tower_hull"/>
+                                <geom class="hd_collision" mesh="lc_tower_hull"/>
+                                <geom class="skin"         mesh="lv_tower_text"/>
+                                <geom class="hd_collision" mesh="lc_tower_text"/>
+
+                                <body name="left_palm" euler="0.0 0.0 0.0" pos="-0.03863 0.00144 0.14359">
+                                  <inertial diaginertia="1.612e-05 1.151e-05 6.72e-06"
+                                            euler="1.67519 -0.0475 -1.55556" mass="0.0257"
+                                            pos="-0.00193 -0.00052 -0.00664"/>
+                                  <joint name="left_wrist" class="hd_joint" axis="-1.0 0.0 0.0"
+                                         pos="-0.002 -0.00144 -0.03872" range="-0.8972 0.6736" ref="0.15"/>
+                                  <geom class="bone"         mesh="lv_palm"/>
+                                  <geom class="hd_collision" mesh="lc_palm"/>
+                                  <geom class="skin"         mesh="lv_palm_skin"/>
+                                  <geom class="hd_collision" mesh="lc_palm_skin"/>
+                                  <!-- Site for wrist camera / eye-in-hand -->
+                                  <site name="left_wrist_camera" pos="-0.04 0 0.12" size="0.010" rgba="0 1 1 1"/>
+
+                                  <!-- THUMB -->
+                                  <body name="left_thumb_mp" euler="0.53857 0.05595 1.27047" pos="0.02821 0.01777 -0.01321">
+                                    <inertial diaginertia="8.4e-07 6.6e-07 2.7e-07" euler="0.0 -0.01625 0.0" mass="0.00586" pos="-0.00247 0.0 0.004"/>
+                                    <joint name="left_thumb_mcp" class="hd_joint" axis="0.0 0.0 1.0" range="-0.87266 0.87266" ref="0.0"/>
+                                    <geom class="bone"         mesh="lv_thumb_mp"/>
+                                    <geom class="hd_collision" mesh="lc_thumb_mp"/>
+                                    <body name="left_thumb_pp" euler="-1.22173 0.0 0.0" pos="0.03 0.0 0.0">
+                                      <inertial diaginertia="7.5e-07 7.1e-07 3e-07" euler="1.5708 -0.77392 -1.5708" mass="0.00655" pos="-0.01848 1e-05 2e-05"/>
+                                      <joint name="left_thumb_abd" class="hd_joint" axis="0.0 -0.34202 -0.93969" pos="-0.03 0.0 0.0" range="-1.08211 0.0" ref="-0.73304"/>
+                                      <geom class="bone"         mesh="lv_thumb_pp"/>
+                                      <geom class="hd_collision" mesh="lc_thumb_pp"/>
+                                      <body name="left_thumb_ip" euler="3.14159 -1.5708 0.0" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 -0.03263 -0.00034" mass="0.01402" pos="-0.00135 2e-05 0.01383"/>
+                                        <joint name="left_thumb_pip" class="hd_joint" axis="0.0 1.0 0.0" range="-0.7944 1.23" ref="-0.58496"/>
+                                        <geom class="bone"         mesh="lv_thumb_ip"/>
+                                        <geom class="hd_collision" mesh="lc_thumb_ip"/>
+                                        <geom class="skin"         mesh="lv_thumb_ip_skin"/>
+                                        <geom class="hd_collision" mesh="lc_thumb_ip_skin"/>
+                                        <body name="left_thumb_dp" euler="0.0 0.0 0.0" pos="-0.0005 0.0 0.033">
+                                          <inertial diaginertia="1.4e-06 1.37e-06 4.4e-07" euler="0.00075 -0.08211 -0.00013" mass="0.0132" pos="-0.00233 1e-05 0.01133"/>
+                                          <joint name="left_thumb_dip" class="hd_joint" axis="0.0 1.0 0.0" range="-0.85384 1.45" ref="-0.50477"/>
+                                          <geom class="bone"         mesh="lv_thumb_dp"/>
+                                          <geom class="hd_collision" mesh="lc_thumb_dp"/>
+                                          <geom class="skin"         mesh="lv_thumb_dp_skin" euler="0.0 -0.52 0.0" pos="0.009 0 -0.011"/>
+                                          <geom class="hd_collision" mesh="lc_thumb_dp_skin" euler="0.0 -0.52 0.0" pos="0.009 0 -0.011"/>
+                                        </body>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- INDEX -->
+                                  <body name="left_index_mp" euler="1.6067 -1.13552 0.05339" pos="0.03251 0.00235 0.0433">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                    <joint name="left_index_abd" class="hd_joint" axis="0.0 0.0 1.0" pos="-0.02 0.0 0.0" range="-1.04577 0.24577" ref="-0.4"/>
+                                    <geom class="bone"         mesh="lv_index_mp"/>
+                                    <geom class="hd_collision" mesh="lc_index_mp"/>
+                                    <body name="left_index_pp" euler="0.0 1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="2.39e-06 2.31e-06 7.1e-07" euler="0.00034 -0.02055 -0.00038" mass="0.0165" pos="-0.00135 2e-05 0.01637"/>
+                                      <joint name="left_index_mcp" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.65806"/>
+                                      <geom class="bone"         mesh="lv_index_pp"/>
+                                      <geom class="hd_collision" mesh="lc_index_pp"/>
+                                      <geom class="skin"         mesh="lv_index_pp_skin"/>
+                                      <geom class="hd_collision" mesh="lc_index_pp_skin"/>
+                                      <body name="left_index_ip" euler="0.0 0.0 0.0" pos="-0.0005 0.0 0.038">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                        <joint name="left_index_pip" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.88496"/>
+                                        <geom class="bone"         mesh="lv_index_ip"/>
+                                        <geom class="hd_collision" mesh="lc_index_ip"/>
+                                        <geom class="skin"         mesh="lv_index_ip_skin"/>
+                                        <geom class="hd_collision" mesh="lc_index_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- MIDDLE -->
+                                  <body name="left_middle_mp" euler="1.5708 -1.5708 0.0" pos="0.0 0.0 0.05">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                    <joint name="left_middle_abd" class="hd_joint" axis="0.0 0.0 1.0" pos="-0.02 0.0 0.0" range="-0.64577 0.64577"/>
+                                    <geom class="bone"         mesh="lv_middle_mp"/>
+                                    <geom class="hd_collision" mesh="lc_middle_mp"/>
+                                    <body name="left_middle_pp" euler="0.0 1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 -0.01386 -0.0006" mass="0.02006" pos="-0.00144 2e-05 0.02021"/>
+                                      <joint name="left_middle_mcp" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.58825"/>
+                                      <geom class="bone"         mesh="lv_middle_pp"/>
+                                      <geom class="hd_collision" mesh="lc_middle_pp"/>
+                                      <geom class="skin"         mesh="lv_middle_pp_skin"/>
+                                      <geom class="hd_collision" mesh="lc_middle_pp_skin"/>
+                                      <body name="left_middle_ip" euler="0.0 0.0 0.0" pos="-0.0005 0.0 0.046">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                        <joint name="left_middle_pip" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.8675"/>
+                                        <geom class="bone"         mesh="lv_middle_ip"/>
+                                        <geom class="hd_collision" mesh="lc_middle_ip"/>
+                                        <geom class="skin"         mesh="lv_middle_ip_skin"/>
+                                        <geom class="hd_collision" mesh="lc_middle_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- RING -->
+                                  <body name="left_ring_mp" euler="-1.53597 -1.30836 3.05441" pos="-0.02669 0.00199 0.04014">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                    <joint name="left_ring_abd" class="hd_joint" axis="0.0 0.0 1.0" pos="-0.02 0.0 0.0" range="-0.47577 0.80577" ref="0.17"/>
+                                    <geom class="bone"         mesh="lv_ring_mp"/>
+                                    <geom class="hd_collision" mesh="lc_ring_mp"/>
+                                    <body name="left_ring_pp" euler="0.0 1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 -0.01386 -0.0006" mass="0.02006" pos="-0.00144 2e-05 0.02021"/>
+                                      <joint name="left_ring_mcp" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.58825"/>
+                                      <geom class="bone"         mesh="lv_ring_pp"/>
+                                      <geom class="hd_collision" mesh="lc_ring_pp"/>
+                                      <geom class="skin"         mesh="lv_ring_pp_skin"/>
+                                      <geom class="hd_collision" mesh="lc_ring_pp_skin"/>
+                                      <body name="left_ring_ip" euler="0.0 0.0 0.0" pos="-0.0005 0.0 0.046">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                        <joint name="left_ring_pip" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.8675"/>
+                                        <geom class="bone"         mesh="lv_ring_ip"/>
+                                        <geom class="hd_collision" mesh="lc_ring_ip"/>
+                                        <geom class="skin"         mesh="lv_ring_ip_skin"/>
+                                        <geom class="hd_collision" mesh="lc_ring_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- PINKY -->
+                                  <body name="left_pinky_mp" euler="-1.49694 -0.86149 2.88373" pos="-0.05518 0.00831 0.02242">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                    <joint name="left_pinky_abd" class="hd_joint" axis="0.0 0.0 1.0" pos="-0.02 0.0 0.0" range="-0.12244 1.1691" ref="0.52333"/>
+                                    <geom class="bone"         mesh="lv_pinky_mp"/>
+                                    <geom class="hd_collision" mesh="lc_pinky_mp"/>
+                                    <body name="left_pinky_pp" euler="0.0 1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 -0.03263 -0.00034" mass="0.01402" pos="-0.00135 2e-05 0.01383"/>
+                                      <joint name="left_pinky_mcp" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.71042"/>
+                                      <geom class="bone"         mesh="lv_pinky_pp"/>
+                                      <geom class="hd_collision" mesh="lc_pinky_pp"/>
+                                      <geom class="skin"         mesh="lv_pinky_pp_skin"/>
+                                      <geom class="hd_collision" mesh="lc_pinky_pp_skin"/>
+                                      <body name="left_pinky_ip" euler="0.0 0.0 0.0" pos="-0.0005 0.0 0.033">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                        <joint name="left_pinky_pip" class="hd_joint" axis="0.0 1.0 0.0" range="-0.34907 1.88496"/>
+                                        <geom class="bone"         mesh="lv_pinky_ip"/>
+                                        <geom class="hd_collision" mesh="lc_pinky_ip"/>
+                                        <geom class="skin"         mesh="lv_pinky_ip_skin"/>
+                                        <geom class="hd_collision" mesh="lc_pinky_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                </body><!-- /left_palm -->
+                              </body><!-- /left_tower -->
+
+                            </body><!-- /left_link6 -->
+                          </body><!-- /left_link5 -->
+                        </body><!-- /left_link4 -->
+                      </body><!-- /left_link3 -->
+                    </body><!-- /left_link2 -->
+                  </body><!-- /left_link1 -->
+                </body><!-- /left_link0 -->
+
+                <!-- ══════════════════════════════════════════════════════ -->
+                <!--  RIGHT ARM  (7-DOF, mirror of left)                   -->
+                <!-- ══════════════════════════════════════════════════════ -->
+                <body name="right_link0" pos="0 -0.220 0.52">
+                  <joint name="right_shoulder_pan"  axis="0 0 1" range="-2.97 2.97"/>
+                  <geom class="arm_sphere_r" size="0.042"/>
+                  <body name="right_link1" pos="0 0 0">
+                    <joint name="right_shoulder_tilt" axis="0 1 0" range="-3.05 1.05"/>
+                    <geom class="arm_sphere_r" size="0.040"/>
+                    <body name="right_link2" pos="0 0 0">
+                      <joint name="right_shoulder_roll" axis="1 0 0" range="-2.97 2.97"/>
+                      <geom class="arm_link_r" fromto="0 0 0  0 0 -0.300" size="0.026" mass="0.8"/>
+                      <geom class="arm_sphere_r" size="0.038" pos="0 0 -0.300"/>
+                      <body name="right_link3" pos="0 0 -0.300">
+                        <joint name="right_elbow_flex" axis="0 1 0" range="0.0 3.05"/>
+                        <geom class="arm_link_r" fromto="0 0 0  0 0 -0.265" size="0.023" mass="0.6"/>
+                        <geom class="arm_sphere_r" size="0.034" pos="0 0 -0.265"/>
+                        <body name="right_link4" pos="0 0 -0.265">
+                          <joint name="right_forearm_roll" axis="1 0 0" range="-2.97 2.97"/>
+                          <geom class="arm_link_r" fromto="0 0 0  0 0 -0.085" size="0.020" mass="0.3"/>
+                          <geom class="arm_sphere_r" size="0.030" pos="0 0 -0.085"/>
+                          <body name="right_link5" pos="0 0 -0.085">
+                            <joint name="right_wrist_flex" axis="0 1 0" range="-2.09 2.09"/>
+                            <geom class="arm_link_r" fromto="0 0 0  0 0 -0.060" size="0.018" mass="0.2"/>
+                            <geom class="arm_sphere_r" size="0.028" pos="0 0 -0.060"/>
+                            <body name="right_link6" pos="0 0 -0.060">
+                              <joint name="right_wrist_roll" axis="1 0 0" range="-2.97 2.97"/>
+                              <geom name="right_ee_flange" type="cylinder" size="0.030 0.008"
+                                    pos="0 0 -0.010" material="arm_tip" mass="0.1"
+                                    contype="0" conaffinity="0"/>
+                              <site name="right_hand_attach" pos="0 0 -0.018" size="0.016" rgba="0.2 1.0 0.4 1"/>
+
+                              <!-- ══════════════════════════════════════ -->
+                              <!--  RIGHT HAND  (ORCA V1, 17-DOF)       -->
+                              <!--  ⚠ FILL IN: Verify euler rotation     -->
+                              <!-- ══════════════════════════════════════ -->
+                              <body name="right_tower" euler="0.0 0.0 0.0"
+                                    pos="0.04 0.0 -0.064">
+                                <inertial diaginertia="0.00150422 0.00125262 0.0007962"
+                                          euler="-0.00261 0.00737 0.04145" mass="0.9"
+                                          pos="0.04034 -0.00091 0.01912"/>
+                                <geom class="bone"         mesh="rv_tower_main"/>
+                                <geom class="hd_collision" mesh="rc_tower_main"/>
+                                <geom class="bone"         mesh="rv_tower_hull"/>
+                                <geom class="hd_collision" mesh="rc_tower_hull"/>
+                                <geom class="skin"         mesh="rv_tower_text"/>
+                                <geom class="hd_collision" mesh="rc_tower_text"/>
+
+                                <body name="right_palm" euler="0.0 0.0 0.0" pos="0.03863 0.00144 0.14359">
+                                  <inertial diaginertia="1.612e-05 1.151e-05 6.72e-06"
+                                            euler="1.67519 0.0475 1.55556" mass="0.0257"
+                                            pos="0.00193 -0.00052 -0.00664"/>
+                                  <joint name="right_wrist" class="hd_joint" axis="1.0 0.0 0.0"
+                                         pos="0.002 -0.00144 -0.03872" range="-0.6736 0.8972" ref="-0.15"/>
+                                  <geom class="bone"         mesh="rv_palm"/>
+                                  <geom class="hd_collision" mesh="rc_palm"/>
+                                  <geom class="skin"         mesh="rv_palm_skin"/>
+                                  <geom class="hd_collision" mesh="rc_palm_skin"/>
+                                  <site name="right_wrist_camera" pos="0.04 0 0.12" size="0.010" rgba="0 1 1 1"/>
+
+                                  <!-- THUMB -->
+                                  <body name="right_thumb_mp" euler="0.53857 -0.05595 -1.27047" pos="-0.02821 0.01777 -0.01321">
+                                    <inertial diaginertia="8.4e-07 6.6e-07 2.7e-07" euler="0.0 0.01625 0.0" mass="0.00586" pos="0.00247 0.0 0.004"/>
+                                    <joint name="right_thumb_mcp" class="hd_joint" axis="0.0 0.0 -1.0" range="-0.87266 0.87266" ref="0.0"/>
+                                    <geom class="bone"         mesh="rv_thumb_mp"/>
+                                    <geom class="hd_collision" mesh="rc_thumb_mp"/>
+                                    <body name="right_thumb_pp" euler="-1.22173 0.0 0.0" pos="-0.03 0.0 0.0">
+                                      <inertial diaginertia="7.5e-07 7.1e-07 3e-07" euler="1.5708 0.77392 1.5708" mass="0.00655" pos="0.01848 1e-05 2e-05"/>
+                                      <joint name="right_thumb_abd" class="hd_joint" axis="0.0 0.34202 0.93969" pos="0.03 0.0 0.0" range="-1.08211 0.0" ref="-0.73304"/>
+                                      <geom class="bone"         mesh="rv_thumb_pp"/>
+                                      <geom class="hd_collision" mesh="rc_thumb_pp"/>
+                                      <body name="right_thumb_ip" euler="3.14159 1.5708 0.0" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 0.03263 0.00034" mass="0.01402" pos="0.00135 2e-05 0.01383"/>
+                                        <joint name="right_thumb_pip" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.7944 1.23" ref="-0.58496"/>
+                                        <geom class="bone"         mesh="rv_thumb_ip"/>
+                                        <geom class="hd_collision" mesh="rc_thumb_ip"/>
+                                        <geom class="skin"         mesh="rv_thumb_ip_skin"/>
+                                        <geom class="hd_collision" mesh="rc_thumb_ip_skin"/>
+                                        <body name="right_thumb_dp" euler="0.0 0.0 0.0" pos="0.0005 0.0 0.033">
+                                          <inertial diaginertia="1.4e-06 1.37e-06 4.4e-07" euler="0.00075 0.08211 0.00013" mass="0.0132" pos="0.00233 1e-05 0.01133"/>
+                                          <joint name="right_thumb_dip" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.85384 1.45" ref="-0.50477"/>
+                                          <geom class="bone"         mesh="rv_thumb_dp"/>
+                                          <geom class="hd_collision" mesh="rc_thumb_dp"/>
+                                          <geom class="skin"         mesh="rv_thumb_dp_skin" euler="0.0 0.52 0.0" pos="-0.009 0 -0.011"/>
+                                          <geom class="hd_collision" mesh="rc_thumb_dp_skin" euler="0.0 0.52 0.0" pos="-0.009 0 -0.011"/>
+                                        </body>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- INDEX -->
+                                  <body name="right_index_mp" euler="1.6067 1.13552 -0.05339" pos="-0.03251 0.00235 0.0433">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                    <joint name="right_index_abd" class="hd_joint" axis="0.0 0.0 -1.0" pos="0.02 0.0 0.0" range="-1.04577 0.24577" ref="-0.4"/>
+                                    <geom class="bone"         mesh="rv_index_mp"/>
+                                    <geom class="hd_collision" mesh="rc_index_mp"/>
+                                    <body name="right_index_pp" euler="0.0 -1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="2.39e-06 2.31e-06 7.1e-07" euler="0.00034 0.02055 0.00038" mass="0.0165" pos="0.00135 2e-05 0.01637"/>
+                                      <joint name="right_index_mcp" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.65806"/>
+                                      <geom class="bone"         mesh="rv_index_pp"/>
+                                      <geom class="hd_collision" mesh="rc_index_pp"/>
+                                      <geom class="skin"         mesh="rv_index_pp_skin"/>
+                                      <geom class="hd_collision" mesh="rc_index_pp_skin"/>
+                                      <body name="right_index_ip" euler="0.0 0.0 0.0" pos="0.0005 0.0 0.038">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                        <joint name="right_index_pip" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.88496"/>
+                                        <geom class="bone"         mesh="rv_index_ip"/>
+                                        <geom class="hd_collision" mesh="rc_index_ip"/>
+                                        <geom class="skin"         mesh="rv_index_ip_skin"/>
+                                        <geom class="hd_collision" mesh="rc_index_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- MIDDLE -->
+                                  <body name="right_middle_mp" euler="1.5708 1.5708 0.0" pos="0.0 0.0 0.05">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                    <joint name="right_middle_abd" class="hd_joint" axis="0.0 0.0 -1.0" pos="0.02 0.0 0.0" range="-0.64577 0.64577"/>
+                                    <geom class="bone"         mesh="rv_middle_mp"/>
+                                    <geom class="hd_collision" mesh="rc_middle_mp"/>
+                                    <body name="right_middle_pp" euler="0.0 -1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 0.01386 0.0006" mass="0.02006" pos="0.00144 2e-05 0.02021"/>
+                                      <joint name="right_middle_mcp" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.58825"/>
+                                      <geom class="bone"         mesh="rv_middle_pp"/>
+                                      <geom class="hd_collision" mesh="rc_middle_pp"/>
+                                      <geom class="skin"         mesh="rv_middle_pp_skin"/>
+                                      <geom class="hd_collision" mesh="rc_middle_pp_skin"/>
+                                      <body name="right_middle_ip" euler="0.0 0.0 0.0" pos="0.0005 0.0 0.046">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                        <joint name="right_middle_pip" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.8675"/>
+                                        <geom class="bone"         mesh="rv_middle_ip"/>
+                                        <geom class="hd_collision" mesh="rc_middle_ip"/>
+                                        <geom class="skin"         mesh="rv_middle_ip_skin"/>
+                                        <geom class="hd_collision" mesh="rc_middle_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- RING -->
+                                  <body name="right_ring_mp" euler="-1.53597 1.30836 -3.05441" pos="0.02669 0.00199 0.04014">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                    <joint name="right_ring_abd" class="hd_joint" axis="0.0 0.0 -1.0" pos="0.02 0.0 0.0" range="-0.47577 0.80577" ref="0.17"/>
+                                    <geom class="bone"         mesh="rv_ring_mp"/>
+                                    <geom class="hd_collision" mesh="rc_ring_mp"/>
+                                    <body name="right_ring_pp" euler="0.0 -1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 0.01386 0.0006" mass="0.02006" pos="0.00144 2e-05 0.02021"/>
+                                      <joint name="right_ring_mcp" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.58825"/>
+                                      <geom class="bone"         mesh="rv_ring_pp"/>
+                                      <geom class="hd_collision" mesh="rc_ring_pp"/>
+                                      <geom class="skin"         mesh="rv_ring_pp_skin"/>
+                                      <geom class="hd_collision" mesh="rc_ring_pp_skin"/>
+                                      <body name="right_ring_ip" euler="0.0 0.0 0.0" pos="0.0005 0.0 0.046">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                        <joint name="right_ring_pip" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.8675"/>
+                                        <geom class="bone"         mesh="rv_ring_ip"/>
+                                        <geom class="hd_collision" mesh="rc_ring_ip"/>
+                                        <geom class="skin"         mesh="rv_ring_ip_skin"/>
+                                        <geom class="hd_collision" mesh="rc_ring_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                  <!-- PINKY -->
+                                  <body name="right_pinky_mp" euler="-1.49694 0.86149 -2.88373" pos="0.05518 0.00831 0.02242">
+                                    <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                    <joint name="right_pinky_abd" class="hd_joint" axis="0.0 0.0 -1.0" pos="0.02 0.0 0.0" range="-0.12244 1.1691" ref="0.52333"/>
+                                    <geom class="bone"         mesh="rv_pinky_mp"/>
+                                    <geom class="hd_collision" mesh="rc_pinky_mp"/>
+                                    <body name="right_pinky_pp" euler="0.0 -1.5708 0.0" pos="0.0 0.0 0.0">
+                                      <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 0.03263 0.00034" mass="0.01402" pos="0.00135 2e-05 0.01383"/>
+                                      <joint name="right_pinky_mcp" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.71042"/>
+                                      <geom class="bone"         mesh="rv_pinky_pp"/>
+                                      <geom class="hd_collision" mesh="rc_pinky_pp"/>
+                                      <geom class="skin"         mesh="rv_pinky_pp_skin"/>
+                                      <geom class="hd_collision" mesh="rc_pinky_pp_skin"/>
+                                      <body name="right_pinky_ip" euler="0.0 0.0 0.0" pos="0.0005 0.0 0.033">
+                                        <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                        <joint name="right_pinky_pip" class="hd_joint" axis="0.0 -1.0 0.0" range="-0.34907 1.88496"/>
+                                        <geom class="bone"         mesh="rv_pinky_ip"/>
+                                        <geom class="hd_collision" mesh="rc_pinky_ip"/>
+                                        <geom class="skin"         mesh="rv_pinky_ip_skin"/>
+                                        <geom class="hd_collision" mesh="rc_pinky_ip_skin"/>
+                                      </body>
+                                    </body>
+                                  </body>
+                                </body><!-- /right_palm -->
+                              </body><!-- /right_tower -->
+
+                            </body><!-- /right_link6 -->
+                          </body><!-- /right_link5 -->
+                        </body><!-- /right_link4 -->
+                      </body><!-- /right_link3 -->
+                    </body><!-- /right_link2 -->
+                  </body><!-- /right_link1 -->
+                </body><!-- /right_link0 -->
+
+                <!-- ══════════════════════════════════════════════════════ -->
+                <!--  NECK + HEAD  (3-DOF)                                -->
+                <!-- ══════════════════════════════════════════════════════ -->
+                <body name="neck_column" pos="0 0 0.57">
+                  <geom name="neck_col" type="capsule" size="0.025"
+                        fromto="0 0 0  0 0 0.10"
+                        material="neck_mat" mass="0.3" contype="0" conaffinity="0"/>
+                  <geom name="servo_pan_body" type="box" pos="0 0 0.12"
+                        size="0.025 0.025 0.020"
+                        material="servo_mat" mass="0.2" contype="0" conaffinity="0"/>
+
+                  <body name="neck_pan_link" pos="0 0 0.14">
+                    <joint name="neck_pan" type="hinge" axis="0 0 1"
+                           range="-2.97 2.97" damping="0.5" armature="0.02" frictionloss="0.05"/>
+                    <geom type="box" pos="0 0 0.02" size="0.040 0.030 0.018"
+                          material="neck_mat" mass="0.15" contype="0" conaffinity="0"/>
+                    <geom name="servo_tilt_body" type="box" pos="0 0 0.045"
+                          size="0.025 0.035 0.018"
+                          material="servo_mat" mass="0.2" contype="0" conaffinity="0"/>
+
+                    <body name="neck_tilt_link" pos="0 0 0.06">
+                      <inertial pos="0 0 0" mass="0.10" diaginertia="1e-4 1e-4 1e-4"/>
+                      <joint name="neck_tilt" type="hinge" axis="0 1 0"
+                             range="-0.524 0.785" damping="0.4" armature="0.02" frictionloss="0.04"/>
+
+                      <body name="neck_roll_link" pos="0 0 0">
+                        <inertial pos="0 0 0" mass="0.10" diaginertia="1e-4 1e-4 1e-4"/>
+                        <joint name="neck_roll" type="hinge" axis="1 0 0"
+                               range="-0.349 0.349" damping="0.3" armature="0.01" frictionloss="0.03"/>
+
+                        <body name="head" pos="0 0 0.03">
+                          <geom name="head_shell" type="box" pos="0 0 0.06"
+                                size="0.075 0.060 0.060"
+                                material="head_shell" mass="0.8" contype="1" conaffinity="0"/>
+                          <geom name="eye_left" type="box"
+                                pos="0.072 0.030 0.075" size="0.007 0.028 0.018"
+                                material="eye_mat" mass="0.05" contype="0" conaffinity="0"/>
+                          <geom name="eye_right" type="box"
+                                pos="0.072 -0.030 0.075" size="0.007 0.028 0.018"
+                                material="eye_mat" mass="0.05" contype="0" conaffinity="0"/>
+                          <geom name="camera_body" type="box"
+                                pos="0.074 0 0.040" size="0.010 0.055 0.016"
+                                material="camera_mat" mass="0.10" contype="0" conaffinity="0"/>
+                          <camera name="head_camera" pos="0.085 0 0.040"
+                                  euler="0 -1.5708 0" fovy="60"/>
+                          <site name="head_imu" pos="0 0 0.08" size="0.01" rgba="1 1 0 1"/>
+                        </body><!-- /head -->
+                      </body><!-- /neck_roll_link -->
+                    </body><!-- /neck_tilt_link -->
+                  </body><!-- /neck_pan_link -->
+                </body><!-- /neck_column -->
+
+              </body><!-- /torso -->
+            </body><!-- /torso_base -->
+          </body><!-- /lift_stage_2 -->
+        </body><!-- /lift_stage_1 -->
+      </body><!-- /lift_column_outer -->
+
+    </body><!-- /chassis -->
+  </worldbody>
+
+  <!-- ================================================================= -->
+  <!-- CONTACT EXCLUSIONS                                                 -->
+  <!-- ================================================================= -->
+  <contact>
+    <!-- Base / swerve -->
+    <exclude body1="chassis"     body2="wheel_fl"/>
+    <exclude body1="chassis"     body2="wheel_fr"/>
+    <exclude body1="chassis"     body2="wheel_bc"/>
+    <exclude body1="chassis"     body2="swerve_fl"/>
+    <exclude body1="chassis"     body2="swerve_fr"/>
+    <exclude body1="chassis"     body2="swerve_bc"/>
+    <!-- Lift internals -->
+    <exclude body1="lift_column_outer" body2="lift_stage_1"/>
+    <exclude body1="lift_column_outer" body2="lift_stage_2"/>
+    <exclude body1="lift_stage_1"      body2="lift_stage_2"/>
+    <exclude body1="lift_stage_2"      body2="torso_base"/>
+    <!-- Torso / arm bases -->
+    <exclude body1="torso"       body2="left_link0"/>
+    <exclude body1="torso"       body2="right_link0"/>
+    <!-- Arm links -->
+    <exclude body1="left_link0"  body2="left_link1"/>
+    <exclude body1="left_link1"  body2="left_link2"/>
+    <exclude body1="left_link2"  body2="left_link3"/>
+    <exclude body1="left_link3"  body2="left_link4"/>
+    <exclude body1="left_link4"  body2="left_link5"/>
+    <exclude body1="left_link5"  body2="left_link6"/>
+    <exclude body1="left_link6"  body2="left_tower"/>
+    <exclude body1="right_link0" body2="right_link1"/>
+    <exclude body1="right_link1" body2="right_link2"/>
+    <exclude body1="right_link2" body2="right_link3"/>
+    <exclude body1="right_link3" body2="right_link4"/>
+    <exclude body1="right_link4" body2="right_link5"/>
+    <exclude body1="right_link5" body2="right_link6"/>
+    <exclude body1="right_link6" body2="right_tower"/>
+    <!-- Left hand -->
+    <exclude body1="left_tower"    body2="left_palm"/>
+    <exclude body1="left_palm"     body2="left_thumb_mp"/>
+    <exclude body1="left_thumb_mp" body2="left_thumb_pp"/>
+    <exclude body1="left_thumb_pp" body2="left_thumb_ip"/>
+    <exclude body1="left_thumb_ip" body2="left_thumb_dp"/>
+    <exclude body1="left_palm"     body2="left_thumb_pp"/>
+    <exclude body1="left_palm"     body2="left_index_mp"/>
+    <exclude body1="left_index_mp" body2="left_index_pp"/>
+    <exclude body1="left_index_pp" body2="left_index_ip"/>
+    <exclude body1="left_palm"     body2="left_middle_mp"/>
+    <exclude body1="left_middle_mp" body2="left_middle_pp"/>
+    <exclude body1="left_middle_pp" body2="left_middle_ip"/>
+    <exclude body1="left_palm"     body2="left_ring_mp"/>
+    <exclude body1="left_ring_mp"  body2="left_ring_pp"/>
+    <exclude body1="left_ring_pp"  body2="left_ring_ip"/>
+    <exclude body1="left_palm"     body2="left_pinky_mp"/>
+    <exclude body1="left_pinky_mp" body2="left_pinky_pp"/>
+    <exclude body1="left_pinky_pp" body2="left_pinky_ip"/>
+    <!-- Right hand -->
+    <exclude body1="right_tower"    body2="right_palm"/>
+    <exclude body1="right_palm"     body2="right_thumb_mp"/>
+    <exclude body1="right_thumb_mp" body2="right_thumb_pp"/>
+    <exclude body1="right_thumb_pp" body2="right_thumb_ip"/>
+    <exclude body1="right_thumb_ip" body2="right_thumb_dp"/>
+    <exclude body1="right_palm"     body2="right_thumb_pp"/>
+    <exclude body1="right_palm"     body2="right_index_mp"/>
+    <exclude body1="right_index_mp" body2="right_index_pp"/>
+    <exclude body1="right_index_pp" body2="right_index_ip"/>
+    <exclude body1="right_palm"     body2="right_middle_mp"/>
+    <exclude body1="right_middle_mp" body2="right_middle_pp"/>
+    <exclude body1="right_middle_pp" body2="right_middle_ip"/>
+    <exclude body1="right_palm"     body2="right_ring_mp"/>
+    <exclude body1="right_ring_mp"  body2="right_ring_pp"/>
+    <exclude body1="right_ring_pp"  body2="right_ring_ip"/>
+    <exclude body1="right_palm"     body2="right_pinky_mp"/>
+    <exclude body1="right_pinky_mp" body2="right_pinky_pp"/>
+    <exclude body1="right_pinky_pp" body2="right_pinky_ip"/>
+  </contact>
+
+  <!-- ================================================================= -->
+  <!-- EQUALITY CONSTRAINTS                                               -->
+  <!-- ================================================================= -->
+  <equality>
+    <!-- Lift: stage 2 mirrors stage 1 (1:1 scissor linkage) -->
+    <joint joint1="slide_stage_2" joint2="slide_stage_1"
+           polycoef="0 1 0 0 0"
+           solimp="0.85 0.99 0.001" solref="0.02 1"/>
+  </equality>
+
+  <!-- ================================================================= -->
+  <!-- ACTUATORS                                                          -->
+  <!-- ================================================================= -->
+  <actuator>
+
+    <!-- ── MOBILE BASE ── -->
+    <position name="act_steer_fl" joint="steer_fl" kp="25" kv="3" forcerange="-6 6"/>
+    <position name="act_steer_fr" joint="steer_fr" kp="25" kv="3" forcerange="-6 6"/>
+    <position name="act_steer_bc" joint="steer_bc" kp="25" kv="3" forcerange="-6 6"/>
+    <velocity  name="act_drive_fl" joint="drive_fl" kv="5"  forcerange="-10 10"/>
+    <velocity  name="act_drive_fr" joint="drive_fr" kv="5"  forcerange="-10 10"/>
+    <velocity  name="act_drive_bc" joint="drive_bc" kv="5"  forcerange="-10 10"/>
+
+    <!-- ── LIFT ── -->
+    <position name="act_lift" joint="slide_stage_1" kp="1500" kv="80"
+              ctrlrange="0 0.40" ctrllimited="true" forcerange="-250 250"/>
+
+    <!-- ── TORSO ── -->
+    <position name="act_torso_tilt" joint="torso_tilt" kp="400" kv="30"
+              ctrlrange="-0.35 0.35" ctrllimited="true" forcerange="-80 80"/>
+
+    <!-- ── LEFT ARM ── -->
+    <position name="act_l_shoulder_pan"   joint="left_shoulder_pan"   kp="350" kv="28" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-60 60"/>
+    <position name="act_l_shoulder_tilt"  joint="left_shoulder_tilt"  kp="350" kv="28" ctrlrange="-1.05 3.05"  ctrllimited="true" forcerange="-60 60"/>
+    <position name="act_l_shoulder_roll"  joint="left_shoulder_roll"  kp="300" kv="25" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-50 50"/>
+    <position name="act_l_elbow_flex"     joint="left_elbow_flex"     kp="250" kv="20" ctrlrange="-3.05 0.0"   ctrllimited="true" forcerange="-45 45"/>
+    <position name="act_l_forearm_roll"   joint="left_forearm_roll"   kp="200" kv="18" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-35 35"/>
+    <position name="act_l_wrist_flex"     joint="left_wrist_flex"     kp="150" kv="12" ctrlrange="-2.09 2.09"  ctrllimited="true" forcerange="-25 25"/>
+    <position name="act_l_wrist_roll"     joint="left_wrist_roll"     kp="120" kv="10" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-20 20"/>
+
+    <!-- ── LEFT HAND (ORCA V1) ── -->
+    <position class="hd_actuator" ctrlrange="-0.8972 0.6736"   joint="left_wrist"      name="act_lh_wrist"/>
+    <position class="hd_actuator" ctrlrange="-0.87266 0.87266" joint="left_thumb_mcp"  name="act_lh_thumb_mcp"/>
+    <position class="hd_actuator" ctrlrange="-1.08211 0.0"     joint="left_thumb_abd"  name="act_lh_thumb_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.7944 1.23"     joint="left_thumb_pip"  name="act_lh_thumb_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.85384 1.45"    joint="left_thumb_dip"  name="act_lh_thumb_dip"/>
+    <position class="hd_actuator" ctrlrange="-1.04577 0.24577" joint="left_index_abd"  name="act_lh_index_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.65806" joint="left_index_mcp"  name="act_lh_index_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.88496" joint="left_index_pip"  name="act_lh_index_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.64577 0.64577" joint="left_middle_abd" name="act_lh_middle_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.58825" joint="left_middle_mcp" name="act_lh_middle_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.8675"  joint="left_middle_pip" name="act_lh_middle_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.47577 0.80577" joint="left_ring_abd"   name="act_lh_ring_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.58825" joint="left_ring_mcp"   name="act_lh_ring_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.8675"  joint="left_ring_pip"   name="act_lh_ring_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.12244 1.1691"  joint="left_pinky_abd"  name="act_lh_pinky_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.71042" joint="left_pinky_mcp"  name="act_lh_pinky_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.88496" joint="left_pinky_pip"  name="act_lh_pinky_pip"/>
+
+    <!-- ── RIGHT ARM ── -->
+    <position name="act_r_shoulder_pan"   joint="right_shoulder_pan"   kp="350" kv="28" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-60 60"/>
+    <position name="act_r_shoulder_tilt"  joint="right_shoulder_tilt"  kp="350" kv="28" ctrlrange="-3.05 1.05"  ctrllimited="true" forcerange="-60 60"/>
+    <position name="act_r_shoulder_roll"  joint="right_shoulder_roll"  kp="300" kv="25" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-50 50"/>
+    <position name="act_r_elbow_flex"     joint="right_elbow_flex"     kp="250" kv="20" ctrlrange="0.0 3.05"    ctrllimited="true" forcerange="-45 45"/>
+    <position name="act_r_forearm_roll"   joint="right_forearm_roll"   kp="200" kv="18" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-35 35"/>
+    <position name="act_r_wrist_flex"     joint="right_wrist_flex"     kp="150" kv="12" ctrlrange="-2.09 2.09"  ctrllimited="true" forcerange="-25 25"/>
+    <position name="act_r_wrist_roll"     joint="right_wrist_roll"     kp="120" kv="10" ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-20 20"/>
+
+    <!-- ── RIGHT HAND (ORCA V1) ── -->
+    <position class="hd_actuator" ctrlrange="-0.6736 0.8972"   joint="right_wrist"      name="act_rh_wrist"/>
+    <position class="hd_actuator" ctrlrange="-0.87266 0.87266" joint="right_thumb_mcp"  name="act_rh_thumb_mcp"/>
+    <position class="hd_actuator" ctrlrange="-1.08211 0.0"     joint="right_thumb_abd"  name="act_rh_thumb_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.7944 1.23"     joint="right_thumb_pip"  name="act_rh_thumb_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.85384 1.45"    joint="right_thumb_dip"  name="act_rh_thumb_dip"/>
+    <position class="hd_actuator" ctrlrange="-1.04577 0.24577" joint="right_index_abd"  name="act_rh_index_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.65806" joint="right_index_mcp"  name="act_rh_index_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.88496" joint="right_index_pip"  name="act_rh_index_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.64577 0.64577" joint="right_middle_abd" name="act_rh_middle_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.58825" joint="right_middle_mcp" name="act_rh_middle_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.8675"  joint="right_middle_pip" name="act_rh_middle_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.47577 0.80577" joint="right_ring_abd"   name="act_rh_ring_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.58825" joint="right_ring_mcp"   name="act_rh_ring_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.8675"  joint="right_ring_pip"   name="act_rh_ring_pip"/>
+    <position class="hd_actuator" ctrlrange="-0.12244 1.1691"  joint="right_pinky_abd"  name="act_rh_pinky_abd"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.71042" joint="right_pinky_mcp"  name="act_rh_pinky_mcp"/>
+    <position class="hd_actuator" ctrlrange="-0.34907 1.88496" joint="right_pinky_pip"  name="act_rh_pinky_pip"/>
+
+    <!-- ── NECK / HEAD ── -->
+    <position name="act_neck_pan"  joint="neck_pan"  kp="80" kv="8"  ctrlrange="-2.97 2.97"  ctrllimited="true" forcerange="-5 5"/>
+    <position name="act_neck_tilt" joint="neck_tilt" kp="70" kv="7"  ctrlrange="-0.524 0.785" ctrllimited="true" forcerange="-4 4"/>
+    <position name="act_neck_roll" joint="neck_roll" kp="60" kv="6"  ctrlrange="-0.349 0.349" ctrllimited="true" forcerange="-3 3"/>
+
+  </actuator>
+
+</mujoco>

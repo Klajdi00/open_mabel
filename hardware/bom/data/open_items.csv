@@ -1,0 +1,8 @@
+kind,item,qty,low_usd,high_usd,impact,note
+correction,Neck servo identity,1,0,0,+57.39,"The BOM carries 1x Dynamixel 2XL430-W250-T at $149.39. mabel_hw/drivers/dynamixel.py records that MABEL's neck reports model 1090 = XC330-T181, and config.py:665 says there are two of them, pitch and roll. 2x XC330-T181-T is $206.78. Ten minutes with the bus scanner settles it."
+gap,Teensy 4.1 microcontrollers,2,31.50,31.50,+63.00,"the firmware notes name two: one runs the swerve base over UDP to the REV SPARK CAN bus, the other runs the arms, torso and neck at 500 Hz across three DAMIAO CAN buses. Neither is on the parts list, and without them the robot has no low-level control."
+gap,ORCA hand structural kit,2,150,300,estimate,"The list buys 34 servos but no frame, tendon, bearings, tensioners or fingertip pads. The guide's own build-or-buy page estimates $800-1,000 per complete hand against $597.30 of actuators."
+gap,Custom distribution PCBs,2,50,150,tbd,Lines 7.18 and 7.19 are marked TBD; the guide budgets $100-300 at JLCPCB for boards plus components. No gerbers are released under hardware/ yet.
+gap,USB-CAN adapter (bench),1,25,45,estimate,"firmware/can_up.sh auto-detects a gs_usb or slcan dongle. Optional in the finished robot, required for bench bring-up."
+gap,Hardware E-stop switch + contactor,1,30,80,estimate,"The safety docs describe a hardware E-stop that de-energises actuators independently of the host. The OpenArm harness set (3.05) includes an e-stop, so this may already be covered."
+gap,Head microphone,1,10,30,estimate,A speaker is costed; the design calls for head microphones for telepresence.

@@ -1,0 +1,13 @@
+platform,year,cost_kusd,open,hand_dof,neck_dof,arms,source
+Mobile ALOHA,2024,32.0,yes,1,0,2,"Fu et al. 2024 (mobilealoha2024)"
+YOR,2024,9.3,yes,1,0,2,"YOR release (yor)"
+Trossen Mobile AI,2025,34.0,yes,1,0,2,"Trossen Robotics listing (trossenmobile)"
+Reachy 2,2025,70.0,yes,1,3,2,"Pollen Robotics listing (reachy2)"
+Rainbow RB-Y1,2024,80.0,no,1,0,2,"Rainbow Robotics (rainbowrobotics)"
+Galaxea R1,2024,27.0,no,1,0,2,"Retail-listed base model; R1 Pro ~$70k (galaxea)"
+AgiBot Genie G1,2025,22.0,no,1,2,2,"Third-party retail price (agibot)"
+Galbot G1,2024,88.0,no,1,2,2,"Third-party retail price (galbot)"
+DexMate Vega,2025,90.0,no,6,3,2,"DexMate listing (dexmate)"
+Astribot S1,2024,100.0,no,1,2,2,"Third-party retail price (astribot)"
+Weave Isaac 1,2026,8.0,no,1,2,2,"Weave Robotics (weaverobotics)"
+Sunday Memo,2025,10.0,no,4,2,2,"Target at scale; beta ~$20k (sundayrobotics)"

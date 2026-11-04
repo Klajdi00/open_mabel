@@ -1,0 +1,50 @@
+ref,section,item,spec,qty,unit_price,currency,vendor,link,fgroup,status,note
+1.01,Mobile base,REV 3in MAXSwerve Module,"REV-21-3005, module only",3,275.00,USD,revrobotics.com,https://www.revrobotics.com/rev-21-3005/,actuation,corrected,REV catalogue price. The sheet carried a $675 as-paid lump per module; itemised at catalogue it is $275 + the $280 motor and controller bundle below.
+1.01b,Mobile base,REV MAXSwerve Motor & Controller Bundle,"REV-15-2992: NEO + NEO 550 + 2x SPARK MAX, one module",3,280.00,USD,revrobotics.com,https://www.revrobotics.com/rev-15-2992/,actuation,corrected,"One bundle per module: the drive NEO, the steering NEO 550 and their two SPARK MAX controllers."
+1.02,Mobile base,"Base sheet metal, lower",Custom laser-cut,1,51.75,USD,Custom fabrication,,structure,sheet,"Laser cutting only, no secondary operations."
+1.03,Mobile base,"Base sheet metal, upper",Custom laser-cut,1,195.36,USD,Custom fabrication,,structure,sheet,"4 bends, dimple forming, hardware insertion, tapping."
+2.01,Body / torso,FlexiSpot E7 Pro lift column,CBR4830MD-E7WS,1,399.00,USD,flexispot.com,https://www.flexispot.com/flexispot-pro-standing-desk-e7,actuation,sheet,A complete standing desk is bought; only the column and frame are used. 0-0.635 m stroke.
+2.02,Body / torso,Lift-to-torso adapter,Custom machined,1,59.26,USD,Custom fabrication,,structure,sheet,"2 bends, dimple forming, hardware insertion, tapping."
+2.03,Body / torso,Torso output plate,Custom machined,1,55.16,USD,Custom fabrication,,structure,sheet,"1 bend, hardware insertion, tapping."
+2.04,Body / torso,Body bottom plate,Custom machined,1,33.55,USD,Custom fabrication,,structure,sheet,"2 bends, hardware insertion, tapping."
+2.05,Body / torso,Arm mounting plate,Custom machined,2,13.17,USD,Custom fabrication,,structure,sheet,"Hardware insertion, tapping. One per arm."
+2.06,Body / torso,Neck mounting plate,Custom machined,1,29.05,USD,Custom fabrication,,structure,sheet,2 bends only.
+2.07,Body / torso,DAMIAO DM10422P torso actuator,"Hollow-shaft planetary, dual inductive encoder",1,1999.00,CNY,Taobao,,actuation,sheet,400 N.m torso-pitch joint.
+3.01,Arms - both,DAMIAO FOCGM43 joint module,"MIT-mode BLDC, dual encoder, geared",6,599.00,CNY,Taobao,,actuation,corrected,"The parts list calls this 'DMJ4301'. The verified Taobao listing is a DAMIAO FOCGM43 module; the repo's own build table calls the arm-wrist actuator DM-J4310. Search the model string, not the sheet's label."
+3.02,Arms - both,DAMIAO DM4340 joint motor,"Geared, dual encoder, 9 N.m rated",4,882.33,CNY,Taobao,,actuation,corrected,Parts list says 'DMJ4343'; the listing and the repo build table both say DM4340. Shoulder roll + elbow.
+3.03,Arms - both,DAMIAO DM8009P joint module,"MIT-mode BLDC module, V4, 40 N.m",4,1899.00,CNY,Taobao,,actuation,corrected,Parts list says 'DMJ4341'; the listing and the repo build table both say DM8009P. Shoulder pitch + yaw. Bought at 25% below the CNY 2529 list.
+3.04,Arms - both,OpenArm structural set,CNC 7075 aluminium + sheet steel,1,2699.00,CNY,Taobao,,structure,sheet,Dual-arm structural set.
+3.05,Arms - both,Arm harness set,Harness + hub + e-stop + power adapter board + PSU,1,865.00,CNY,Taobao,,power,corrected,The original sheet gave '865' with no currency. Read as CNY on the basis of its Taobao link. If it is USD every total rises by $740.93.
+4.01,Hands - both,Feetech HL3915M servo,"HL-3915-C001, 12 V, 14 kg-cm, dual-shaft, steel gear, TTL",32,235.00,CNY,Taobao,,actuation,sheet,16 per ORCA hand.
+4.02,Hands - both,Feetech HL3930M servo,"HL-3930-C001, 12 V, 35 kg-cm, metal case, dual-shaft, TTL",2,359.00,CNY,Taobao,,actuation,sheet,1 per hand.
+4.03,Hands - both,ST/SC bus servo driver board,USB-UART TTL debug board,2,27.65,CNY,Taobao,,misc,sheet,One per hand on the 1 Mbit TTL bus.
+4.04,Hands - both,Bus servo power distribution board,5264 terminal splitter,2,18.00,CNY,Taobao,,misc,sheet,One per hand.
+5.01,Neck / head,Robotis Dynamixel 2XL430-W250-T,Dual-axis smart servo,1,149.39,USD,robotshop.com,https://www.robotshop.com/products/robotis-dynamixel-2xl430-w250-t-smart-servo-actuator,actuation,disputed,The HAL disagrees: mabel_hw/drivers/dynamixel.py records that MABEL's neck reports model 1090 = XC330-T181 and config.py:665 says there are two of them. 2x XC330-T181-T would be $206.78. Unresolved - see open items.
+5.02,Neck / head,DAMIAO FOCGM43 neck actuator,"MIT-mode BLDC, dual encoder",1,599.00,CNY,Taobao,,actuation,sheet,Neck yaw. Same module as line 3.01.
+6.01,Structural hardware,"Aluminium extrusion, cut lengths","2x2 in: 15x2, 17x2, 4.75x3, 8x2; 2x4 in: 10x1, 12.5x2",1,101.46,USD,mcmaster.com,https://www.mcmaster.com/,structure,sheet,
+6.02,Structural hardware,Extrusion 90 degree corner brackets,"1010-series, T-slot",1,26.90,USD,amazon.com,,structure,sheet,
+6.03,Structural hardware,Extrusion angled plates,"BLCCLOY 20-set, 1010-series",1,20.88,USD,amazon.com,,structure,sheet,
+6.04,Structural hardware,Metric screw assortment,Mixed M3-M6,1,13.99,USD,amazon.com,,structure,sheet,
+6.05,Structural hardware,Imperial screw assortment,For lift column and extrusion,1,8.99,USD,amazon.com,,structure,sheet,
+6.06,Structural hardware,Neodymium magnets,Panel retention,1,11.99,USD,amazon.com,,structure,sheet,
+7.01,"Electronics, power & cabling",SODOLA 6-port 2.5 GbE switch,"4x 2.5G-BaseT, 2x 10G SFP+, managed",1,49.99,USD,amazon.com,,data,sheet,Onboard network spine.
+7.02,"Electronics, power & cabling",USB expansion board,Powered multi-port hub,1,74.99,USD,amazon.com,,data,sheet,Feeds the camera USB3 tree; contention here is a known video-latency source.
+7.03,"Electronics, power & cabling",Battery,Main pack,2,46.81,USD,amazon.com,,power,sheet,
+7.04,"Electronics, power & cabling",Ethernet twinax cable,SFP+ direct-attach,1,45.99,USD,amazon.com,,data,sheet,
+7.05,"Electronics, power & cabling",Wi-Fi antenna cable,Pigtail extension,2,17.99,USD,amazon.com,,data,sheet,
+7.06,"Electronics, power & cabling","Power cable, 6XT",Main DC run,1,24.99,USD,amazon.com,,power,sheet,
+7.07,"Electronics, power & cabling",Buck converter 24 V to 12 V,Step-down regulator,1,18.99,USD,amazon.com,,power,sheet,
+7.08,"Electronics, power & cabling",Speaker + USB sound card,"8 ohm 5 W, Jetson/Pi",1,19.50,USD,amazon.com,,misc,sheet,
+7.09,"Electronics, power & cabling",Power cord extension,AC mains,1,16.95,USD,amazon.com,,power,sheet,
+7.10,"Electronics, power & cabling",Fuse box,Blade-fuse distribution,1,15.99,USD,amazon.com,,power,sheet,
+7.11,"Electronics, power & cabling",Raspberry Pi Pico,Auxiliary MCU (lift),1,15.95,USD,amazon.com,,misc,sheet,Runs the lift leadscrew loop.
+7.12,"Electronics, power & cabling",Motor driver,BTS7960 auxiliary DC drive (lift),1,9.99,USD,amazon.com,,misc,sheet,
+7.13,"Electronics, power & cabling",USB-C to USB-A cable,"Head cam, hands x2, base cam",4,6.99,USD,amazon.com,,data,sheet,
+7.14,"Electronics, power & cabling",Ethernet patch cable,Upper body + mobile base,2,6.99,USD,amazon.com,,data,sheet,
+7.15,"Electronics, power & cabling","Protective sleeving, 1/2 in",Harness loom,2,8.99,USD,amazon.com,,misc,sheet,
+7.16,"Electronics, power & cabling","Protective sleeving, 1/4 in",Harness loom,1,8.99,USD,amazon.com,,misc,sheet,
+7.18,"Electronics, power & cabling",Custom PCBs,Two-layer distribution boards - not yet priced,1,0.00,USD,JLCPCB,https://jlcpcb.com/,misc,tbd,"Budget $100-300 at JLCPCB for boards plus components. No gerbers are released under hardware/ yet, so this cannot be verified from the repo."
+7.19,"Electronics, power & cabling",Custom PCB components,"Connectors, regulators, CAN transceivers - not yet priced",1,0.00,USD,-,,misc,tbd,Carried at zero in every total on this page.
+8.01,3D printed material,"Bambu Lab PLA Basic, Jade White","1.75 mm, 1 kg with spool - covers, sensor mounts, trim",4,17.24,USD,bambulab.com,https://us.store.bambulab.com/collections/pla,structure,corrected,"Bambu Lab's standing bulk price: 25% off four rolls or more, and the build takes seven, so every roll is $17.24 rather than the $22.99 list. Covers, sensor mounts and trim."
+8.02,3D printed material,"Bambu Lab PLA Basic, Black","1.75 mm, 1 kg with spool - ORCA hand structure",2,17.24,USD,bambulab.com,https://us.store.bambulab.com/collections/pla,structure,corrected,"Bambu Lab's standing bulk price: 25% off four rolls or more, and the build takes seven, so every roll is $17.24 rather than the $22.99 list. The tendon-driven hand frames; the highest-wear printed parts on the robot."
+8.03,3D printed material,"Bambu Lab PLA Basic, Light Gray","1.75 mm, 1 kg with spool - accent parts",1,17.24,USD,bambulab.com,https://us.store.bambulab.com/collections/pla,structure,corrected,"Bambu Lab's standing bulk price: 25% off four rolls or more, and the build takes seven, so every roll is $17.24 rather than the $22.99 list."

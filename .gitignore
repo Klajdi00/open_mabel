@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+# Build outputs
+/ros/build/
+/ros/install/
+/ros/log/
+.pio/
+node_modules/
+# LaTeX
+*.aux
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+# Runtime data, secrets
+*.secrets
+MUJOCO_LOG.TXT
+# Third-party datasets (not redistributable)
+controller/experiments/data/

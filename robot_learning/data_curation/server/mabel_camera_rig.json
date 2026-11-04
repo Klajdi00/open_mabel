@@ -1,0 +1,240 @@
+[
+ {
+  "name": "l_wrist_cam",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 100.0,
+  "fovx_deg": 129.47,
+  "fx": 113.28,
+  "fy": 113.28,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": true,
+  "mount_body": "left_palm",
+  "pose_key": "left_palm",
+  "mount_pos": [
+   0.0,
+   0.048,
+   -0.035
+  ],
+  "mount_quat": [
+   0.0,
+   0.0,
+   0.985835416869444,
+   0.1677156249305642
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ },
+ {
+  "name": "r_wrist_cam",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 100.0,
+  "fovx_deg": 129.47,
+  "fx": 113.28,
+  "fy": 113.28,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": true,
+  "mount_body": "right_palm",
+  "pose_key": "right_palm",
+  "mount_pos": [
+   0.0,
+   0.048,
+   -0.035
+  ],
+  "mount_quat": [
+   0.0,
+   0.0,
+   0.985835416869444,
+   0.1677156249305642
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ },
+ {
+  "name": "zed_left",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 83.3,
+  "fovx_deg": 115.38,
+  "fx": 151.79,
+  "fy": 151.79,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": true,
+  "mount_body": "head",
+  "pose_key": "head",
+  "mount_pos": [
+   -0.0317,
+   0.006,
+   -0.1089
+  ],
+  "mount_quat": [
+   0.999999840000128,
+   -1.5999987200011466e-07,
+   0.00039999974400022526,
+   0.00039999987200008195
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ },
+ {
+  "name": "zed_right",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 83.3,
+  "fovx_deg": 115.38,
+  "fx": 151.79,
+  "fy": 151.79,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": false,
+  "mount_body": "head",
+  "pose_key": "head",
+  "mount_pos": [
+   0.0313,
+   0.006,
+   -0.1089
+  ],
+  "mount_quat": [
+   0.999999840000128,
+   -1.5999987200011466e-07,
+   0.00039999974400022526,
+   0.00039999987200008195
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ },
+ {
+  "name": "body_cam",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 83.0,
+  "fovx_deg": 115.1,
+  "fx": 152.59,
+  "fy": 152.59,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": true,
+  "mount_body": "torso",
+  "pose_key": null,
+  "mount_pos": [
+   0.094,
+   0.096,
+   -0.043
+  ],
+  "mount_quat": [
+   0.7044174467562138,
+   -0.061612179846655964,
+   -0.7044174467562139,
+   -0.061612179846655964
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ },
+ {
+  "name": "body_front_cam",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 100.0,
+  "fovx_deg": 129.47,
+  "fx": 113.28,
+  "fy": 113.28,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": true,
+  "mount_body": "mabel_chassis",
+  "pose_key": "chassis",
+  "mount_pos": [
+   -0.25,
+   0.0,
+   0.13
+  ],
+  "mount_quat": [
+   0.5,
+   0.5,
+   0.5,
+   0.5
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ },
+ {
+  "name": "body_back_cam",
+  "w": 480,
+  "h": 270,
+  "fovy_deg": 100.0,
+  "fovx_deg": 129.47,
+  "fx": 113.28,
+  "fy": 113.28,
+  "cx": 240.0,
+  "cy": 135.0,
+  "has_depth": false,
+  "mount_body": "mabel_chassis",
+  "pose_key": "chassis",
+  "mount_pos": [
+   0.25,
+   0.0,
+   0.13
+  ],
+  "mount_quat": [
+   -0.5,
+   -0.5,
+   0.5,
+   0.5
+  ],
+  "dist_model": "brown-conrady",
+  "dist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "distortion": "none (ideal pinhole \u2014 sim)"
+ }
+]

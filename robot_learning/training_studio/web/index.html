@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0d0c0b" />
+<title>MABEL · Trainer Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/studio.css" />
+<link rel="stylesheet" href="css/trainer.css" />
+<script type="importmap">
+{ "imports": {
+  "three": "/website-assets/three/three.module.js",
+  "three/addons/": "/website-assets/three/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="studio trainer">
+  <!-- ░░ TOP BAR ░░ -->
+  <header class="topbar">
+    <div class="brand"><span class="mark">MABEL</span><span class="sub">Trainer&nbsp;Studio</span></div>
+    <div class="transport">
+      <span class="run-chip" id="runChip" title="active run">no run</span>
+      <span class="device-badge" id="deviceBadge" title="compute device">·</span>
+    </div>
+    <div class="topright">
+      <a class="hero-btn" href="/experiments.html" title="Browse the training/eval tree (runs, checkpoints, plots, evals)" style="text-decoration:none">🧪&nbsp;Experiments</a>
+      <span class="conn" id="conn" title="server">●</span>
+      <button class="hero-btn" id="newJobBtn" title="Start a fresh architecture for the next job"><span class="hero-ico">＋</span>New&nbsp;job</button>
+      <div class="seg-ctl">
+        <span class="seg-lab">Train</span>
+        <button class="seg-main primary" id="trainBtn" title="Start training (⌘↵)">▶&nbsp;Train</button>
+        <button class="seg-ic" id="pauseBtn" title="Pause training" disabled>⏸</button>
+        <button class="seg-ic" id="retrainBtn" title="Retrain from a checkpoint">↻</button>
+      </div>
+      <div class="seg-ctl">
+        <span class="seg-lab">Deploy</span>
+        <button class="seg-main" id="deployTopBtn" title="Deploy the selected checkpoint in sim">◆&nbsp;Deploy</button>
+        <button class="seg-ic" id="depPauseBtn" title="Stop the current deployment" disabled>⏸</button>
+        <button class="seg-ic" id="redeployBtn" title="Redeploy">↻</button>
+      </div>
+      <div class="addwin-wrap">
+        <button class="gbtn" id="addWinBtn" title="Add a window (plots, logs, …)">＋&nbsp;Window</button>
+        <div class="addwin-menu hidden" id="addWinMenu"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ░░ LEFT — TRAINING (data + config + inputs + info) ░░ -->
+  <aside class="train-rail" id="trainRail">
+    <div class="rail-head"><span class="rail-title">Training</span></div>
+    <div class="rail-tabs" id="railTabs">
+      <button class="rail-tab on" data-tab="data">Data</button>
+      <button class="rail-tab" data-tab="config">Model</button>
+      <button class="rail-tab" data-tab="inputs">Inputs</button>
+      <button class="rail-tab" data-tab="output">Output</button>
+      <button class="rail-tab" data-tab="jobs">Jobs</button>
+    </div>
+    <div class="rail-body">
+      <div class="rail-pane on" data-pane="data" id="dataPane"></div>
+      <div class="rail-pane" data-pane="config" id="configPane"></div>
+      <div class="rail-pane" data-pane="inputs" id="inputsPane"></div>
+      <div class="rail-pane" data-pane="output" id="outputPane"></div>
+      <div class="rail-pane" data-pane="jobs" id="jobsPane"></div>
+    </div>
+  </aside>
+  <div class="vsplit" data-split="browser"></div>
+
+  <!-- ░░ CENTER — architecture editor + 3D robot side by side ░░ -->
+  <main class="center">
+    <section class="archstage" id="archStage">
+      <div class="arch-head">
+        <span class="arch-title" id="archTitle">Architecture</span>
+        <span class="arch-mode design" id="archMode" title="Are you designing a new job or viewing a run?">designing new job</span>
+        <div class="arch-toolbar" id="archToolbar"></div>
+        <div class="arch-ctl">
+          <button class="mini add primary-add" id="addBlockBtn" title="Add a layer or block (floats in — drag to connect)">＋ Add block ▾</button>
+          <button class="mini" id="compileBtn" title="Compile the graph: check every connection's dimensions + wiring, suggest and auto-insert fixes">⚙ compile</button>
+          <button class="mini" id="srcBtn" title="Show the real nn.Module structure (ground truth from code)">⌁ code</button>
+          <button class="mini" id="saveBlockBtn" title="Save this view as a reusable block">★ save</button>
+          <button class="mini" id="tidyBtn" title="Auto-organize layout">⤧ tidy</button>
+          <button class="mini" id="zoomOut" title="Zoom out">−</button>
+          <button class="mini" id="zoomFit" title="Fit to view">fit</button>
+          <button class="mini" id="zoomIn" title="Zoom in">+</button>
+          <button class="mini on" id="animToggle" title="Toggle data-flow animation">▶</button>
+        </div>
+      </div>
+      <div class="arch-legend" id="archLegend"></div>
+      <canvas id="archCanvas"></canvas>
+      <div class="arch-tip" id="archTip"></div>
+      <div class="arch-hint">drag blocks · scroll to zoom · double-click a block to look inside</div>
+    </section>
+    <section class="robot-stage" id="robotStageWrap">
+      <div class="robot-resize" id="robotResize" title="drag to resize"></div>
+      <div class="arch-head"><span class="arch-title">Robot</span>
+        <span class="robot-sub" id="robotSub">MuJoCo model</span></div>
+      <div class="robot-view" id="robotStage"></div>
+    </section>
+  </main>
+  <div class="vsplit" data-split="dock"></div>
+
+  <!-- ░░ RIGHT — DEPLOYMENT config (permanent) ░░ -->
+  <aside class="deploy-rail" id="deployRail">
+    <div class="rail-head"><span class="rail-title">Deployment</span></div>
+    <div class="deploy-body" id="deployPane"></div>
+  </aside>
+
+  <!-- ░░ BOTTOM — clean training progress ░░ -->
+  <div class="hsplit" data-split="timeline"></div>
+  <section class="trainbar" id="trainbar">
+    <div class="tb-left">
+      <div class="tb-top">
+        <span class="tb-title" id="tbTitle">Training</span>
+        <span class="tb-status idle" id="tbStatus">idle</span>
+        <span class="tb-eta" id="tbEta"></span>
+      </div>
+      <div class="tb-bar-row"><span class="tb-bar-lab">run</span>
+        <div class="tb-progress"><div class="tb-fill" id="tbFill"></div></div><span class="tb-pct" id="tbPct"></span></div>
+      <div class="tb-bar-row"><span class="tb-bar-lab">epoch</span>
+        <div class="tb-progress ep"><div class="tb-fill ep" id="tbEpFill"></div></div><span class="tb-pct" id="tbEpPct"></span></div>
+      <div class="tb-stats" id="tbStats"></div>
+    </div>
+    <div class="tb-chart">
+      <div class="tb-split-wrap">
+        <button class="mini tb-split" id="splitBtn" title="Split — choose plot layout">⊞ split</button>
+        <div class="tb-split-menu hidden" id="splitMenu"></div>
+      </div>
+      <div class="tb-charts" id="tbCharts"></div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-top"><span class="tb-title">Deployment</span>
+        <span class="tb-status idle" id="depBarStatus">idle</span></div>
+      <div class="tb-progress"><div class="tb-fill dep" id="depBarFill"></div><span class="tb-pct" id="depBarPct"></span></div>
+      <div class="tb-stats" id="depBarStats"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

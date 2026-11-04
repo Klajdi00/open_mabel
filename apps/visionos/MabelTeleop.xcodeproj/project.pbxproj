@@ -1,0 +1,541 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EC41E2FD2F91BA9000F2E353 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = EC41E2FC2F91BA9000F2E353 /* RealityKitContent */; };
+		EC41E31D2F91BAAB00F2E353 /* requirements.txt in Resources */ = {isa = PBXBuildFile; fileRef = EC41E31A2F91BAAB00F2E353 /* requirements.txt */; };
+		EC41E31E2F91BAAB00F2E353 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EC41E3192F91BAAB00F2E353 /* README.md */; };
+		EC41E31F2F91BAAB00F2E353 /* fake_cameras.py in Resources */ = {isa = PBXBuildFile; fileRef = EC41E3182F91BAAB00F2E353 /* fake_cameras.py */; };
+		EC41E3202F91BAAB00F2E353 /* server.py in Resources */ = {isa = PBXBuildFile; fileRef = EC41E31B2F91BAAB00F2E353 /* server.py */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EC41E30A2F91BA9200F2E353 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC41E2EF2F91BA9000F2E353 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EC41E2F62F91BA9000F2E353;
+			remoteInfo = MabelTeleop;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EC41E2F72F91BA9000F2E353 /* MabelTeleop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MabelTeleop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC41E2FB2F91BA9000F2E353 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+		EC41E3092F91BA9200F2E353 /* MabelTeleopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MabelTeleopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC41E3182F91BAAB00F2E353 /* fake_cameras.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = fake_cameras.py; sourceTree = "<group>"; };
+		EC41E3192F91BAAB00F2E353 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EC41E31A2F91BAAB00F2E353 /* requirements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = requirements.txt; sourceTree = "<group>"; };
+		EC41E31B2F91BAAB00F2E353 /* server.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = server.py; sourceTree = "<group>"; };
+		EC41E3642F91BAC600F2E353 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EC41E3672F927DE600F2E353 /* fake_camera.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = fake_camera.py; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EC41E30F2F91BA9200F2E353 /* Exceptions for "MabelTeleop" folder in "MabelTeleop" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EC41E2F62F91BA9000F2E353 /* MabelTeleop */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EC41E2F92F91BA9000F2E353 /* MabelTeleop */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EC41E30F2F91BA9200F2E353 /* Exceptions for "MabelTeleop" folder in "MabelTeleop" target */,
+			);
+			path = MabelTeleop;
+			sourceTree = "<group>";
+		};
+		EC41E30C2F91BA9200F2E353 /* MabelTeleopTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MabelTeleopTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EC41E2F42F91BA9000F2E353 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC41E2FD2F91BA9000F2E353 /* RealityKitContent in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC41E3062F91BA9200F2E353 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EC411B252FC019320017032B /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		EC41E2EE2F91BA9000F2E353 = {
+			isa = PBXGroup;
+			children = (
+				EC41E3662F927DC800F2E353 /* mabel-client */,
+				EC41E2F92F91BA9000F2E353 /* MabelTeleop */,
+				EC41E2FA2F91BA9000F2E353 /* Packages */,
+				EC41E30C2F91BA9200F2E353 /* MabelTeleopTests */,
+				EC41E2F82F91BA9000F2E353 /* Products */,
+				EC41E31C2F91BAAB00F2E353 /* mabel-server */,
+				EC41E3642F91BAC600F2E353 /* README.md */,
+				EC411B252FC019320017032B /* Recovered References */,
+			);
+			sourceTree = "<group>";
+		};
+		EC41E2F82F91BA9000F2E353 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC41E2F72F91BA9000F2E353 /* MabelTeleop.app */,
+				EC41E3092F91BA9200F2E353 /* MabelTeleopTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC41E2FA2F91BA9000F2E353 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				EC41E2FB2F91BA9000F2E353 /* RealityKitContent */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		EC41E31C2F91BAAB00F2E353 /* mabel-server */ = {
+			isa = PBXGroup;
+			children = (
+				EC41E3182F91BAAB00F2E353 /* fake_cameras.py */,
+				EC41E3192F91BAAB00F2E353 /* README.md */,
+				EC41E31A2F91BAAB00F2E353 /* requirements.txt */,
+				EC41E31B2F91BAAB00F2E353 /* server.py */,
+			);
+			path = "mabel-server";
+			sourceTree = "<group>";
+		};
+		EC41E3662F927DC800F2E353 /* mabel-client */ = {
+			isa = PBXGroup;
+			children = (
+				EC41E3672F927DE600F2E353 /* fake_camera.py */,
+			);
+			path = "mabel-client";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EC41E2F62F91BA9000F2E353 /* MabelTeleop */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC41E3102F91BA9200F2E353 /* Build configuration list for PBXNativeTarget "MabelTeleop" */;
+			buildPhases = (
+				EC41E2F32F91BA9000F2E353 /* Sources */,
+				EC41E2F42F91BA9000F2E353 /* Frameworks */,
+				EC41E2F52F91BA9000F2E353 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EC41E2F92F91BA9000F2E353 /* MabelTeleop */,
+			);
+			name = MabelTeleop;
+			packageProductDependencies = (
+				EC41E2FC2F91BA9000F2E353 /* RealityKitContent */,
+			);
+			productName = MabelTeleop;
+			productReference = EC41E2F72F91BA9000F2E353 /* MabelTeleop.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EC41E3082F91BA9200F2E353 /* MabelTeleopTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC41E3152F91BA9200F2E353 /* Build configuration list for PBXNativeTarget "MabelTeleopTests" */;
+			buildPhases = (
+				EC41E3052F91BA9200F2E353 /* Sources */,
+				EC41E3062F91BA9200F2E353 /* Frameworks */,
+				EC41E3072F91BA9200F2E353 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EC41E30B2F91BA9200F2E353 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EC41E30C2F91BA9200F2E353 /* MabelTeleopTests */,
+			);
+			name = MabelTeleopTests;
+			packageProductDependencies = (
+			);
+			productName = MabelTeleopTests;
+			productReference = EC41E3092F91BA9200F2E353 /* MabelTeleopTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EC41E2EF2F91BA9000F2E353 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					EC41E2F62F91BA9000F2E353 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					EC41E3082F91BA9200F2E353 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = EC41E2F62F91BA9000F2E353;
+					};
+				};
+			};
+			buildConfigurationList = EC41E2F22F91BA9000F2E353 /* Build configuration list for PBXProject "MabelTeleop" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EC41E2EE2F91BA9000F2E353;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EC41E2F82F91BA9000F2E353 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EC41E2F62F91BA9000F2E353 /* MabelTeleop */,
+				EC41E3082F91BA9200F2E353 /* MabelTeleopTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EC41E2F52F91BA9000F2E353 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC41E31D2F91BAAB00F2E353 /* requirements.txt in Resources */,
+				EC41E31E2F91BAAB00F2E353 /* README.md in Resources */,
+				EC41E31F2F91BAAB00F2E353 /* fake_cameras.py in Resources */,
+				EC41E3202F91BAAB00F2E353 /* server.py in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC41E3072F91BA9200F2E353 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EC41E2F32F91BA9000F2E353 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC41E3052F91BA9200F2E353 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EC41E30B2F91BA9200F2E353 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EC41E2F62F91BA9000F2E353 /* MabelTeleop */;
+			targetProxy = EC41E30A2F91BA9200F2E353 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		EC41E3112F91BA9200F2E353 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MabelTeleop-V2";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Debug;
+		};
+		EC41E3122F91BA9200F2E353 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MabelTeleop-V2";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Release;
+		};
+		EC41E3132F91BA9200F2E353 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				XROS_DEPLOYMENT_TARGET = 26.4;
+			};
+			name = Debug;
+		};
+		EC41E3142F91BA9200F2E353 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = xros;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+				XROS_DEPLOYMENT_TARGET = 26.4;
+			};
+			name = Release;
+		};
+		EC41E3162F91BA9200F2E353 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MabelTeleop-V2Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MabelTeleop.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MabelTeleop";
+				XROS_DEPLOYMENT_TARGET = 26.4;
+			};
+			name = Debug;
+		};
+		EC41E3172F91BA9200F2E353 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MabelTeleop-V2Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MabelTeleop.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MabelTeleop";
+				XROS_DEPLOYMENT_TARGET = 26.4;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EC41E2F22F91BA9000F2E353 /* Build configuration list for PBXProject "MabelTeleop" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC41E3132F91BA9200F2E353 /* Debug */,
+				EC41E3142F91BA9200F2E353 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC41E3102F91BA9200F2E353 /* Build configuration list for PBXNativeTarget "MabelTeleop" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC41E3112F91BA9200F2E353 /* Debug */,
+				EC41E3122F91BA9200F2E353 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC41E3152F91BA9200F2E353 /* Build configuration list for PBXNativeTarget "MabelTeleopTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC41E3162F91BA9200F2E353 /* Debug */,
+				EC41E3172F91BA9200F2E353 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EC41E2FC2F91BA9000F2E353 /* RealityKitContent */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RealityKitContent;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = EC41E2EF2F91BA9000F2E353 /* Project object */;
+}

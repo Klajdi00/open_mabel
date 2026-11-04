@@ -1,0 +1,175 @@
+#usda 1.0
+(
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+# Per-eye head video for the full-immersion stereo window (StereoWindowPanel.swift).
+#
+#   eye uv  = clamp(texcoord ± (EyeShift, 0), 0, 1)        LEFT +, RIGHT -
+#   sample  = eye uv * (ScaleU, 1) + (Offset{Left,Right}, 0)
+#
+# EyeShift  s = (IPD/2)/W centres each eye's image on that eye (orthostereo).
+# Two layouts, chosen by the app:
+#   separate textures : ScaleU 1,   OffsetLeft 0, OffsetRight 0    (Left/RightTexture differ)
+#   side-by-side      : ScaleU 0.5, OffsetLeft 0, OffsetRight 0.5  (both = the ONE L|R frame,
+#                       so the two eyes are the same instant by construction)
+# The clamp keeps a shifted eye inside its own half (no bleed of the other eye).
+#
+# ⚠ The per-eye node MUST be ND_realitykit_geometry_switch_cameraindex_color3. An unknown
+# node id makes the compiled scene silently DROP the material (materialNameNotFound) and
+# the app falls back to mono — which is what happened until 2026-10-16. After any edit,
+# check the app log for "Loaded stereo material".
+def Xform "Root"
+{
+    def Material "StereoCameraMaterial"
+    {
+        asset inputs:LeftTexture
+        asset inputs:RightTexture
+        float inputs:EyeShift = 0
+        float inputs:ScaleU = 1
+        float inputs:OffsetLeft = 0
+        float inputs:OffsetRight = 0
+        token outputs:mtlx:surface.connect = </Root/StereoCameraMaterial/UnlitSurface.outputs:out>
+
+        def Shader "TexCoord"
+        {
+            uniform token info:id = "ND_texcoord_vector2"
+            float2 outputs:out
+        }
+
+        def Shader "ShiftVec"
+        {
+            uniform token info:id = "ND_combine2_vector2"
+            float inputs:in1.connect = </Root/StereoCameraMaterial.inputs:EyeShift>
+            float inputs:in2 = 0
+            float2 outputs:out
+        }
+
+        def Shader "ScaleVec"
+        {
+            uniform token info:id = "ND_combine2_vector2"
+            float inputs:in1.connect = </Root/StereoCameraMaterial.inputs:ScaleU>
+            float inputs:in2 = 1
+            float2 outputs:out
+        }
+
+        def Shader "OffsetLeftVec"
+        {
+            uniform token info:id = "ND_combine2_vector2"
+            float inputs:in1.connect = </Root/StereoCameraMaterial.inputs:OffsetLeft>
+            float inputs:in2 = 0
+            float2 outputs:out
+        }
+
+        def Shader "OffsetRightVec"
+        {
+            uniform token info:id = "ND_combine2_vector2"
+            float inputs:in1.connect = </Root/StereoCameraMaterial.inputs:OffsetRight>
+            float inputs:in2 = 0
+            float2 outputs:out
+        }
+
+        def Shader "LeftShifted"
+        {
+            uniform token info:id = "ND_add_vector2"
+            float2 inputs:in1.connect = </Root/StereoCameraMaterial/TexCoord.outputs:out>
+            float2 inputs:in2.connect = </Root/StereoCameraMaterial/ShiftVec.outputs:out>
+            float2 outputs:out
+        }
+
+        def Shader "RightShifted"
+        {
+            uniform token info:id = "ND_subtract_vector2"
+            float2 inputs:in1.connect = </Root/StereoCameraMaterial/TexCoord.outputs:out>
+            float2 inputs:in2.connect = </Root/StereoCameraMaterial/ShiftVec.outputs:out>
+            float2 outputs:out
+        }
+
+        def Shader "LeftClamped"
+        {
+            uniform token info:id = "ND_clamp_vector2"
+            float2 inputs:in.connect = </Root/StereoCameraMaterial/LeftShifted.outputs:out>
+            float2 inputs:low = (0, 0)
+            float2 inputs:high = (0.999, 1)
+            float2 outputs:out
+        }
+
+        def Shader "RightClamped"
+        {
+            uniform token info:id = "ND_clamp_vector2"
+            float2 inputs:in.connect = </Root/StereoCameraMaterial/RightShifted.outputs:out>
+            float2 inputs:low = (0.001, 0)
+            float2 inputs:high = (1, 1)
+            float2 outputs:out
+        }
+
+        def Shader "LeftScaled"
+        {
+            uniform token info:id = "ND_multiply_vector2"
+            float2 inputs:in1.connect = </Root/StereoCameraMaterial/LeftClamped.outputs:out>
+            float2 inputs:in2.connect = </Root/StereoCameraMaterial/ScaleVec.outputs:out>
+            float2 outputs:out
+        }
+
+        def Shader "RightScaled"
+        {
+            uniform token info:id = "ND_multiply_vector2"
+            float2 inputs:in1.connect = </Root/StereoCameraMaterial/RightClamped.outputs:out>
+            float2 inputs:in2.connect = </Root/StereoCameraMaterial/ScaleVec.outputs:out>
+            float2 outputs:out
+        }
+
+        def Shader "LeftUV"
+        {
+            uniform token info:id = "ND_add_vector2"
+            float2 inputs:in1.connect = </Root/StereoCameraMaterial/LeftScaled.outputs:out>
+            float2 inputs:in2.connect = </Root/StereoCameraMaterial/OffsetLeftVec.outputs:out>
+            float2 outputs:out
+        }
+
+        def Shader "RightUV"
+        {
+            uniform token info:id = "ND_add_vector2"
+            float2 inputs:in1.connect = </Root/StereoCameraMaterial/RightScaled.outputs:out>
+            float2 inputs:in2.connect = </Root/StereoCameraMaterial/OffsetRightVec.outputs:out>
+            float2 outputs:out
+        }
+
+        def Shader "LeftImage"
+        {
+            uniform token info:id = "ND_image_color3"
+            asset inputs:file.connect = </Root/StereoCameraMaterial.inputs:LeftTexture>
+            float2 inputs:texcoord.connect = </Root/StereoCameraMaterial/LeftUV.outputs:out>
+            string inputs:filtertype = "linear"
+            color3f outputs:out
+        }
+
+        def Shader "RightImage"
+        {
+            uniform token info:id = "ND_image_color3"
+            asset inputs:file.connect = </Root/StereoCameraMaterial.inputs:RightTexture>
+            float2 inputs:texcoord.connect = </Root/StereoCameraMaterial/RightUV.outputs:out>
+            string inputs:filtertype = "linear"
+            color3f outputs:out
+        }
+
+        def Shader "CameraSwitch"
+        {
+            uniform token info:id = "ND_realitykit_geometry_switch_cameraindex_color3"
+            color3f inputs:mono.connect = </Root/StereoCameraMaterial/LeftImage.outputs:out>
+            color3f inputs:left.connect = </Root/StereoCameraMaterial/LeftImage.outputs:out>
+            color3f inputs:right.connect = </Root/StereoCameraMaterial/RightImage.outputs:out>
+            color3f outputs:out
+        }
+
+        def Shader "UnlitSurface"
+        {
+            uniform token info:id = "ND_realitykit_unlit_surfaceshader"
+            color3f inputs:color.connect = </Root/StereoCameraMaterial/CameraSwitch.outputs:out>
+            bool inputs:applyPostProcessToneMap = 0
+            token outputs:out
+        }
+    }
+}

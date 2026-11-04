@@ -1,0 +1,115 @@
+<mujoco model="mabel_living_room_environment">
+  <!-- MABEL in a living room: sofa, coffee table, TV stand + TV, bookshelf, rug,
+       floor lamp. Textured primitives (textures from scripts/tools/gen_env_textures.py
+       and gen_home_textures.py); graspable clutter wired by gen_env_objects.py.
+       Run from repo root:  python scripts/visualize_sensors.py --scene scenes/mabel_living_room.xml -->
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <include file="../models/mabel_full.xml"/>
+
+  <visual>
+    <headlight ambient="0.45 0.45 0.47" diffuse="0.25 0.25 0.25" specular="0.1 0.1 0.1"/>
+    <quality shadowsize="4096"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.52 0.58 0.66" rgb2="0.86 0.89 0.93" width="256" height="256"/>
+    <texture type="2d" name="t_floor"  file="../assets/textures/wood_floor.png"/>
+    <texture type="2d" name="t_wood"   file="../assets/textures/wood_furniture.png"/>
+    <texture type="2d" name="t_wall"   file="../assets/textures/wall.png"/>
+    <texture type="2d" name="t_fabric" file="../assets/textures/fabric_blue.png"/>
+    <texture type="2d" name="t_rug"    file="../assets/textures/rug.png"/>
+    <texture type="2d" name="t_books"  file="../assets/textures/book_spines.png"/>
+    <texture type="2d" name="t_screen" file="../assets/textures/monitor.png"/>
+
+    <material name="m_floor"  texture="t_floor"  texuniform="true" texrepeat="2 2" reflectance="0.10" shininess="0.1"/>
+    <material name="m_wood"   texture="t_wood"   texuniform="true" texrepeat="2 2" reflectance="0.05" shininess="0.2"/>
+    <material name="m_wall"   texture="t_wall"   texuniform="true" texrepeat="2 2" reflectance="0.0"/>
+    <material name="m_fabric" texture="t_fabric" texuniform="true" texrepeat="3 3" reflectance="0.0" shininess="0.0"/>
+    <material name="m_rug"    texture="t_rug"    texrepeat="1 1" reflectance="0.0" shininess="0.0"/>
+    <material name="m_books"  texture="t_books"  texrepeat="2 3" reflectance="0.0" shininess="0.05"/>
+    <material name="m_screen" texture="t_screen" texrepeat="1 1" reflectance="0.3" shininess="0.8" emission="0.55"/>
+    <material name="m_black"  rgba="0.08 0.08 0.09 1" reflectance="0.2" shininess="0.6"/>
+    <material name="m_shade"  rgba="0.93 0.85 0.68 1" emission="0.35"/>
+    <material name="m_metal"  rgba="0.55 0.56 0.58 1" reflectance="0.3" shininess="0.6"/>
+  </asset>
+
+  <worldbody>
+    <!-- ===== lighting ===== -->
+    <light name="sun"    directional="true" pos=" 1.0  0.6 3.0" dir="-0.35 -0.2 -1" diffuse="0.55 0.54 0.52" specular="0.25 0.25 0.25" castshadow="true"/>
+    <light name="fill_x" directional="true" pos="-2.0  0.0 3.0" dir=" 0.40  0.0 -1" diffuse="0.30 0.30 0.33" castshadow="false"/>
+    <light name="window" directional="true" pos=" 1.0  2.4 2.0" dir=" 0.0 -0.6 -1" diffuse="0.28 0.30 0.36" castshadow="false"/>
+
+    <!-- ===== room shell 7 x 6 m ===== -->
+    <geom name="floor" type="plane" size="3.5 3 0.1" material="m_floor"
+          contype="1" conaffinity="1" friction="1.5 0.05 0.001"/>
+    <geom name="wall_back"  type="box" pos=" 3.55 0    1.3" size="0.05 3.0 1.3" material="m_wall"/>
+    <geom name="wall_front" type="box" pos="-3.55 0    1.3" size="0.05 3.0 1.3" material="m_wall"/>
+    <geom name="wall_left"  type="box" pos=" 0    3.05 1.3" size="3.5 0.05 1.3" material="m_wall"/>
+    <geom name="wall_right" type="box" pos=" 0   -3.05 1.3" size="3.5 0.05 1.3" material="m_wall"/>
+
+    <!-- ===== rug + coffee table (in front of the sofa, -X of the robot) ===== -->
+    <geom name="rug" type="box" pos="-2.0 0 0.004" size="1.35 1.15 0.004" material="m_rug"/>
+    <geom name="ctable_top"  type="box" pos="-1.80 0 0.40" size="0.55 0.35 0.02" material="m_wood"/>
+    <geom name="ctable_leg1" type="box" pos="-1.30 -0.30 0.19" size="0.03 0.03 0.19" material="m_wood"/>
+    <geom name="ctable_leg2" type="box" pos="-1.30  0.30 0.19" size="0.03 0.03 0.19" material="m_wood"/>
+    <geom name="ctable_leg3" type="box" pos="-2.30 -0.30 0.19" size="0.03 0.03 0.19" material="m_wood"/>
+    <geom name="ctable_leg4" type="box" pos="-2.30  0.30 0.19" size="0.03 0.03 0.19" material="m_wood"/>
+    <geom name="ctable_shelf" type="box" pos="-1.80 0 0.10" size="0.48 0.28 0.012" material="m_wood"/>
+
+    <!-- ===== sofa along the -X wall, facing the room ===== -->
+    <geom name="sofa_plinth" type="box" pos="-3.02 0 0.14" size="0.46 1.05 0.14" material="m_fabric"/>
+    <geom name="sofa_seat_l" type="box" pos="-2.98  0.50 0.36" size="0.44 0.50 0.09" material="m_fabric"/>
+    <geom name="sofa_seat_r" type="box" pos="-2.98 -0.50 0.36" size="0.44 0.50 0.09" material="m_fabric"/>
+    <geom name="sofa_back"   type="box" pos="-3.36 0 0.62" size="0.12 1.05 0.34" material="m_fabric"/>
+    <geom name="sofa_cush_l" type="box" pos="-3.28  0.50 0.62" size="0.10 0.48 0.26" material="m_fabric"/>
+    <geom name="sofa_cush_r" type="box" pos="-3.28 -0.50 0.62" size="0.10 0.48 0.26" material="m_fabric"/>
+    <geom name="sofa_arm_l"  type="box" pos="-3.02  1.14 0.42" size="0.46 0.09 0.28" material="m_fabric"/>
+    <geom name="sofa_arm_r"  type="box" pos="-3.02 -1.14 0.42" size="0.46 0.09 0.28" material="m_fabric"/>
+
+    <!-- ===== TV stand + TV along the +X wall ===== -->
+    <geom name="tvstand" type="box" pos="3.10 0 0.225" size="0.35 1.10 0.225" material="m_wood"/>
+    <geom name="tv_frame"  type="box" pos="3.28 0 1.02" size="0.035 0.88 0.52" material="m_black"/>
+    <geom name="tv_screen" type="box" pos="3.24 0 1.02" size="0.004 0.82 0.46" material="m_screen"/>
+    <geom name="tv_foot"   type="box" pos="3.28 0 0.47" size="0.06 0.30 0.025" material="m_black"/>
+
+    <!-- ===== bookshelf on the +Y wall ===== -->
+    <geom name="shelf_body"  type="box" pos="1.60 2.82 0.92" size="0.80 0.16 0.92" material="m_wood"/>
+    <geom name="shelf_books" type="box" pos="1.60 2.64 0.90" size="0.76 0.02 0.84" material="m_books"/>
+
+    <!-- ===== armchair on the -Y side, angled toward the table ===== -->
+    <geom name="chair_plinth" type="box" pos="-1.60 -2.15 0.14" size="0.42 0.42 0.14" euler="0 0 0.5" material="m_fabric"/>
+    <geom name="chair_seat"   type="box" pos="-1.60 -2.15 0.35" size="0.40 0.40 0.08" euler="0 0 0.5" material="m_fabric"/>
+    <geom name="chair_back"   type="box" pos="-1.78 -2.48 0.60" size="0.42 0.11 0.32" euler="0 0 0.5" material="m_fabric"/>
+
+    <!-- ===== floor lamp in the -X/+Y corner ===== -->
+    <geom name="lamp_base"  type="cylinder" pos="-3.05 2.35 0.02" size="0.16 0.02" material="m_metal"/>
+    <geom name="lamp_pole"  type="cylinder" pos="-3.05 2.35 0.78" size="0.018 0.76" material="m_metal"/>
+    <geom name="lamp_shade" type="cylinder" pos="-3.05 2.35 1.63" size="0.17 0.13" material="m_shade"/>
+    <light name="lamp_light" pos="-3.05 2.35 1.45" dir="0 0 -1" diffuse="0.25 0.22 0.16" specular="0.05 0.05 0.05" castshadow="false"/>
+
+    <!-- ===== side table with plant (+X/-Y corner) ===== -->
+    <geom name="plant_pot"    type="cylinder" pos="3.05 -2.45 0.14" size="0.15 0.14" rgba="0.62 0.38 0.28 1"/>
+    <geom name="plant_bush"   type="sphere"   pos="3.05 -2.45 0.52" size="0.30" rgba="0.28 0.45 0.22 1"/>
+    <geom name="plant_bush2"  type="sphere"   pos="2.95 -2.32 0.70" size="0.20" rgba="0.32 0.50 0.25 1"/>
+
+    <!-- ===== teleop mocap targets (kept compatible with the teleop / WBC scripts) ===== -->
+    <body name="target_l" mocap="true" pos="0.45 0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="target_r" mocap="true" pos="0.45 -0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="gaze_point" mocap="true" pos="0.85 0 1.0">
+      <geom group="3" type="sphere" size="0.04" rgba="1 0.5 0 0.4" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- graspable clutter (scanned objects) on the coffee table + TV stand -->
+  <include file="living_room_objects.xml"/>
+
+</mujoco>

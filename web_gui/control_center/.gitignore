@@ -1,0 +1,9 @@
+# Generated video fixtures for tools/exp_video_latency.py (re-encoded on demand)
+tools/.cache/
+
+# LaTeX build artifacts (docs/*.pdf IS committed — it is the record)
+docs/*.aux
+docs/*.fdb_latexmk
+docs/*.fls
+docs/*.log
+docs/*.out

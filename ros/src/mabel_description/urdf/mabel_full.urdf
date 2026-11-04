@@ -1,0 +1,986 @@
+<?xml version="1.0"?>
+<robot name="mabel">
+  <!-- AUTO-GENERATED from mabel_full.xml by scripts/mjcf_to_urdf.py. Do not hand-edit. -->
+  <material name="mat_0"><color rgba="0.8 0.8 0.8 1"/></material>
+  <material name="mat_1"><color rgba="0.25 0.25 0.28 1"/></material>
+  <material name="mat_2"><color rgba="0.1 0.35 0.75 1"/></material>
+  <material name="mat_3"><color rgba="0.75 0.2 0.2 1"/></material>
+  <material name="mat_4"><color rgba="0.2 0.2 0.2 1"/></material>
+  <material name="mat_5"><color rgba="0.4 0.4 0.4 1"/></material>
+  <material name="mat_6"><color rgba="0.6 0.6 0.6 1"/></material>
+  <material name="mat_7"><color rgba="0.3 0.3 0.35 1"/></material>
+  <material name="mat_8"><color rgba="0.7 0.7 0.7 1"/></material>
+  <material name="mat_9"><color rgba="0.24 0.24 0.24 1"/></material>
+  <material name="mat_10"><color rgba="0.8 0.3 0.1 1"/></material>
+  <material name="mat_11"><color rgba="0.25 0.25 0.25 1"/></material>
+  <material name="mat_12"><color rgba="1 1 1 1"/></material>
+  <link name="base_link"/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="mabel_chassis"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="mabel_chassis">
+    <inertial><origin xyz="0.0053945323 2.4928114e-06 0.094137249" rpy="-3.137123 -1.5613649 0.012377115"/><mass value="22.686"/><inertia ixx="0.86513364" ixy="0" ixz="0" iyy="0.52064343" iyz="0" izz="0.51664167"/></inertial>
+    <visual><origin xyz="-4.3368087e-18 -9.7408789e-20 2.7755576e-17" rpy="1.1113072e-18 -5.5511151e-17 -1.5644278e-18"/><geometry><mesh filename="package://mabel_description/meshes/base/mobile_base.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+    <collision><origin xyz="-4.3368087e-18 -9.7408789e-20 2.7755576e-17" rpy="1.1113072e-18 -5.5511151e-17 -1.5644278e-18"/><geometry><mesh filename="package://mabel_description/meshes/base/mobile_base.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="lidar">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="0.0001"/><inertia ixx="1e-06" ixy="0" ixz="0" iyy="1e-06" iyz="0" izz="1e-06"/></inertial>
+  </link>
+  <link name="fl_swerve_housing">
+    <inertial><origin xyz="0.0085907853 -0.0093218629 0.034598464" rpy="0.049805513 -1.3329108 2.3149006"/><mass value="0.488554"/><inertia ixx="0.00062316563" ixy="0" ixz="0" iyy="0.00060922993" iyz="0" izz="0.00053167302"/></inertial>
+    <visual><origin xyz="-3.469447e-18 0 0" rpy="0 -5.5511151e-17 -2.8784401e-17"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_1"/></visual>
+    <collision><origin xyz="-3.469447e-18 0 0" rpy="0 -5.5511151e-17 -2.8784401e-17"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="fl_steer_body">
+    <inertial><origin xyz="3.4431261e-05 7.2473145e-07 -0.012039447" rpy="0.0021089686 -1.5536896 3.1392266"/><mass value="0.0743539"/><inertia ixx="4.595945e-05" ixy="0" ixz="0" iyy="3.2657432e-05" iyz="0" izz="2.4766277e-05"/></inertial>
+    <visual><origin xyz="9.4190064e-19 1.0587912e-22 -1.7347235e-18" rpy="1.0164395e-20 -7.6327833e-17 1.5777491e-20"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_2"/></visual>
+    <collision><origin xyz="9.4190064e-19 1.0587912e-22 -1.7347235e-18" rpy="1.0164395e-20 -7.6327833e-17 1.5777491e-20"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="fl_wheel">
+    <inertial><origin xyz="-8.6550403e-07 -1.5526468e-06 -0.00045443722" rpy="1.6104725 -1.5707721 0"/><mass value="0.208434"/><inertia ixx="0.00011329833" ixy="0" ixz="0" iyy="6.5071521e-05" iyz="0" izz="6.5022891e-05"/></inertial>
+    <visual><origin xyz="-9.9314613e-20 7.7079998e-20 2.1684043e-19" rpy="1.6858666e-16 2.1950478e-16 1.8647179e-16"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_3"/></visual>
+    <collision><origin xyz="-9.9314613e-20 7.7079998e-20 2.1684043e-19" rpy="1.6858666e-16 2.1950478e-16 1.8647179e-16"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="fr_swerve_housing">
+    <inertial><origin xyz="0.0085907853 -0.0093218629 0.034598464" rpy="0.049805513 -1.3329108 2.3149006"/><mass value="0.488554"/><inertia ixx="0.00062316563" ixy="0" ixz="0" iyy="0.00060922993" iyz="0" izz="0.00053167302"/></inertial>
+    <visual><origin xyz="-3.469447e-18 0 0" rpy="0 -5.5511151e-17 -2.8784401e-17"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_1"/></visual>
+    <collision><origin xyz="-3.469447e-18 0 0" rpy="0 -5.5511151e-17 -2.8784401e-17"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="fr_steer_body">
+    <inertial><origin xyz="3.4431261e-05 7.2473145e-07 -0.012039447" rpy="0.0021089686 -1.5536896 3.1392266"/><mass value="0.0743539"/><inertia ixx="4.595945e-05" ixy="0" ixz="0" iyy="3.2657432e-05" iyz="0" izz="2.4766277e-05"/></inertial>
+    <visual><origin xyz="9.4190064e-19 1.0587912e-22 -1.7347235e-18" rpy="1.0164395e-20 -7.6327833e-17 1.5777491e-20"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_2"/></visual>
+    <collision><origin xyz="9.4190064e-19 1.0587912e-22 -1.7347235e-18" rpy="1.0164395e-20 -7.6327833e-17 1.5777491e-20"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="fr_wheel">
+    <inertial><origin xyz="-8.6550403e-07 -1.5526468e-06 -0.00045443722" rpy="1.6104725 -1.5707721 0"/><mass value="0.208434"/><inertia ixx="0.00011329833" ixy="0" ixz="0" iyy="6.5071521e-05" iyz="0" izz="6.5022891e-05"/></inertial>
+    <visual><origin xyz="-9.9314613e-20 7.7079998e-20 2.1684043e-19" rpy="1.6858666e-16 2.1950478e-16 1.8647179e-16"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_3"/></visual>
+    <collision><origin xyz="-9.9314613e-20 7.7079998e-20 2.1684043e-19" rpy="1.6858666e-16 2.1950478e-16 1.8647179e-16"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="b_swerve_housing">
+    <inertial><origin xyz="0.0085907853 -0.0093218629 0.034598464" rpy="0.049805513 -1.3329108 2.3149006"/><mass value="0.488554"/><inertia ixx="0.00062316563" ixy="0" ixz="0" iyy="0.00060922993" iyz="0" izz="0.00053167302"/></inertial>
+    <visual><origin xyz="-3.469447e-18 0 0" rpy="0 -5.5511151e-17 -2.8784401e-17"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_1"/></visual>
+    <collision><origin xyz="-3.469447e-18 0 0" rpy="0 -5.5511151e-17 -2.8784401e-17"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="b_steer_body">
+    <inertial><origin xyz="3.4431261e-05 7.2473145e-07 -0.012039447" rpy="0.0021089686 -1.5536896 3.1392266"/><mass value="0.0743539"/><inertia ixx="4.595945e-05" ixy="0" ixz="0" iyy="3.2657432e-05" iyz="0" izz="2.4766277e-05"/></inertial>
+    <visual><origin xyz="9.4190064e-19 1.0587912e-22 -1.7347235e-18" rpy="1.0164395e-20 -7.6327833e-17 1.5777491e-20"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_2"/></visual>
+    <collision><origin xyz="9.4190064e-19 1.0587912e-22 -1.7347235e-18" rpy="1.0164395e-20 -7.6327833e-17 1.5777491e-20"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="b_wheel">
+    <inertial><origin xyz="-8.6550403e-07 -1.5526468e-06 -0.00045443722" rpy="1.6104725 -1.5707721 0"/><mass value="0.208434"/><inertia ixx="0.00011329833" ixy="0" ixz="0" iyy="6.5071521e-05" iyz="0" izz="6.5022891e-05"/></inertial>
+    <visual><origin xyz="-9.9314613e-20 7.7079998e-20 2.1684043e-19" rpy="1.6858666e-16 2.1950478e-16 1.8647179e-16"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_3"/></visual>
+    <collision><origin xyz="-9.9314613e-20 7.7079998e-20 2.1684043e-19" rpy="1.6858666e-16 2.1950478e-16 1.8647179e-16"/><geometry><mesh filename="package://mabel_description/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="lift_base">
+    <inertial><origin xyz="-0.034639393 -0.00012947802 0.10809787" rpy="0.14084165 0.0018841296 1.5617015"/><mass value="6.8075727"/><inertia ixx="0.16742899" ixy="0" ixz="0" iyy="0.16224219" iyz="0" izz="0.013195168"/></inertial>
+    <visual><origin xyz="-1.3877788e-17 -2.2497195e-18 1.3877788e-17" rpy="1.1058862e-17 -2.7755576e-17 -2.9346658e-17"/><geometry><mesh filename="package://mabel_description/meshes/lift/lift_base_link.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_4"/></visual>
+    <collision><origin xyz="-1.3877788e-17 -2.2497195e-18 1.3877788e-17" rpy="1.1058862e-17 -2.7755576e-17 -2.9346658e-17"/><geometry><mesh filename="package://mabel_description/meshes/lift/lift_base_link.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="lift_mid">
+    <inertial><origin xyz="1.1710994e-12 -2.097117e-12 0.25" rpy="0 -0 0"/><mass value="2.211716"/><inertia ixx="0.032842493" ixy="0" ixz="0" iyy="0.032842493" iyz="0" izz="0.0013845299"/></inertial>
+    <visual><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/lift/lift_mid_link.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_5"/></visual>
+  </link>
+  <link name="lift_top">
+    <inertial><origin xyz="2.714664e-13 3.2966412e-15 0.1393571" rpy="0 -0 1.5707963"/><mass value="5.4980136"/><inertia ixx="0.24651919" ixy="0" ixz="0" iyy="0.24651919" iyz="0" izz="0.0052828458"/></inertial>
+    <visual><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/lift/lift_top_link.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_6"/></visual>
+  </link>
+  <link name="body_mount">
+    <inertial><origin xyz="5.9105267e-05 -0.015092891 -0.047821146" rpy="1.0191733 -0.50646945 0.35457418"/><mass value="1.95836"/><inertia ixx="0.0035741105" ixy="0" ixz="0" iyy="0.0035256756" iyz="0" izz="0.0032254595"/></inertial>
+    <visual><origin xyz="-7.1828394e-18 8.6736174e-18 1.3877788e-17" rpy="-5.5511151e-17 1.2490009e-16 -8.2419256e-19"/><geometry><mesh filename="package://mabel_description/meshes/body/lift_to_body.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_7"/></visual>
+    <collision><origin xyz="-7.1828394e-18 8.6736174e-18 1.3877788e-17" rpy="-5.5511151e-17 1.2490009e-16 -8.2419256e-19"/><geometry><mesh filename="package://mabel_description/meshes/body/lift_to_body.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="torso">
+    <inertial><origin xyz="0.0050530103 0.097628617 -0.044603704" rpy="1.5368837 -0.0078410574 -0.093950189"/><mass value="4.51091"/><inertia ixx="0.034278941" ixy="0" ixz="0" iyy="0.028676702" iyz="0" izz="0.022475771"/></inertial>
+    <visual><origin xyz="6.505213e-19 0 6.9388939e-18" rpy="9.7144515e-17 -1.3877788e-17 7.0893549e-18"/><geometry><mesh filename="package://mabel_description/meshes/body/body_link.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_8"/></visual>
+    <collision><origin xyz="6.505213e-19 0 6.9388939e-18" rpy="9.7144515e-17 -1.3877788e-17 7.0893549e-18"/><geometry><mesh filename="package://mabel_description/meshes/body/body_link.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="head_mount">
+    <inertial><origin xyz="2.9485514e-06 -0.00045869441 0.021005005" rpy="1.544295 -1.231146 1.5846821"/><mass value="0.0379181"/><inertia ixx="1.2163842e-05" ixy="0" ixz="0" iyy="1.1354899e-05" iyz="0" izz="1.1185905e-05"/></inertial>
+    <visual><origin xyz="-1.2074455e-17 -3.1441863e-18 1.3877788e-17" rpy="1.356608e-16 -5.7766292e-16 8.7418846e-17"/><geometry><mesh filename="package://mabel_description/meshes/head/1_body_to_head.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+    <collision><origin xyz="-1.2074455e-17 -3.1441863e-18 1.3877788e-17" rpy="1.356608e-16 -5.7766292e-16 8.7418846e-17"/><geometry><mesh filename="package://mabel_description/meshes/head/1_body_to_head.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="neck_1">
+    <inertial><origin xyz="5.8965299e-08 2.7720524e-08 0.017283191" rpy="1.5707963 -0 1.5707963"/><mass value="0.0140212"/><inertia ixx="4.8794924e-06" ixy="0" ixz="0" iyy="4.055205e-06" iyz="0" izz="2.9871522e-06"/></inertial>
+    <visual><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/head/2_neck_1.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="neck_2">
+    <inertial><origin xyz="-0.012331342 0.00030064264 0.019151689" rpy="1.4173129 -1.1731941 -1.4988781"/><mass value="0.0344612"/><inertia ixx="7.7219582e-06" ixy="0" ixz="0" iyy="7.7060711e-06" iyz="0" izz="5.0780044e-06"/></inertial>
+    <visual><origin xyz="1.7347235e-18 1.517883e-18 0" rpy="6.9388939e-17 -6.1582683e-17 -1.570796"/><geometry><mesh filename="package://mabel_description/meshes/head/3_neck_2.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="head">
+    <inertial><origin xyz="-3.107847e-05 0.011905083 -0.050737528" rpy="-1.6048445 -1.5127968 -1.5326122"/><mass value="1.44503"/><inertia ixx="0.0033390523" ixy="0" ixz="0" iyy="0.002346851" iyz="0" izz="0.0021407056"/></inertial>
+    <visual><origin xyz="1.2576745e-17 -1.3877788e-17 -0.043712" rpy="3.1415927 -3.4641021e-07 -3.1415927"/><geometry><mesh filename="package://mabel_description/meshes/head/4_head.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+    <collision><origin xyz="1.2576745e-17 -1.3877788e-17 -0.043712" rpy="3.1415927 -3.4641021e-07 -3.1415927"/><geometry><mesh filename="package://mabel_description/meshes/head/4_head.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="l_arm_mount">
+    <inertial><origin xyz="0.00092058093 0.0018274949 -0.035022636" rpy="1.9946188 -1.298432 -0.31592346"/><mass value="0.697682"/><inertia ixx="0.00086775425" ixy="0" ixz="0" iyy="0.00070530438" iyz="0" izz="0.00054501147"/></inertial>
+    <visual><origin xyz="8.6736174e-19 -6.505213e-19 6.9388939e-18" rpy="0 3.469447e-18 -1.0525434e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/1_body_to_shoulder.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+    <collision><origin xyz="8.6736174e-19 -6.505213e-19 6.9388939e-18" rpy="0 3.469447e-18 -1.0525434e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/1_body_to_shoulder.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="l_shoulder_1">
+    <inertial><origin xyz="-0.0011466777 0.00011025871 0.048578497" rpy="0.015010369 -0.052732123 0.0003997825"/><mass value="0.732088"/><inertia ixx="0.0010757844" ixy="0" ixz="0" iyy="0.00082958094" iyz="0" izz="0.00061763062"/></inertial>
+    <visual><origin xyz="-2.1684043e-19 2.7105054e-20 6.9388939e-18" rpy="1.7347235e-18 -0 7.1051721e-20"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/2_shoulder.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="l_shoulder_2">
+    <inertial><origin xyz="-0.00034722938 -0.017612826 -0.027176968" rpy="0.24203168 0.0023099241 -0.021949079"/><mass value="0.698691"/><inertia ixx="0.0010942296" ixy="0" ixz="0" iyy="0.00088867713" iyz="0" izz="0.00079540705"/></inertial>
+    <visual><origin xyz="5.4210109e-20 0 3.469447e-18" rpy="-2.7755576e-17 -4.3368087e-19 -1.094541e-18"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/3_shoulder_to_elbow.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="l_shoulder_3">
+    <inertial><origin xyz="-0.00073130413 0.0049936454 0.086680351" rpy="-0.023843879 -0.024491029 -0.14593623"/><mass value="1.46697"/><inertia ixx="0.0047280852" ixy="0" ixz="0" iyy="0.0046624958" iyz="0" izz="0.0012642778"/></inertial>
+    <visual><origin xyz="2.1684043e-19 0 -1.3877788e-17" rpy="0 -0 5.8398619e-19"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/4_upper_arm.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="l_elbow">
+    <inertial><origin xyz="0.0031611927 -0.044765735 0.030496717" rpy="1.5038073 0.02015072 -0.073032253"/><mass value="0.943183"/><inertia ixx="0.0016140189" ixy="0" ixz="0" iyy="0.0014265884" iyz="0" izz="0.0010609133"/></inertial>
+    <visual><origin xyz="1.7347235e-18 -6.9388939e-18 6.9388939e-18" rpy="-1.3877788e-17 1.2143064e-17 1.2358375e-17"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/5_elbow.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="l_forearm">
+    <inertial><origin xyz="-0.00070688287 -0.00027560931 0.051771681" rpy="0.18947286 -0.024456567 1.557164"/><mass value="0.837592"/><inertia ixx="0.0012248752" ixy="0" ixz="0" iyy="0.00092446955" iyz="0" izz="0.00089396916"/></inertial>
+    <visual><origin xyz="-4.3368087e-19 -2.1684043e-19 -6.9388939e-18" rpy="3.469447e-18 -0 2.3320193e-17"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/6_forearm.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="l_wrist">
+    <inertial><origin xyz="-0.0052024156 -0.00040404052 0.033716311" rpy="1.187394 -0.65672704 1.9837586"/><mass value="0.302966"/><inertia ixx="0.00016883191" ixy="0" ixz="0" iyy="0.00016242116" iyz="0" izz="0.00015017384"/></inertial>
+    <visual><origin xyz="1.2143064e-17 5.9089018e-18 0" rpy="-1.9428903e-16 3.3306691e-16 -1.2175632e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/7_wrist.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="l_hand_mount">
+    <inertial><origin xyz="9.5180055e-07 -0.036665736 -0.0097976747" rpy="3.1415566 -0.84784772 -1.5707483"/><mass value="0.318773"/><inertia ixx="0.00037016871" ixy="0" ixz="0" iyy="0.00031218091" iyz="0" izz="0.00020093097"/></inertial>
+    <visual><origin xyz="9.3185271e-18 6.9388939e-18 1.3877788e-17" rpy="1.6653345e-16 1.5174087e-16 2.9469789e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/left/8_arm_to_hand.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_10"/></visual>
+  </link>
+  <link name="left_tower">
+    <inertial><origin xyz="-0.04034 -0.00091 0.01912" rpy="-0.00261 -0.00737 -0.04145"/><mass value="0.9"/><inertia ixx="0.00150422" ixy="0" ixz="0" iyy="0.00125262" iyz="0" izz="0.0007962"/></inertial>
+    <visual><origin xyz="2.0816682e-17 -4.1199683e-18 0" rpy="0 2.6020852e-18 -1.0221634e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_tower_main.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="6.9388939e-18 -3.5778672e-18 6.9388939e-18" rpy="-3.469447e-18 2.7755576e-17 -1.1233582e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_tower_main.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-6.9388939e-18 -1.1689055e-19 0" rpy="1.3010426e-17 -5.3363076e-20 1.678999e-19"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_tower_hull.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="6.9388939e-18 5.9292306e-21 -5.2041704e-18" rpy="1.0842022e-18 -3.7481208e-19 3.967262e-19"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_tower_hull.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="2.7755576e-17 2.5410988e-20 -2.0816682e-17" rpy="2.8785568e-16 1.2753267e-16 1.9560636e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_tower_text.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="2.7755576e-17 2.3852448e-18 -1.3877788e-17" rpy="2.6888214e-16 2.4107235e-16 2.2255478e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_tower_text.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_palm">
+    <inertial><origin xyz="-0.00193 -0.00052 -0.00664" rpy="1.67519 -0.0475 -1.55556"/><mass value="0.0257"/><inertia ixx="1.612e-05" ixy="0" ixz="0" iyy="1.151e-05" iyz="0" izz="6.72e-06"/></inertial>
+    <visual><origin xyz="-4.3368087e-19 1.0842022e-19 0" rpy="3.469447e-18 -0 1.5983924e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_palm.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-6.505213e-19 7.5894152e-19 -1.7347235e-18" rpy="5.2041704e-17 -0 1.3833915e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_palm.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="2.6020852e-18 -1.7347235e-18 -1.0842022e-18" rpy="-3.105155e-16 3.0531133e-16 -2.9677192e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_palm_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="0 1.0842022e-18 1.0842022e-18" rpy="1.3530843e-16 -5.5511151e-17 1.4138098e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_palm_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_palm__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="left_thumb_mp">
+    <inertial><origin xyz="-0.00247 0 0.004" rpy="0 -0.01625 0"/><mass value="0.00586"/><inertia ixx="8.4e-07" ixy="0" ixz="0" iyy="6.6e-07" iyz="0" izz="2.7e-07"/></inertial>
+    <visual><origin xyz="0 1.6940659e-21 0" rpy="-8.6736174e-19 -0 7.8126146e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_thumb_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_thumb_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_thumb_pp">
+    <inertial><origin xyz="-0.01848 1e-05 2e-05" rpy="1.5708 -0.77392 -1.5708"/><mass value="0.00655"/><inertia ixx="7.5e-07" ixy="0" ixz="0" iyy="7.1e-07" iyz="0" izz="3e-07"/></inertial>
+    <visual><origin xyz="1.0408341e-17 2.8951586e-18 -1.1180835e-17" rpy="1.6288698e-16 6.3317407e-16 1.6392303e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_thumb_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-1.0408341e-17 -6.2341625e-19 4.1470733e-18" rpy="-7.5992408e-17 -2.4112656e-16 -3.6590313e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_thumb_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_thumb_pp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="left_thumb_ip">
+    <inertial><origin xyz="-0.00135 2e-05 0.01383" rpy="0.00037 -0.03263 -0.00034"/><mass value="0.01402"/><inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07"/></inertial>
+    <visual><origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_thumb_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 2.7105054e-20 -1.7347235e-18" rpy="-8.6736174e-19 -6.9388939e-18 -9.4460444e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_thumb_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="6.0715322e-18 -1.5881868e-22 -3.469447e-18" rpy="6.5481618e-33 3.3306691e-16 5.2130141e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_thumb_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="5.6378513e-18 -5.0821977e-21 -3.469447e-18" rpy="-1.8488927e-32 2.7755576e-16 -2.4926442e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_thumb_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_thumb_dp">
+    <inertial><origin xyz="-0.00233 1e-05 0.01133" rpy="0.00075 -0.08211 -0.00013"/><mass value="0.0132"/><inertia ixx="1.4e-06" ixy="0" ixz="0" iyy="1.37e-06" iyz="0" izz="4.4e-07"/></inertial>
+    <visual><origin xyz="4.3368087e-19 0 -8.6736174e-19" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_thumb_dp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 -4.0657581e-20 -8.6736174e-19" rpy="-2.0816682e-17 2.7755576e-17 -8.1756933e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_thumb_dp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="0.009 -1.0587912e-22 -0.011" rpy="1.7754205e-33 -0.52 -2.0957269e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_thumb_dp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="0.009 2.5410988e-21 -0.011" rpy="-4.4385512e-33 -0.52 1.3462212e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_thumb_dp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_index_mp">
+    <inertial><origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_index_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 -6.0986372e-20 -3.0628711e-18" rpy="-8.4517446e-18 2.9837244e-16 -8.0227361e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_index_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_index_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="left_index_pp">
+    <inertial><origin xyz="-0.00135 2e-05 0.01637" rpy="0.00034 -0.02055 -0.00038"/><mass value="0.0165"/><inertia ixx="2.39e-06" ixy="0" ixz="0" iyy="2.31e-06" iyz="0" izz="7.1e-07"/></inertial>
+    <visual><origin xyz="0 -1.3552527e-20 -3.469447e-18" rpy="8.6736174e-19 -0 2.7090261e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_index_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 0 3.469447e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_index_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="8.4567769e-18 -6.6174449e-23 -3.469447e-18" rpy="-3.0814879e-33 3.8857806e-16 4.7986962e-34"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_index_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="6.7220535e-18 5.0821977e-21 0" rpy="-6.1629758e-33 3.3306691e-16 -6.3033029e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_index_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_index_ip">
+    <inertial><origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_index_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 3.3881318e-21 0" rpy="3.9981204e-19 -2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_index_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_index_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="-9.7578196e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_index_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_middle_mp">
+    <inertial><origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_middle_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 -6.0986372e-20 -3.0628711e-18" rpy="-8.4517446e-18 2.9837244e-16 -8.0227361e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_middle_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_middle_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="left_middle_pp">
+    <inertial><origin xyz="-0.00144 2e-05 0.02021" rpy="-3e-05 -0.01386 -0.0006"/><mass value="0.02006"/><inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07"/></inertial>
+    <visual><origin xyz="2.1684043e-19 6.7762636e-21 0" rpy="0 3.469447e-18 2.9274185e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_middle_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 3.3881318e-21 3.469447e-18" rpy="-1.0842022e-19 -0 4.5652904e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_middle_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-2.1684043e-19 0 3.469447e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_middle_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_middle_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_middle_ip">
+    <inertial><origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_middle_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 3.3881318e-21 0" rpy="3.9981204e-19 -2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_middle_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="-9.7578196e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_middle_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_ring_mp">
+    <inertial><origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_ring_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 -6.0986372e-20 -3.0628711e-18" rpy="-8.4517446e-18 2.9837244e-16 -8.0227361e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_ring_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_ring_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="left_ring_pp">
+    <inertial><origin xyz="-0.00144 2e-05 0.02021" rpy="-3e-05 -0.01386 -0.0006"/><mass value="0.02006"/><inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07"/></inertial>
+    <visual><origin xyz="2.1684043e-19 6.7762636e-21 0" rpy="0 3.469447e-18 2.9274185e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_ring_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 3.3881318e-21 3.469447e-18" rpy="-1.0842022e-19 -0 4.5652904e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_ring_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-2.1684043e-19 0 3.469447e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_ring_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_ring_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_ring_ip">
+    <inertial><origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_ring_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 3.3881318e-21 0" rpy="3.9981204e-19 -2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_ring_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_ring_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="-9.7578196e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_ring_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_pinky_mp">
+    <inertial><origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_pinky_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 -6.0986372e-20 -3.0628711e-18" rpy="-8.4517446e-18 2.9837244e-16 -8.0227361e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_pinky_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_pinky_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="left_pinky_pp">
+    <inertial><origin xyz="-0.00135 2e-05 0.01383" rpy="0.00037 -0.03263 -0.00034"/><mass value="0.01402"/><inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07"/></inertial>
+    <visual><origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_pinky_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 2.7105054e-20 -1.7347235e-18" rpy="-8.6736174e-19 -6.9388939e-18 -9.4460444e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_pinky_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="6.0715322e-18 -1.5881868e-22 -3.469447e-18" rpy="6.5481618e-33 3.3306691e-16 5.2130141e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_pinky_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="5.6378513e-18 -5.0821977e-21 -3.469447e-18" rpy="-1.8488927e-32 2.7755576e-16 -2.4926442e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_pinky_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="left_pinky_ip">
+    <inertial><origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_pinky_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 3.3881318e-21 0" rpy="3.9981204e-19 -2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_pinky_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/visual/left_visual_pinky_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="-9.7578196e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/left/collision/left_collision_pinky_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="r_arm_mount">
+    <inertial><origin xyz="-0.00092050288 0.0018274729 0.026677458" rpy="-1.9946126 -1.2984353 -2.8256692"/><mass value="0.69702"/><inertia ixx="0.00086692284" ixy="0" ixz="0" iyy="0.00070463176" iyz="0" izz="0.00054448939"/></inertial>
+    <visual><origin xyz="2.3852448e-18 -6.505213e-18 -6.9388939e-18" rpy="2.3592239e-16 1.110223e-16 1.6413443e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/1_body_to_shoulder.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+    <collision><origin xyz="2.3852448e-18 -6.505213e-18 -6.9388939e-18" rpy="2.3592239e-16 1.110223e-16 1.6413443e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/1_body_to_shoulder.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="r_shoulder_1">
+    <inertial><origin xyz="0.0011466438 0.00011024107 0.04857799" rpy="0.015012784 0.052729988 -0.00040019826"/><mass value="0.731383"/><inertia ixx="0.0010747227" ixy="0" ixz="0" iyy="0.00082875785" iyz="0" izz="0.00061702434"/></inertial>
+    <visual><origin xyz="0 2.7105054e-20 0" rpy="-1.7347235e-18 6.9388939e-18 -7.9822244e-20"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/2_shoulder.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="r_shoulder_2">
+    <inertial><origin xyz="-0.00034722484 -0.017612584 0.027176837" rpy="-0.24205426 -0.0023104387 -0.021949996"/><mass value="0.698035"/><inertia ixx="0.0010931957" ixy="0" ixz="0" iyy="0.00088783594" iyz="0" izz="0.00079465327"/></inertial>
+    <visual><origin xyz="-5.4210109e-20 -3.469447e-18 0" rpy="2.7755576e-17 -0 -2.7711706e-18"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/3_shoulder_to_elbow.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="r_shoulder_3">
+    <inertial><origin xyz="-0.00073126156 -0.0049937085 0.086681345" rpy="0.023840886 -0.024491244 0.14598677"/><mass value="1.4656"/><inertia ixx="0.0047236506" ixy="0" ixz="0" iyy="0.0046581135" iyz="0" izz="0.0012630927"/></inertial>
+    <visual><origin xyz="1.0842022e-19 -8.6736174e-19 -1.3877788e-17" rpy="0 3.469447e-18 7.4160058e-18"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/4_upper_arm.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="r_elbow">
+    <inertial><origin xyz="-0.0031611522 -0.04476586 0.032196804" rpy="1.5038126 -0.020156643 0.073029881"/><mass value="0.942285"/><inertia ixx="0.0016124682" ixy="0" ixz="0" iyy="0.0014252153" iyz="0" izz="0.0010598928"/></inertial>
+    <visual><origin xyz="0 -6.9388939e-18 0" rpy="1.3877788e-17 -7.8062556e-18 2.3949507e-18"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/5_elbow.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="r_forearm">
+    <inertial><origin xyz="-0.00027558112 -0.0007069156 0.051771391" rpy="-0.18955888 -0.024466734 0.013630983"/><mass value="0.836794"/><inertia ixx="0.0012236909" ixy="0" ixz="0" iyy="0.00092357437" iyz="0" izz="0.0008931156"/></inertial>
+    <visual><origin xyz="-2.7105054e-19 0 -6.9388939e-18" rpy="2.7755576e-17 -0 -1.595419e-18"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/6_forearm.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_0"/></visual>
+  </link>
+  <link name="r_wrist">
+    <inertial><origin xyz="0.005401 -0.0003930308 0.034032267" rpy="1.7389942 -0.43526972 1.3244859"/><mass value="0.309131"/><inertia ixx="0.00017286144" ixy="0" ixz="0" iyy="0.00016606252" iyz="0" izz="0.00015409259"/></inertial>
+    <visual><origin xyz="1.3010426e-17 2.7647155e-18 -2.0816682e-17" rpy="-8.6736174e-17 4.9960036e-16 -2.989564e-16"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/7_wrist.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_9"/></visual>
+  </link>
+  <link name="r_hand_mount">
+    <inertial><origin xyz="8.56678e-07 0.036666424 -0.0097979071" rpy="3.1462216e-05 -0.84784913 1.5707544"/><mass value="0.318463"/><inertia ixx="0.00036979903" ixy="0" ixz="0" iyy="0.00031187236" iyz="0" izz="0.00020073125"/></inertial>
+    <visual><origin xyz="-2.3919152e-18 -6.9388939e-18 -1.0408341e-17" rpy="1.6653345e-16 2.0860727e-16 9.4780866e-18"/><geometry><mesh filename="package://mabel_description/meshes/arms/right/8_arm_to_hand.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_10"/></visual>
+  </link>
+  <link name="right_tower">
+    <inertial><origin xyz="0.04034 -0.00091 0.01912" rpy="-0.00261 0.00737 0.04145"/><mass value="0.9"/><inertia ixx="0.00150422" ixy="0" ixz="0" iyy="0.00125262" iyz="0" izz="0.0007962"/></inertial>
+    <visual><origin xyz="-2.0816682e-17 5.4210109e-19 0" rpy="2.6020852e-18 -0 -9.0397447e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_tower_main.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="6.9388939e-18 -4.8789098e-18 0" rpy="1.3877788e-17 -0 -1.8214949e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_tower_main.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="6.9388939e-18 2.1133472e-19 -3.469447e-18" rpy="-2.3852448e-17 -1.2843137e-19 2.8269681e-19"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_tower_hull.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="6.9388939e-18 8.3856262e-20 -3.469447e-18" rpy="-1.01915e-17 -3.3034285e-20 -1.4787291e-20"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_tower_hull.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-1.3877788e-17 -1.8599149e-17 1.0408341e-17" rpy="3.7545921e-16 4.592511e-16 2.0844623e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_tower_text.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="0 1.3010426e-18 1.0408341e-17" rpy="0 6.7220535e-17 -3.6042531e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_tower_text.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_palm">
+    <inertial><origin xyz="0.00193 -0.00052 -0.00664" rpy="1.67519 0.0475 1.55556"/><mass value="0.0257"/><inertia ixx="1.612e-05" ixy="0" ixz="0" iyy="1.151e-05" iyz="0" izz="6.72e-06"/></inertial>
+    <visual><origin xyz="-6.9388939e-18 -3.9573379e-18 1.3877788e-17" rpy="-3.7816972e-16 4.4408921e-16 -4.2931844e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_palm.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-4.7704896e-18 -2.1684043e-18 1.2143064e-17" rpy="-2.220446e-16 3.3306691e-16 -3.859388e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_palm.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-4.3368087e-18 1.9515639e-18 2.6020852e-18" rpy="-3.4174052e-16 2.4980018e-16 -3.5548411e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_palm_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="0 -2.1684043e-19 -1.7347235e-18" rpy="1.5265567e-16 -2.220446e-16 6.678584e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_palm_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_palm__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="right_thumb_mp">
+    <inertial><origin xyz="0.00247 0 0.004" rpy="0 0.01625 0"/><mass value="0.00586"/><inertia ixx="8.4e-07" ixy="0" ixz="0" iyy="6.6e-07" iyz="0" izz="2.7e-07"/></inertial>
+    <visual><origin xyz="0 1.2705494e-21 0" rpy="-8.6736174e-19 -0 -7.8126146e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_thumb_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_thumb_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_thumb_pp">
+    <inertial><origin xyz="0.01848 1e-05 2e-05" rpy="1.5708 0.77392 1.5708"/><mass value="0.00655"/><inertia ixx="7.5e-07" ixy="0" ixz="0" iyy="7.1e-07" iyz="0" izz="3e-07"/></inertial>
+    <visual><origin xyz="-1.0408341e-17 -2.1141942e-18 1.1085967e-17" rpy="1.0805515e-16 6.2276573e-16 1.1878513e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_thumb_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 -2.7105054e-19 4.3503612e-18" rpy="-2.1335066e-17 2.5066754e-16 1.6180466e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_thumb_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_thumb_pp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="right_thumb_ip">
+    <inertial><origin xyz="0.00135 2e-05 0.01383" rpy="0.00037 0.03263 0.00034"/><mass value="0.01402"/><inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07"/></inertial>
+    <visual><origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_thumb_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 2.7105054e-20 -1.7347235e-18" rpy="-8.6736174e-19 6.9388939e-18 9.4460444e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_thumb_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="5.2041704e-18 -1.5881868e-22 -6.9388939e-18" rpy="-3.4666739e-33 3.3306691e-16 -8.6536815e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_thumb_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="4.3368087e-18 -5.9292306e-21 -6.9388939e-18" rpy="-3.0814879e-33 2.7755576e-16 -3.1089418e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_thumb_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_thumb_dp">
+    <inertial><origin xyz="0.00233 1e-05 0.01133" rpy="0.00075 0.08211 0.00013"/><mass value="0.0132"/><inertia ixx="1.4e-06" ixy="0" ixz="0" iyy="1.37e-06" iyz="0" izz="4.4e-07"/></inertial>
+    <visual><origin xyz="-2.1684043e-19 0 -8.6736174e-19" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_thumb_dp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-8.6736174e-19 3.8624702e-19 -8.6736174e-19" rpy="-6.0715322e-17 2.7755576e-17 -3.5671121e-17"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_thumb_dp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-0.009 3.1763736e-22 -0.011" rpy="-4.4385512e-34 0.52 -9.2335779e-34"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_thumb_dp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="-0.009 1.6940659e-21 -0.011" rpy="8.8771025e-34 0.52 6.36053e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_thumb_dp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_index_mp">
+    <inertial><origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_index_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-1.7347235e-18 -1.3552527e-20 3.2526065e-19" rpy="4.7278045e-18 2.7755576e-17 1.3772733e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_index_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_index_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="right_index_pp">
+    <inertial><origin xyz="0.00135 2e-05 0.01637" rpy="0.00034 0.02055 0.00038"/><mass value="0.0165"/><inertia ixx="2.39e-06" ixy="0" ixz="0" iyy="2.31e-06" iyz="0" izz="7.1e-07"/></inertial>
+    <visual><origin xyz="-2.1684043e-19 0 -3.469447e-18" rpy="8.6736174e-19 -0 -2.7090261e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_index_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="2.1684043e-19 0 3.469447e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_index_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="5.4210109e-18 -3.9704669e-23 -1.3877788e-17" rpy="-1.0785208e-32 3.3306691e-16 -1.1458258e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_index_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="5.8546917e-18 5.0821977e-21 -1.0408341e-17" rpy="-1.2325952e-32 3.3306691e-16 -2.479223e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_index_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_index_ip">
+    <inertial><origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_index_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 1.0164395e-20 0" rpy="-3.9981204e-19 2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_index_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_index_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="1.4094628e-18 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_index_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_middle_mp">
+    <inertial><origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_middle_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-1.7347235e-18 -1.3552527e-20 3.2526065e-19" rpy="4.7278045e-18 2.7755576e-17 1.3772733e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_middle_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_middle_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="right_middle_pp">
+    <inertial><origin xyz="0.00144 2e-05 0.02021" rpy="-3e-05 0.01386 0.0006"/><mass value="0.02006"/><inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07"/></inertial>
+    <visual><origin xyz="-2.1684043e-19 1.3552527e-20 0" rpy="0 -3.469447e-18 -2.9274185e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_middle_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 1.6940659e-21 3.469447e-18" rpy="-1.0842022e-19 -0 -4.5652904e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_middle_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="8.6736174e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_middle_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_middle_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_middle_ip">
+    <inertial><origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_middle_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 1.0164395e-20 0" rpy="-3.9981204e-19 2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_middle_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="1.4094628e-18 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_middle_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_ring_mp">
+    <inertial><origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_ring_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-1.7347235e-18 -1.3552527e-20 3.2526065e-19" rpy="4.7278045e-18 2.7755576e-17 1.3772733e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_ring_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_ring_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="right_ring_pp">
+    <inertial><origin xyz="0.00144 2e-05 0.02021" rpy="-3e-05 0.01386 0.0006"/><mass value="0.02006"/><inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07"/></inertial>
+    <visual><origin xyz="-2.1684043e-19 1.3552527e-20 0" rpy="0 -3.469447e-18 -2.9274185e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_ring_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="0 1.6940659e-21 3.469447e-18" rpy="-1.0842022e-19 -0 -4.5652904e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_ring_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="8.6736174e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_ring_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="0 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_ring_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_ring_ip">
+    <inertial><origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_ring_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 1.0164395e-20 0" rpy="-3.9981204e-19 2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_ring_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_ring_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="1.4094628e-18 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_ring_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_pinky_mp">
+    <inertial><origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0"/><mass value="0.00498"/><inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07"/></inertial>
+    <visual><origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_pinky_mp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-1.7347235e-18 -1.3552527e-20 3.2526065e-19" rpy="4.7278045e-18 2.7755576e-17 1.3772733e-18"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_pinky_mp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_pinky_mp__anchor">
+    <inertial><origin xyz="0 0 0" rpy="0 0 0"/><mass value="1e-4"/><inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <link name="right_pinky_pp">
+    <inertial><origin xyz="0.00135 2e-05 0.01383" rpy="0.00037 0.03263 0.00034"/><mass value="0.01402"/><inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07"/></inertial>
+    <visual><origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_pinky_pp.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 2.7105054e-20 -1.7347235e-18" rpy="-8.6736174e-19 6.9388939e-18 9.4460444e-21"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_pinky_pp.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="5.2041704e-18 -1.5881868e-22 -6.9388939e-18" rpy="-3.4666739e-33 3.3306691e-16 -8.6536815e-33"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_pinky_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="4.3368087e-18 -5.9292306e-21 -6.9388939e-18" rpy="-3.0814879e-33 2.7755576e-16 -3.1089418e-32"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_pinky_pp_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <link name="right_pinky_ip">
+    <inertial><origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044"/><mass value="0.01521"/><inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07"/></inertial>
+    <visual><origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_pinky_ip.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_11"/></visual>
+    <collision><origin xyz="-2.1684043e-19 1.0164395e-20 0" rpy="-3.9981204e-19 2.1684043e-19 -3.5994973e-22"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_pinky_ip.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+    <visual><origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/visual/right_visual_pinky_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry><material name="mat_12"/></visual>
+    <collision><origin xyz="1.4094628e-18 0 0" rpy="0 -0 0"/><geometry><mesh filename="package://mabel_description/meshes/hands/right/collision/right_collision_pinky_ip_skin.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <joint name="lidar_fixed" type="fixed">
+    <parent link="mabel_chassis"/>
+    <child link="lidar"/>
+    <origin xyz="0.122 0 0.25" rpy="0 -0 0"/>
+  </joint>
+  <joint name="fl_swerve_housing_fixed" type="fixed">
+    <parent link="mabel_chassis"/>
+    <child link="fl_swerve_housing"/>
+    <origin xyz="-0.17 -0.17 0" rpy="0 -0 1.570795"/>
+  </joint>
+  <joint name="fl_steer" type="continuous">
+    <parent link="fl_swerve_housing"/>
+    <child link="fl_steer_body"/>
+    <origin xyz="0 0 0" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="20"/>
+  </joint>
+  <joint name="fl_drive" type="continuous">
+    <parent link="fl_steer_body"/>
+    <child link="fl_wheel"/>
+    <origin xyz="0 0 -0.04" rpy="0 -1.5707963 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="20"/>
+  </joint>
+  <joint name="fr_swerve_housing_fixed" type="fixed">
+    <parent link="mabel_chassis"/>
+    <child link="fr_swerve_housing"/>
+    <origin xyz="-0.17 0.17 0" rpy="0 -0 0"/>
+  </joint>
+  <joint name="fr_steer" type="continuous">
+    <parent link="fr_swerve_housing"/>
+    <child link="fr_steer_body"/>
+    <origin xyz="0 0 0" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="20"/>
+  </joint>
+  <joint name="fr_drive" type="continuous">
+    <parent link="fr_steer_body"/>
+    <child link="fr_wheel"/>
+    <origin xyz="0 0 -0.04" rpy="0 -1.5707963 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="20"/>
+  </joint>
+  <joint name="b_swerve_housing_fixed" type="fixed">
+    <parent link="mabel_chassis"/>
+    <child link="b_swerve_housing"/>
+    <origin xyz="0.15 0 0" rpy="0 -0 -2.3561927"/>
+  </joint>
+  <joint name="b_steer" type="continuous">
+    <parent link="b_swerve_housing"/>
+    <child link="b_steer_body"/>
+    <origin xyz="0 0 0" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="20"/>
+  </joint>
+  <joint name="b_drive" type="continuous">
+    <parent link="b_steer_body"/>
+    <child link="b_wheel"/>
+    <origin xyz="0 0 -0.04" rpy="0 -1.5707963 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50" velocity="20"/>
+  </joint>
+  <joint name="lift_base_fixed" type="fixed">
+    <parent link="mabel_chassis"/>
+    <child link="lift_base"/>
+    <origin xyz="-0.096 0 0" rpy="0 -0 3.1415926"/>
+  </joint>
+  <joint name="lift_lower" type="prismatic">
+    <parent link="lift_base"/>
+    <child link="lift_mid"/>
+    <origin xyz="0 0 0.17575" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.15875" upper="0.15875" effort="50" velocity="5"/>
+  </joint>
+  <joint name="lift_upper" type="prismatic">
+    <parent link="lift_mid"/>
+    <child link="lift_top"/>
+    <origin xyz="0 0 0.16575" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.15875" upper="0.15875" effort="50" velocity="5"/>
+  </joint>
+  <joint name="body_mount_fixed" type="fixed">
+    <parent link="lift_top"/>
+    <child link="body_mount"/>
+    <origin xyz="0 -0.043 0.56" rpy="1.570796 -0 0"/>
+  </joint>
+  <joint name="torso" type="revolute">
+    <parent link="body_mount"/>
+    <child link="torso"/>
+    <origin xyz="0 0 0" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.0472" upper="0.2618" effort="50" velocity="5"/>
+  </joint>
+  <joint name="head_mount_fixed" type="fixed">
+    <parent link="torso"/>
+    <child link="head_mount"/>
+    <origin xyz="0 0.21 -0.045" rpy="-1.57 1.57 0"/>
+  </joint>
+  <joint name="neck_yaw" type="revolute">
+    <parent link="head_mount"/>
+    <child link="neck_1"/>
+    <origin xyz="0 0 0.045" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="neck_pitch" type="revolute">
+    <parent link="neck_1"/>
+    <child link="neck_2"/>
+    <origin xyz="-0.02 0 0.035" rpy="-0 1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.785398" upper="0.785398" effort="50" velocity="5"/>
+  </joint>
+  <joint name="neck_roll" type="revolute">
+    <parent link="neck_2"/>
+    <child link="head"/>
+    <origin xyz="-0.025 0.02 0.019" rpy="-1.57 1.57 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.785398" upper="0.785398" effort="50" velocity="5"/>
+  </joint>
+  <joint name="l_arm_mount_fixed" type="fixed">
+    <parent link="torso"/>
+    <child link="l_arm_mount"/>
+    <origin xyz="0 0.15 -0.15" rpy="2.9670597 0.0015926536 3.1415927"/>
+  </joint>
+  <joint name="left_arm_1" type="revolute">
+    <parent link="l_arm_mount"/>
+    <child link="l_shoulder_1"/>
+    <origin xyz="0 0 0" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.49066" upper="1.39626" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_arm_2" type="revolute">
+    <parent link="l_shoulder_1"/>
+    <child link="l_shoulder_2"/>
+    <origin xyz="-0.0301 0 0.06" rpy="0 -1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.174533" upper="3.31612" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_arm_3" type="revolute">
+    <parent link="l_shoulder_2"/>
+    <child link="l_shoulder_3"/>
+    <origin xyz="0 -0.06625 -0.0301" rpy="-1.570796 -0 3.1415926"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_arm_4" type="revolute">
+    <parent link="l_shoulder_3"/>
+    <child link="l_elbow"/>
+    <origin xyz="0.0315 0 0.15375" rpy="0 -1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.943" upper="1.542" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_arm_5" type="revolute">
+    <parent link="l_elbow"/>
+    <child link="l_forearm"/>
+    <origin xyz="0 -0.0955 0.0315" rpy="1.570796 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_arm_6" type="revolute">
+    <parent link="l_forearm"/>
+    <child link="l_wrist"/>
+    <origin xyz="-0.0375 0 0.1205" rpy="-1.5707967 0.0015926536 -1.5707967"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.785398" upper="0.785398" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_arm_7" type="revolute">
+    <parent link="l_wrist"/>
+    <child link="l_hand_mount"/>
+    <origin xyz="0.02 0 0.035" rpy="-1.4420286e-17 1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_tower_fixed" type="fixed">
+    <parent link="l_hand_mount"/>
+    <child link="left_tower"/>
+    <origin xyz="0.04 -0.111 -0.02" rpy="1.5708 -0 0"/>
+  </joint>
+  <joint name="left_wrist" type="revolute">
+    <parent link="left_tower"/>
+    <child link="left_palm__anchor"/>
+    <origin xyz="-0.04063 0 0.10487" rpy="0 -0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-1.0472" upper="0.5236" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_palm_anchor_fixed" type="fixed">
+    <parent link="left_palm__anchor"/>
+    <child link="left_palm"/>
+    <origin xyz="0.002 0.00144 0.03872" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_thumb_mcp" type="revolute">
+    <parent link="left_palm"/>
+    <child link="left_thumb_mp"/>
+    <origin xyz="0.02821 0.01777 -0.01321" rpy="0.53857 0.05595 1.27047"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.87266" upper="0.87266" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_thumb_abd" type="revolute">
+    <parent link="left_thumb_mp"/>
+    <child link="left_thumb_pp__anchor"/>
+    <origin xyz="0 0 0" rpy="-1.22173 0 0"/>
+    <axis xyz="0 -0.34202086 -0.93969236"/>
+    <limit lower="-0.34907" upper="0.73304" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_thumb_pp_anchor_fixed" type="fixed">
+    <parent link="left_thumb_pp__anchor"/>
+    <child link="left_thumb_pp"/>
+    <origin xyz="0.03 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_thumb_pip" type="revolute">
+    <parent link="left_thumb_pp"/>
+    <child link="left_thumb_ip"/>
+    <origin xyz="0 0 0" rpy="3.14159 -1.5707927 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.20944" upper="1.81496" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_thumb_dip" type="revolute">
+    <parent link="left_thumb_ip"/>
+    <child link="left_thumb_dp"/>
+    <origin xyz="-0.0005 0 0.033" rpy="0 -0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.95477" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_index_abd" type="revolute">
+    <parent link="left_palm"/>
+    <child link="left_index_mp__anchor"/>
+    <origin xyz="0.024088797 0.0018999643 0.025164929" rpy="1.6067 -1.13552 0.05339"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.64577" upper="0.64577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_index_mp_anchor_fixed" type="fixed">
+    <parent link="left_index_mp__anchor"/>
+    <child link="left_index_mp"/>
+    <origin xyz="0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_index_mcp" type="revolute">
+    <parent link="left_index_mp"/>
+    <child link="left_index_pp"/>
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.65806" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_index_pip" type="revolute">
+    <parent link="left_index_pp"/>
+    <child link="left_index_ip"/>
+    <origin xyz="-0.0005 0 0.038" rpy="0 -0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.88496" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_middle_abd" type="revolute">
+    <parent link="left_palm"/>
+    <child link="left_middle_mp__anchor"/>
+    <origin xyz="-7.3463783e-08 0 0.03" rpy="1.5708 -1.5707927 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.64577" upper="0.64577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_middle_mp_anchor_fixed" type="fixed">
+    <parent link="left_middle_mp__anchor"/>
+    <child link="left_middle_mp"/>
+    <origin xyz="0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_middle_mcp" type="revolute">
+    <parent link="left_middle_mp"/>
+    <child link="left_middle_pp"/>
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.58825" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_middle_pip" type="revolute">
+    <parent link="left_middle_pp"/>
+    <child link="left_middle_ip"/>
+    <origin xyz="-0.0005 0 0.046" rpy="0 -0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.8675" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_ring_abd" type="revolute">
+    <parent link="left_palm"/>
+    <child link="left_ring_mp__anchor"/>
+    <origin xyz="-0.021521022 0.0015382095 0.020824784" rpy="-1.53597 -1.30836 3.05441"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.64577" upper="0.63577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_ring_mp_anchor_fixed" type="fixed">
+    <parent link="left_ring_mp__anchor"/>
+    <child link="left_ring_mp"/>
+    <origin xyz="0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_ring_mcp" type="revolute">
+    <parent link="left_ring_mp"/>
+    <child link="left_ring_pp"/>
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.58825" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_ring_pip" type="revolute">
+    <parent link="left_ring_pp"/>
+    <child link="left_ring_ip"/>
+    <origin xyz="-0.0005 0 0.046" rpy="0 -0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.8675" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_pinky_abd" type="revolute">
+    <parent link="left_palm"/>
+    <child link="left_pinky_mp__anchor"/>
+    <origin xyz="-0.042584529 0.0049881431 0.0072437229" rpy="-1.49694 -0.86149 2.88373"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.64577" upper="0.64577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_pinky_mp_anchor_fixed" type="fixed">
+    <parent link="left_pinky_mp__anchor"/>
+    <child link="left_pinky_mp"/>
+    <origin xyz="0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_pinky_mcp" type="revolute">
+    <parent link="left_pinky_mp"/>
+    <child link="left_pinky_pp"/>
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.71042" effort="50" velocity="5"/>
+  </joint>
+  <joint name="left_pinky_pip" type="revolute">
+    <parent link="left_pinky_pp"/>
+    <child link="left_pinky_ip"/>
+    <origin xyz="-0.0005 0 0.033" rpy="0 -0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.34907" upper="1.88496" effort="50" velocity="5"/>
+  </joint>
+  <joint name="r_arm_mount_fixed" type="fixed">
+    <parent link="torso"/>
+    <child link="r_arm_mount"/>
+    <origin xyz="0 0.14 -0.002" rpy="-0.174533 0 0"/>
+  </joint>
+  <joint name="right_arm_1" type="revolute">
+    <parent link="r_arm_mount"/>
+    <child link="r_shoulder_1"/>
+    <origin xyz="0 0 0.062" rpy="0 -0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.39626" upper="3.49066" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_arm_2" type="revolute">
+    <parent link="r_shoulder_1"/>
+    <child link="r_shoulder_2"/>
+    <origin xyz="-0.0301 0 0.06" rpy="-0 1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.31612" upper="0.174533" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_arm_3" type="revolute">
+    <parent link="r_shoulder_2"/>
+    <child link="r_shoulder_3"/>
+    <origin xyz="0 -0.06625 0.0301" rpy="1.5707967 5.3589793e-08 -5.3589793e-08"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_arm_4" type="revolute">
+    <parent link="r_shoulder_3"/>
+    <child link="r_elbow"/>
+    <origin xyz="0.033 0 0.15375" rpy="-3.1415926 1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.67" upper="0.773461" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_arm_5" type="revolute">
+    <parent link="r_elbow"/>
+    <child link="r_forearm"/>
+    <origin xyz="0 -0.0955 0.0315" rpy="1.570796 1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_arm_6" type="revolute">
+    <parent link="r_forearm"/>
+    <child link="r_wrist"/>
+    <origin xyz="0 0.0375 0.1205" rpy="-1.5707967 0.0015926536 3.1415927"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.785398" upper="0.785398" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_arm_7" type="revolute">
+    <parent link="r_wrist"/>
+    <child link="r_hand_mount"/>
+    <origin xyz="-0.02 0 0.035" rpy="-3.141592 1.570796 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.5708" upper="1.5708" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_tower_fixed" type="fixed">
+    <parent link="r_hand_mount"/>
+    <child link="right_tower"/>
+    <origin xyz="0.04 0.111 -0.02" rpy="1.5708 -0 3.14159"/>
+  </joint>
+  <joint name="right_wrist" type="revolute">
+    <parent link="right_tower"/>
+    <child link="right_palm__anchor"/>
+    <origin xyz="0.04063 0 0.10487" rpy="0 -0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.5236" upper="1.0472" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_palm_anchor_fixed" type="fixed">
+    <parent link="right_palm__anchor"/>
+    <child link="right_palm"/>
+    <origin xyz="-0.002 0.00144 0.03872" rpy="0 0 0"/>
+  </joint>
+  <joint name="right_thumb_mcp" type="revolute">
+    <parent link="right_palm"/>
+    <child link="right_thumb_mp"/>
+    <origin xyz="-0.02821 0.01777 -0.01321" rpy="0.53857 -0.05595 -1.27047"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.87266" upper="0.87266" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_thumb_abd" type="revolute">
+    <parent link="right_thumb_mp"/>
+    <child link="right_thumb_pp__anchor"/>
+    <origin xyz="0 0 0" rpy="-1.22173 0 0"/>
+    <axis xyz="0 0.34202086 0.93969236"/>
+    <limit lower="-0.34907" upper="0.73304" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_thumb_pp_anchor_fixed" type="fixed">
+    <parent link="right_thumb_pp__anchor"/>
+    <child link="right_thumb_pp"/>
+    <origin xyz="-0.03 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="right_thumb_pip" type="revolute">
+    <parent link="right_thumb_pp"/>
+    <child link="right_thumb_ip"/>
+    <origin xyz="0 0 0" rpy="3.14159 1.5707927 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.20944" upper="1.81496" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_thumb_dip" type="revolute">
+    <parent link="right_thumb_ip"/>
+    <child link="right_thumb_dp"/>
+    <origin xyz="0.0005 0 0.033" rpy="0 -0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.95477" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_index_abd" type="revolute">
+    <parent link="right_palm"/>
+    <child link="right_index_mp__anchor"/>
+    <origin xyz="-0.024088797 0.0018999643 0.025164929" rpy="1.6067 1.13552 -0.05339"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.64577" upper="0.64577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_index_mp_anchor_fixed" type="fixed">
+    <parent link="right_index_mp__anchor"/>
+    <child link="right_index_mp"/>
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="right_index_mcp" type="revolute">
+    <parent link="right_index_mp"/>
+    <child link="right_index_pp"/>
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.65806" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_index_pip" type="revolute">
+    <parent link="right_index_pp"/>
+    <child link="right_index_ip"/>
+    <origin xyz="0.0005 0 0.038" rpy="0 -0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.88496" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_middle_abd" type="revolute">
+    <parent link="right_palm"/>
+    <child link="right_middle_mp__anchor"/>
+    <origin xyz="7.3463783e-08 0 0.03" rpy="1.5708 1.5707927 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.64577" upper="0.64577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_middle_mp_anchor_fixed" type="fixed">
+    <parent link="right_middle_mp__anchor"/>
+    <child link="right_middle_mp"/>
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="right_middle_mcp" type="revolute">
+    <parent link="right_middle_mp"/>
+    <child link="right_middle_pp"/>
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.58825" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_middle_pip" type="revolute">
+    <parent link="right_middle_pp"/>
+    <child link="right_middle_ip"/>
+    <origin xyz="0.0005 0 0.046" rpy="0 -0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.8675" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_ring_abd" type="revolute">
+    <parent link="right_palm"/>
+    <child link="right_ring_mp__anchor"/>
+    <origin xyz="0.021521022 0.0015382095 0.020824784" rpy="-1.53597 1.30836 -3.05441"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.64577" upper="0.63577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_ring_mp_anchor_fixed" type="fixed">
+    <parent link="right_ring_mp__anchor"/>
+    <child link="right_ring_mp"/>
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="right_ring_mcp" type="revolute">
+    <parent link="right_ring_mp"/>
+    <child link="right_ring_pp"/>
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.58825" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_ring_pip" type="revolute">
+    <parent link="right_ring_pp"/>
+    <child link="right_ring_ip"/>
+    <origin xyz="0.0005 0 0.046" rpy="0 -0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.8675" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_pinky_abd" type="revolute">
+    <parent link="right_palm"/>
+    <child link="right_pinky_mp__anchor"/>
+    <origin xyz="0.042584529 0.0049881431 0.0072437229" rpy="-1.49694 0.86149 -2.88373"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.64577" upper="0.64577" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_pinky_mp_anchor_fixed" type="fixed">
+    <parent link="right_pinky_mp__anchor"/>
+    <child link="right_pinky_mp"/>
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0"/>
+  </joint>
+  <joint name="right_pinky_mcp" type="revolute">
+    <parent link="right_pinky_mp"/>
+    <child link="right_pinky_pp"/>
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.71042" effort="50" velocity="5"/>
+  </joint>
+  <joint name="right_pinky_pip" type="revolute">
+    <parent link="right_pinky_pp"/>
+    <child link="right_pinky_ip"/>
+    <origin xyz="0.0005 0 0.033" rpy="0 -0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.34907" upper="1.88496" effort="50" velocity="5"/>
+  </joint>
+</robot>

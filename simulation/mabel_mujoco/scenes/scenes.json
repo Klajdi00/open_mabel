@@ -1,0 +1,253 @@
+[
+  {
+    "name": "home",
+    "title": "Home / Kitchen",
+    "xml": "mabel_home.xml",
+    "thumb": "thumbs/home.png",
+    "description": "Cozy home kitchen and dining room with a work island, counter, fridge and real graspable tableware.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "living_room",
+    "title": "Living Room",
+    "xml": "mabel_living_room.xml",
+    "thumb": "thumbs/living_room.png",
+    "description": "Living room with sofa, coffee table, TV wall, bookshelf, rug and floor lamp; mug and speaker to pick up.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "bedroom",
+    "title": "Bedroom",
+    "xml": "mabel_bedroom.xml",
+    "thumb": "thumbs/bedroom.png",
+    "description": "Bedroom with quilted bed, nightstands, dresser, wardrobe and window; alarm clock on the nightstand.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "washroom",
+    "title": "Washroom",
+    "xml": "mabel_washroom.xml",
+    "thumb": "thumbs/washroom.png",
+    "description": "Family bathroom in small white tile: double vanity with mirror, bathtub, glass shower stall and toilet; towels and a laundry basket within reach.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "living_room_loft",
+    "title": "Loft Living Room",
+    "xml": "mabel_living_room_loft.xml",
+    "thumb": "thumbs/living_room_loft.png",
+    "description": "Industrial loft: brick walls, wood floor, L-sofa around a slab coffee table, big TV, kitchenette bar with stools and a wall of glass; speaker and mug to fetch.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "living_room_family",
+    "title": "Family Living Room",
+    "xml": "mabel_living_room_family.xml",
+    "thumb": "thumbs/living_room_family.png",
+    "description": "Warm carpeted family room: two facing sofas, toy-strewn play rug, TV and bookshelf; foam blocks and a ball for pick-up practice.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "full_house",
+    "title": "Full House (One Floor)",
+    "xml": "mabel_full_house.xml",
+    "thumb": "thumbs/full_house.png",
+    "description": "A whole 17 x 10 m single-floor home: living room, open kitchen with island, dining, bedroom, washroom and hallway \u2014 one continuous navigable space for long-horizon mobile tasks.",
+    "category": "Home & Living"
+  },
+  {
+    "name": "kitchen_fk",
+    "title": "Franka Kitchen",
+    "xml": "mabel_kitchen_fk.xml",
+    "thumb": "thumbs/kitchen_fk.png",
+    "description": "The classic D4RL Franka Kitchen benchmark: articulated oven, microwave, cabinets and a movable kettle, rescaled for MABEL.",
+    "category": "Food & Dining"
+  },
+  {
+    "name": "cafe",
+    "title": "Corner Cafe",
+    "xml": "mabel_cafe.xml",
+    "thumb": "thumbs/cafe.png",
+    "description": "Cozy corner cafe: espresso bar with pastry case under a red awning, round tables with seated customers, window bench; a mug to bus and a pastry to deliver.",
+    "category": "Food & Dining"
+  },
+  {
+    "name": "cafe_industrial",
+    "title": "Roastery Cafe",
+    "xml": "mabel_cafe_industrial.xml",
+    "thumb": "thumbs/cafe_industrial.png",
+    "description": "Industrial roastery cafe: concrete floor, long communal tables with stools, exposed ducting, green awning and a roaster drum in the corner.",
+    "category": "Food & Dining"
+  },
+  {
+    "name": "restaurant",
+    "title": "Restaurant",
+    "xml": "mabel_restaurant.xml",
+    "thumb": "thumbs/restaurant.png",
+    "description": "Casual bistro: wood four-tops with seated diners, wall banquette, service bar, pendant lights \u2014 and a waiter doing rounds between the tables.",
+    "category": "Food & Dining",
+    "dynamic": true
+  },
+  {
+    "name": "fastfood",
+    "title": "Fast Food",
+    "xml": "mabel_fastfood.xml",
+    "thumb": "thumbs/fastfood.png",
+    "description": "Burger joint: checkerboard floor, glowing menu boards over the order counter, soda fountain, red booths \u2014 trays and a burger box to clear.",
+    "category": "Food & Dining"
+  },
+  {
+    "name": "fine_dining",
+    "title": "Fine Dining",
+    "xml": "mabel_fine_dining.xml",
+    "thumb": "thumbs/fine_dining.png",
+    "description": "White-tablecloth dining room: clothed rounds with candles and place settings, high-back chairs, drapes, a grand piano \u2014 and a waiter circulating silently.",
+    "category": "Food & Dining",
+    "dynamic": true
+  },
+  {
+    "name": "office",
+    "title": "Office",
+    "xml": "mabel_office.xml",
+    "thumb": "thumbs/office.png",
+    "description": "Office with two desk pods, monitors, chairs, filing cabinets and a whiteboard; laptop, keyboard, mouse and mug on the desks.",
+    "category": "Work & Public"
+  },
+  {
+    "name": "gym",
+    "title": "Gym",
+    "xml": "mabel_gym.xml",
+    "thumb": "thumbs/gym.png",
+    "description": "Strength & cardio floor on speckled rubber: squat rack, benches, dumbbell rack, treadmills, plyo boxes and a mirror wall; kettlebell and dumbbells are real free bodies.",
+    "category": "Work & Public"
+  },
+  {
+    "name": "supermarket",
+    "title": "Supermarket",
+    "xml": "mabel_supermarket.xml",
+    "thumb": "thumbs/supermarket.png",
+    "description": "Grocery store: three product aisles, produce tables with real fruit to pick, a glass cooler wall and two checkout lanes \u2014 with shoppers wandering the aisles.",
+    "category": "Work & Public",
+    "dynamic": true
+  },
+  {
+    "name": "airport",
+    "title": "Airport Terminal",
+    "xml": "mabel_airport.xml",
+    "thumb": "thumbs/airport.png",
+    "description": "A 36 m departure concourse: check-in island, security lane, gate seating, duty-free kiosk, departure boards \u2014 travelers with roller bags criss-crossing, a jet at the glass.",
+    "category": "Work & Public",
+    "dynamic": true
+  },
+  {
+    "name": "factory",
+    "title": "Factory Floor",
+    "xml": "mabel_factory.xml",
+    "thumb": "thumbs/factory.png",
+    "description": "Industrial hall with CNC machine, hydraulic press, pallets, shelving and a safety-striped robot cell; real tools on the workbench.",
+    "category": "Industrial"
+  },
+  {
+    "name": "assembly_line",
+    "title": "Assembly Line",
+    "xml": "mabel_assembly_line.xml",
+    "thumb": "thumbs/assembly_line.png",
+    "description": "A 9 m belt conveyor carrying parts, workstations with bins on both sides and an operator slot for the robot.",
+    "category": "Industrial",
+    "dynamic": true
+  },
+  {
+    "name": "warehouse",
+    "title": "Warehouse",
+    "xml": "mabel_warehouse.xml",
+    "thumb": "thumbs/warehouse.png",
+    "description": "Warehouse aisle between two tall pallet racks loaded with cardboard boxes; a bin and tools at picking height.",
+    "category": "Industrial"
+  },
+  {
+    "name": "outdoor",
+    "title": "Outdoor Park",
+    "xml": "mabel_outdoor.xml",
+    "thumb": "thumbs/outdoor.png",
+    "description": "Open grass field under a blue sky with a gravel path, trees, rocks and a park bench.",
+    "category": "Outdoor & Leisure"
+  },
+  {
+    "name": "golf",
+    "title": "Golf Course",
+    "xml": "mabel_golf.xml",
+    "thumb": "thumbs/golf.png",
+    "description": "A 40 m par-3 hole: striped fairway to a raised green with pin and real golf balls, two sand bunkers, cart path with parked cart, tee boxes and tree lines.",
+    "category": "Outdoor & Leisure"
+  },
+  {
+    "name": "front_yard",
+    "title": "Front Yard",
+    "xml": "mabel_front_yard.xml",
+    "thumb": "thumbs/front_yard.png",
+    "description": "Suburban front yard: house facade with porch, lawn, driveway with a parked car, picket fence, flower beds, mailbox \u2014 and a kid's ball to fetch.",
+    "category": "Outdoor & Leisure"
+  },
+  {
+    "name": "rooftop_lounge",
+    "title": "Rooftop Lounge",
+    "xml": "mabel_rooftop_lounge.xml",
+    "thumb": "thumbs/rooftop_lounge.png",
+    "description": "Dusk rooftop bar: glowing pool, loungers and parasols, bar counter with stools, planters, string lights and a skyline of lit facades beyond the parapet.",
+    "category": "Outdoor & Leisure"
+  },
+  {
+    "name": "la_suburb",
+    "title": "LA Hills Suburb",
+    "xml": "mabel_la_suburb.xml",
+    "thumb": "thumbs/la_suburb.png",
+    "description": "A Los Angeles hillside neighbourhood: single-family houses with pitched roofs, driveways and lawns along a palm- and plum-lined street, brown hills rising behind with the HOLLYWOOD sign, and a dog trotting the block.",
+    "category": "Outdoor & Leisure",
+    "dynamic": true
+  },
+  {
+    "name": "venice_beach",
+    "title": "Venice Beach",
+    "xml": "mabel_venice_beach.xml",
+    "thumb": "thumbs/venice_beach.png",
+    "description": "A California beach: soft sand down to a glittering ocean, a boardwalk lined with palms, a lifeguard tower and volleyball net, cars cruising the road behind. Sun, palms, surf.",
+    "category": "Outdoor & Leisure",
+    "dynamic": true
+  },
+  {
+    "name": "city_sidewalk",
+    "title": "City Sidewalk",
+    "xml": "mabel_city_sidewalk.xml",
+    "thumb": "thumbs/city_sidewalk.png",
+    "description": "A downtown block: the robot works a wide sidewalk between storefronts and a two-way street; taxis and cars circle the block, pedestrians stream both ways, lights and awnings overhead.",
+    "category": "City & Streets",
+    "dynamic": true
+  },
+  {
+    "name": "intersection",
+    "title": "Busy Intersection",
+    "xml": "mabel_intersection.xml",
+    "thumb": "thumbs/intersection.png",
+    "description": "A signalized four-way crossing: alternating N-S / E-W traffic with cars braking at the stop lines, pedestrians timed to the gaps, corner shops on every quadrant. The robot owns the SW corner.",
+    "category": "City & Streets",
+    "dynamic": true
+  },
+  {
+    "name": "boulevard",
+    "title": "Grand Boulevard",
+    "xml": "mabel_boulevard.xml",
+    "thumb": "thumbs/boulevard.png",
+    "description": "A 70 m four-lane boulevard with a planted median: a bus works its stop, cars overtake in both directions, pedestrians and a median promenade \u2014 the robot starts curbside by the bus shelter.",
+    "category": "City & Streets",
+    "dynamic": true
+  },
+  {
+    "name": "plaza",
+    "title": "City Plaza",
+    "xml": "mabel_plaza.xml",
+    "thumb": "thumbs/plaza.png",
+    "description": "A pedestrian plaza around a fountain: crowds criss-crossing with pauses at the water, a coffee kiosk, benches, planters and pigeons \u2014 no cars, all people.",
+    "category": "City & Streets",
+    "dynamic": true
+  }
+]

@@ -1,0 +1,110 @@
+# MABEL ROS 2 workspace -- reproducible conda environment (RoboStack)
+# =====================================================================
+# This is a SELF-CONTAINED ROS 2 Jazzy stack: ROS itself comes from conda-forge
+# via RoboStack (channel `robostack-jazzy`), NOT from apt. That sidesteps the
+# `catkin_pkg`/anaconda-python clash that breaks colcon when Anaconda's python is
+# mixed with an apt ROS install -- here EVERYTHING (ROS, python, compilers, the
+# colcon toolchain) lives in one conda env, so there is nothing to mix.
+#
+# Create / update it with ./dev_up.sh (recommended), or by hand:
+#
+#     conda env create -f environment.yml      # first time
+#     conda env update -f environment.yml --prune   # refresh
+#     conda activate mabel
+#
+# Target host: Ubuntu 24.04, x86_64. The same env file works on the robot
+# (Jetson Thor, aarch64) since RoboStack ships linux-aarch64 builds too.
+#
+# NOT covered here (need native / Docker installs, not on conda-forge):
+#   * ZED SDK + zed-ros2-wrapper        -> SDK is a native install (/usr/local/zed);
+#     the wrapper is a source build via ./scripts/build_sdk_cams.sh (thirdparty.repos)
+#   * Isaac ROS visual SLAM (cuVSLAM/nvblox) -> runs in the isaac_ros_dev Docker
+#     container; the `visual_slam` terminal only works with that container up.
+# RealSense IS covered: the RoboStack `ros-jazzy-realsense2-camera` below bundles
+# librealsense -- no source build. (USB udev rules: scripts/install_camera_udev.sh)
+name: mabel
+
+channels:
+  - conda-forge
+  - robostack-jazzy
+
+dependencies:
+  # --- ROS 2 Jazzy (RoboStack) ----------------------------------------------
+  - ros-jazzy-desktop            # rclpy, rviz2, tf2, sensor_msgs family, ros2 CLI
+  - ros-jazzy-navigation2        # Nav2 core (mabel_navigation)
+  - ros-jazzy-nav2-bringup
+  - ros-jazzy-slam-toolbox       # 2D LiDAR SLAM backend (mabel_slam)
+  - ros-jazzy-robot-localization # EKF (mabel_navigation/ekf.launch.py)
+  - ros-jazzy-xacro              # URDF generation (mabel_description)
+  - ros-jazzy-v4l2-camera        # camera ingest (mabel_sensors)
+  - ros-jazzy-image-proc         # rectify / stereo split (mabel_sensors)
+  - ros-jazzy-realsense2-camera  # front D435i driver + bundled librealsense (mabel_sensors)
+  - ros-jazzy-topic-tools        # relays: real cameras -> /camera/* sim contract
+  - ros-jazzy-image-transport-plugins      # compressed/theora image transport (ZED wrapper)
+  - ros-jazzy-point-cloud-transport-plugins # ZED pointcloud transport
+  - ros-jazzy-ffmpeg-image-transport       # ZED wrapper dep
+  - ros-jazzy-nmea-msgs          # ZED wrapper dep (GNSS msgs)
+  - ros-jazzy-diagnostic-updater # hardware bridges + ZED wrapper
+  - ros-jazzy-tf-transformations
+  - ros-jazzy-foxglove-bridge    # sim.launch.py foxglove:=true
+
+  # --- build toolchain (all-conda, no apt) ----------------------------------
+  - colcon-common-extensions     # `colcon build` (includes mixin support)
+  # ament_python + `colcon build --symlink-install` runs `setup.py develop`, which
+  # setuptools 80 REMOVED ("option --editable not recognized"). Pin below 80.
+  - setuptools<80
+  - compilers                    # C / C++ toolchain matched to the conda libc
+  - cmake
+  - ninja
+  - make
+  - pkg-config
+  - vcstool                      # `vcs import` for the source SDK packages
+
+  # --- python deps imported by the mabel nodes (from requirements.txt) -------
+  # numpy is PINNED <2 on purpose: the ZED SDK python API (pyzed, installed via
+  # /usr/local/zed/get_python_api.py by dev_up.sh) runs as a numpy-1.x C extension
+  # here -- on numpy 2.x the older line dies with "numpy.dtype size changed" and
+  # even pyzed 5.4 (whose wheel DECLARES numpy>=2.0) is happiest at 1.26: it
+  # imports + grabs colour/depth/cloud fine, while numpy-2.x breaks numpy-quaternion
+  # and scipy below. So the WHOLE env stays numpy-1.x (scipy<2, numpy-quaternion
+  # <2024). Mixing pip installs of numpy 1.x and 2.x is what corrupted this env
+  # once (stacked core/ + _core/). dev_up.sh re-pins numpy<2 after the pyzed
+  # install (get_python_api.py pulls 2.x). To move to numpy-2.x, lift these pins
+  # together AND confirm pyzed capture still works.
+  - numpy>=1.24,<2               # used everywhere (ZED SDK pyzed C-ext needs numpy 1.x here)
+  - scipy>=1.11,<2               # controller hand-IK (mabel.hand_ik_retarget); numpy-1.x build
+  - mujoco>=3.0                  # mabel_sim MuJoCo<->ROS bridge
+  - trimesh>=4.0                 # mabel_description rig/asset tooling
+  - paho-mqtt>=1.6               # camera MQTT bridge (mabel_sensors)
+  - pynput>=1.7                  # mabel_teleop keyboard_teleop
+  - pyserial>=3.5               # base/hand/neck serial drivers
+  - requests>=2.28
+  - tqdm>=4.64
+
+  - pillow                       # JPEG encode for the camera node MJPEG fan-out
+                                 # (numpy-agnostic -- avoids the cv2/numpy ABI clash)
+
+  # --- tooling for the one-command dev launcher -----------------------------
+  - tmux                         # the 4-pane dev session (dev_up.sh)
+
+  # --- pip-only (no conda-forge package / cleaner from PyPI) -----------------
+  - pip
+  - pip:
+      - numpy-quaternion>=2022,<2024   # `import quaternion` -- pose math in sim/teleop.
+                                 # <2024: the 2024.x line is numpy-2.x-only and infinite-
+                                 # loops numpy 1.x's dtype repr on import (see numpy pin).
+      # --- MABEL app server (server/) deps, so the ROS-backed teleop+map server
+      #     (sim_ros_server.sh / real_ros_server.sh, gateway.launch.py) runs in
+      #     THIS env -- it needs both rclpy (above) and these (server/requirements.txt).
+      - websockets>=12.0         # async WebSocket server (teleop + /map)
+      - aiohttp>=3.9             # async HTTP server for MJPEG cameras
+      - quadprog>=0.1.11         # dense QP for the WBC self-collision CBF (control modes)
+      - osqp>=0.6                # QP fallback if quadprog is unavailable
+      # --- camera-hardware node (sensors/ros_camera_node.py) -- the single owner
+      #     of the USB depth cameras, publishing /camera/* to ROS + MJPEG to the net.
+      - pyrealsense2             # Intel D435i (V4L2 backend -> opens as user, no udev)
+      # pyzed (Stereolabs ZED-M) is NOT on PyPI -- it ships per ZED-SDK version.
+      # dev_up.sh's install_camera_sdks() installs it automatically from the local
+      # SDK (python /usr/local/zed/get_python_api.py) and re-pins numpy<2 after, so
+      # you don't run it by hand. Verified on ZED SDK 5.4 / pyzed 5.4 at numpy 1.26.
+      # (matches the SDK + python; can't be pinned here).

@@ -1,0 +1,7 @@
+# colcon / ROS 2 workspace artifacts — machine- and distro-specific, never commit.
+# Each machine (e.g. Jetson Thor / Ubuntu 24 / Jazzy and Ubuntu 22 / Humble)
+# must build these from src/ itself: they bake in absolute paths, compiled
+# binaries, and the host Python version.
+/build/
+/install/
+/log/

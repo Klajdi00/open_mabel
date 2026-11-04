@@ -1,0 +1,57 @@
+<mujoco model="mabel_body_standalone">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002"/>
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    
+    <default class="b_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="b_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    
+    <default class="b_hinge">
+      <joint type="hinge" axis="0 0 1" limited="true" range="-1.0472 0.2618" damping="5" armature="1"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh file="../assets/meshes/body/lift_to_body.stl" name="m_lift_to_body"/>
+    <mesh file="../assets/meshes/body/body_link.stl"    name="m_body_link"/>
+
+    <material name="mat_mount" rgba="0.3 0.3 0.35 1"/>
+    <material name="mat_torso" rgba="0.7 0.7 0.7 1"/>
+    <material name="invisible" rgba="1 1 1 0"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.7 0.7 0.7 1"/>
+
+    <body name="body_mount" pos="0 0 0.1" euler="1.570796 0 3.1415926">
+      <geom class="b_visual"    mesh="m_lift_to_body" material="mat_mount"/>
+      <geom class="b_collision" mesh="m_lift_to_body"/>
+
+      <body name="torso" pos="0 0 0">
+        <joint name="torso_joint" class="b_hinge"/>
+        <geom class="b_visual"    mesh="m_body_link" material="mat_torso"/>
+        <geom class="b_collision" mesh="m_body_link" mass="5.0"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="body_mount" body2="torso"/>
+  </contact>
+
+  <actuator>
+    <position name="act_torso" joint="torso_joint" 
+              kp="5000" kv="100" 
+              ctrlrange="-1.0472 0.2618" ctrllimited="true" 
+              forcerange="-1000 1000"/>
+  </actuator>
+
+</mujoco>

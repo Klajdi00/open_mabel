@@ -1,0 +1,13 @@
+# MABEL controller library — runtime dependencies.
+# Canonical install:  pip install -e controller/   (uses pyproject.toml)
+# This file mirrors pyproject.toml for `pip install -r requirements.txt` users.
+numpy
+scipy
+mujoco>=3.0
+pyzmq
+
+# Optional (faster / exact QP backends for self-collision avoidance; the guard
+# falls back gracefully without them):
+#   pip install -e "controller/[qp]"     or uncomment:
+# quadprog
+# osqp

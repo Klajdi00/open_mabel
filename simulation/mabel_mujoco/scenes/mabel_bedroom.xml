@@ -1,0 +1,117 @@
+<mujoco model="mabel_bedroom_environment">
+  <!-- MABEL in a bedroom: bed with quilted duvet + pillows, two nightstands (lamp +
+       alarm clock), dresser, wardrobe, window. Textured primitives (textures from
+       scripts/tools/gen_env_textures.py / gen_home_textures.py); clutter wired by
+       gen_env_objects.py.
+       Run from repo root:  python scripts/visualize_sensors.py --scene scenes/mabel_bedroom.xml -->
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <include file="../models/mabel_full.xml"/>
+
+  <visual>
+    <headlight ambient="0.45 0.45 0.47" diffuse="0.25 0.25 0.25" specular="0.1 0.1 0.1"/>
+    <quality shadowsize="4096"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.52 0.58 0.66" rgb2="0.86 0.89 0.93" width="256" height="256"/>
+    <texture type="2d" name="t_carpet"  file="../assets/textures/carpet_beige.png"/>
+    <texture type="2d" name="t_wood"    file="../assets/textures/wood_furniture.png"/>
+    <texture type="2d" name="t_wall"    file="../assets/textures/wall.png"/>
+    <texture type="2d" name="t_bedding" file="../assets/textures/bedding.png"/>
+    <texture type="2d" name="t_rug"     file="../assets/textures/rug.png"/>
+
+    <material name="m_carpet"  texture="t_carpet"  texuniform="true" texrepeat="2 2" reflectance="0.0" shininess="0.0"/>
+    <material name="m_wood"    texture="t_wood"    texuniform="true" texrepeat="2 2" reflectance="0.05" shininess="0.2"/>
+    <material name="m_wall"    texture="t_wall"    texuniform="true" texrepeat="2 2" reflectance="0.0"/>
+    <material name="m_bedding" texture="t_bedding" texuniform="true" texrepeat="2 2" reflectance="0.0" shininess="0.0"/>
+    <material name="m_rug"     texture="t_rug"     texrepeat="1 1" reflectance="0.0" shininess="0.0"/>
+    <material name="m_pillow"  rgba="0.97 0.97 0.95 1" reflectance="0.0" shininess="0.0"/>
+    <material name="m_shade"   rgba="0.94 0.87 0.70 1" emission="0.35"/>
+    <material name="m_metal"   rgba="0.55 0.56 0.58 1" reflectance="0.3" shininess="0.6"/>
+    <material name="m_window"  rgba="0.72 0.84 0.95 1" reflectance="0.4" shininess="0.8" emission="0.25"/>
+  </asset>
+
+  <worldbody>
+    <!-- ===== lighting (soft, warm) ===== -->
+    <light name="sun"    directional="true" pos=" 1.0  0.6 3.0" dir="-0.35 -0.2 -1" ambient="0.16 0.16 0.16" diffuse="0.50 0.48 0.45" specular="0.2 0.2 0.2" castshadow="true"/>
+    <light name="fill_x" directional="true" pos="-2.0  0.0 3.0" dir=" 0.40  0.0 -1" diffuse="0.32 0.31 0.32" castshadow="false"/>
+    <light name="window" directional="true" pos="-0.5  2.4 2.0" dir=" 0.0 -0.6 -1" diffuse="0.30 0.32 0.38" castshadow="false"/>
+    <light name="fill_up" directional="true" pos=" 0.0  0.0 0.5" dir="-0.3  0.55 1" diffuse="0.18 0.17 0.16" castshadow="false"/>
+
+    <!-- ===== room shell 7 x 5.4 m ===== -->
+    <geom name="floor" type="plane" size="3.5 2.7 0.1" material="m_carpet"
+          contype="1" conaffinity="1" friction="1.5 0.05 0.001"/>
+    <geom name="wall_back"  type="box" pos=" 3.55 0    1.3" size="0.05 2.7 1.3" material="m_wall"/>
+    <geom name="wall_front" type="box" pos="-3.55 0    1.3" size="0.05 2.7 1.3" material="m_wall"/>
+    <geom name="wall_left"  type="box" pos=" 0    2.75 1.3" size="3.5 0.05 1.3" material="m_wall"/>
+    <geom name="wall_right" type="box" pos=" 0   -2.75 1.3" size="3.5 0.05 1.3" material="m_wall"/>
+
+    <!-- ===== window on the +Y wall ===== -->
+    <geom name="window_pane"   type="box" pos="-0.8 2.71 1.55" size="0.75 0.015 0.55" material="m_window"/>
+    <geom name="window_frame_l" type="box" pos="-1.58 2.70 1.55" size="0.035 0.03 0.60" rgba="0.95 0.95 0.95 1"/>
+    <geom name="window_frame_r" type="box" pos="-0.02 2.70 1.55" size="0.035 0.03 0.60" rgba="0.95 0.95 0.95 1"/>
+    <geom name="window_frame_t" type="box" pos="-0.8 2.70 2.13" size="0.82 0.03 0.035" rgba="0.95 0.95 0.95 1"/>
+    <geom name="window_frame_b" type="box" pos="-0.8 2.70 0.97" size="0.82 0.03 0.035" rgba="0.95 0.95 0.95 1"/>
+    <geom name="window_mullion" type="box" pos="-0.8 2.70 1.55" size="0.025 0.03 0.55" rgba="0.95 0.95 0.95 1"/>
+
+    <!-- ===== bed against the +X wall (head at the wall) ===== -->
+    <geom name="bed_frame"    type="box" pos="2.40 0 0.17" size="1.08 0.88 0.17" material="m_wood"/>
+    <geom name="bed_mattress" type="box" pos="2.42 0 0.45" size="1.02 0.82 0.12" material="m_bedding"/>
+    <geom name="bed_duvet"    type="box" pos="2.20 0 0.585" size="0.78 0.84 0.035" material="m_bedding"/>
+    <geom name="bed_pillow_l" type="box" pos="3.16  0.40 0.63" size="0.24 0.32 0.065" material="m_pillow" euler="0 -0.12 0"/>
+    <geom name="bed_pillow_r" type="box" pos="3.16 -0.40 0.63" size="0.24 0.32 0.065" material="m_pillow" euler="0 -0.12 0"/>
+    <geom name="bed_headboard" type="box" pos="3.46 0 0.75" size="0.055 0.88 0.48" material="m_wood"/>
+
+    <!-- ===== nightstands with lamp (-Y) and alarm clock (+Y) ===== -->
+    <geom name="nstand_l"       type="box" pos="2.60  1.35 0.275" size="0.26 0.26 0.275" material="m_wood"/>
+    <geom name="nstand_l_drawer" type="box" pos="2.335 1.35 0.40" size="0.006 0.20 0.09" rgba="0.50 0.33 0.20 1"/>
+    <geom name="nstand_r"       type="box" pos="2.60 -1.35 0.275" size="0.26 0.26 0.275" material="m_wood"/>
+    <geom name="nstand_r_drawer" type="box" pos="2.335 -1.35 0.40" size="0.006 0.20 0.09" rgba="0.50 0.33 0.20 1"/>
+    <geom name="nlamp_base"  type="cylinder" pos="2.62 -1.35 0.57" size="0.09 0.015" material="m_metal"/>
+    <geom name="nlamp_pole"  type="cylinder" pos="2.62 -1.35 0.70" size="0.012 0.13" material="m_metal"/>
+    <geom name="nlamp_shade" type="cylinder" pos="2.62 -1.35 0.88" size="0.11 0.09" material="m_shade"/>
+    <light name="nlamp_light" pos="2.62 -1.35 0.80" dir="0 0 -1" diffuse="0.22 0.19 0.13" castshadow="false"/>
+
+    <!-- ===== dresser along the -Y wall ===== -->
+    <geom name="dresser"    type="box" pos="0.60 -2.42 0.42" size="0.65 0.27 0.42" material="m_wood"/>
+    <geom name="dresser_d1" type="box" pos="0.60 -2.135 0.22" size="0.55 0.008 0.13" rgba="0.50 0.33 0.20 1"/>
+    <geom name="dresser_d2" type="box" pos="0.60 -2.135 0.52" size="0.55 0.008 0.13" rgba="0.50 0.33 0.20 1"/>
+    <geom name="dresser_h1" type="box" pos="0.60 -2.12 0.22" size="0.10 0.012 0.012" material="m_metal"/>
+    <geom name="dresser_h2" type="box" pos="0.60 -2.12 0.52" size="0.10 0.012 0.012" material="m_metal"/>
+    <geom name="dresser_mirror" type="box" pos="0.60 -2.66 1.35" size="0.45 0.015 0.45" material="m_window"/>
+
+    <!-- ===== wardrobe along the -X wall ===== -->
+    <geom name="wardrobe"        type="box" pos="-3.12 1.30 1.05" size="0.38 0.62 1.05" material="m_wood"/>
+    <geom name="wardrobe_gap"    type="box" pos="-2.73 1.30 1.05" size="0.006 0.006 0.98" rgba="0.25 0.16 0.10 1"/>
+    <geom name="wardrobe_h1"     type="box" pos="-2.72 1.20 1.05" size="0.012 0.012 0.14" material="m_metal"/>
+    <geom name="wardrobe_h2"     type="box" pos="-2.72 1.40 1.05" size="0.012 0.012 0.14" material="m_metal"/>
+
+    <!-- ===== bedside rug ===== -->
+    <geom name="bedside_rug" type="box" pos="1.95 -1.65 0.004" size="0.70 0.45 0.004" material="m_rug"/>
+
+    <!-- ===== upholstered bench under the window (+Y wall) ===== -->
+    <geom name="bench_top" type="box" pos="-0.8 2.50 0.235" size="0.60 0.16 0.045" material="m_pillow"/>
+    <geom name="bench_l1"  type="box" pos="-1.32 2.50 0.095" size="0.045 0.13 0.095" material="m_wood"/>
+    <geom name="bench_l2"  type="box" pos="-0.28 2.50 0.095" size="0.045 0.13 0.095" material="m_wood"/>
+
+    <!-- ===== teleop mocap targets (kept compatible with the teleop / WBC scripts) ===== -->
+    <body name="target_l" mocap="true" pos="0.45 0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="target_r" mocap="true" pos="0.45 -0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="gaze_point" mocap="true" pos="0.85 0 1.0">
+      <geom group="3" type="sphere" size="0.04" rgba="1 0.5 0 0.4" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- graspable clutter (scanned objects): alarm clock on the +Y nightstand -->
+  <include file="bedroom_objects.xml"/>
+
+</mujoco>

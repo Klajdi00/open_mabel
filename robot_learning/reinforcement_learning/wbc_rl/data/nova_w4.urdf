@@ -1,0 +1,1946 @@
+<robot name="nova">
+  <link name="mabel_chassis">
+    <inertial>
+      <origin xyz="0.0053945323 2.4928114e-06 0.094137249" rpy="-3.13712299 -1.56136491 0.0123771154" />
+      <mass value="22.686" />
+      <inertia ixx="0.86513364" ixy="0" ixz="0" iyy="0.52064343" iyz="0" izz="0.51664167" />
+    </inertial>
+    <visual>
+      <origin xyz="2.51534904e-17 4.36645484e-19 -2.77555756e-17" rpy="-4.53332033e-18 2.78528785e-16 -1.92721171e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/base/mobile_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="chassis_mat">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="2.51534904e-17 4.36645484e-19 -2.77555756e-17" rpy="-4.53332033e-18 2.78528785e-16 -1.92721171e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/base/mobile_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="lidar">
+  </link>
+  <link name="fl_swerve_housing">
+    <inertial>
+      <origin xyz="0.0085907853 -0.0093218629 0.034598464" rpy="0.0498055127 -1.33291075 2.31490055" />
+      <mass value="0.488554" />
+      <inertia ixx="0.00062316563" ixy="0" ixz="0" iyy="0.00060922993" iyz="0" izz="0.00053167302" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.73472348e-18 1.73472348e-18 6.9388939e-18" rpy="-4.85722573e-17 3.12250226e-17 -1.17961196e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="housing_mat">
+        <color rgba="0.25 0.25 0.280000001 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.73472348e-18 1.73472348e-18 6.9388939e-18" rpy="-4.85722573e-17 3.12250226e-17 -1.17961196e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="fl_steer_body">
+    <inertial>
+      <origin xyz="3.4431261e-05 7.2473145e-07 -0.012039447" rpy="0.00210896857 -1.55368958 3.13922662" />
+      <mass value="0.0743539" />
+      <inertia ixx="4.595945e-05" ixy="0" ixz="0" iyy="3.2657432e-05" iyz="0" izz="2.4766277e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-4.4655577e-18 -2.11758237e-22 0" rpy="3.47283508e-20 3.709037e-16 5.05043395e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="steer_motor_mat">
+        <color rgba="0.100000001 0.349999994 0.75 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-4.4655577e-18 -2.11758237e-22 0" rpy="3.47283508e-20 3.709037e-16 5.05043395e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="fl_wheel">
+    <inertial>
+      <origin xyz="-8.6550403e-07 -1.5526468e-06 -0.00045443722" rpy="0 -1.57077205 1.61047246" />
+      <mass value="0.208434" />
+      <inertia ixx="0.00011329833" ixy="0" ixz="0" iyy="6.5071521e-05" iyz="0" izz="6.5022891e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.9693516e-20 4.23516474e-22 1.08420217e-19" rpy="4.02617534e-20 4.37126823e-17 7.7603807e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="drive_motor_mat">
+        <color rgba="0.75 0.200000003 0.200000003 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.9693516e-20 4.23516474e-22 1.08420217e-19" rpy="4.02617534e-20 4.37126823e-17 7.7603807e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    <collision><origin xyz="0 0 0" rpy="0 0 0" /><geometry><sphere radius="0.038" /></geometry></collision></link>
+  <link name="fr_swerve_housing">
+    <inertial>
+      <origin xyz="0.0085907853 -0.0093218629 0.034598464" rpy="0.0498055127 -1.33291075 2.31490055" />
+      <mass value="0.488554" />
+      <inertia ixx="0.00062316563" ixy="0" ixz="0" iyy="0.00060922993" iyz="0" izz="0.00053167302" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.73472348e-18 1.73472348e-18 6.9388939e-18" rpy="-4.85722573e-17 3.12250226e-17 -1.17961196e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="housing_mat">
+        <color rgba="0.25 0.25 0.280000001 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.73472348e-18 1.73472348e-18 6.9388939e-18" rpy="-4.85722573e-17 3.12250226e-17 -1.17961196e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="fr_steer_body">
+    <inertial>
+      <origin xyz="3.4431261e-05 7.2473145e-07 -0.012039447" rpy="0.00210896857 -1.55368958 3.13922662" />
+      <mass value="0.0743539" />
+      <inertia ixx="4.595945e-05" ixy="0" ixz="0" iyy="3.2657432e-05" iyz="0" izz="2.4766277e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-4.4655577e-18 -2.11758237e-22 0" rpy="3.47283508e-20 3.709037e-16 5.05043395e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="steer_motor_mat">
+        <color rgba="0.100000001 0.349999994 0.75 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-4.4655577e-18 -2.11758237e-22 0" rpy="3.47283508e-20 3.709037e-16 5.05043395e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="fr_wheel">
+    <inertial>
+      <origin xyz="-8.6550403e-07 -1.5526468e-06 -0.00045443722" rpy="0 -1.57077205 1.61047246" />
+      <mass value="0.208434" />
+      <inertia ixx="0.00011329833" ixy="0" ixz="0" iyy="6.5071521e-05" iyz="0" izz="6.5022891e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.9693516e-20 4.23516474e-22 1.08420217e-19" rpy="4.02617534e-20 4.37126823e-17 7.7603807e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="drive_motor_mat">
+        <color rgba="0.75 0.200000003 0.200000003 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.9693516e-20 4.23516474e-22 1.08420217e-19" rpy="4.02617534e-20 4.37126823e-17 7.7603807e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    <collision><origin xyz="0 0 0" rpy="0 0 0" /><geometry><sphere radius="0.038" /></geometry></collision></link>
+  <link name="b_swerve_housing">
+    <inertial>
+      <origin xyz="0.0085907853 -0.0093218629 0.034598464" rpy="0.0498055127 -1.33291075 2.31490055" />
+      <mass value="0.488554" />
+      <inertia ixx="0.00062316563" ixy="0" ixz="0" iyy="0.00060922993" iyz="0" izz="0.00053167302" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.73472348e-18 1.73472348e-18 6.9388939e-18" rpy="-4.85722573e-17 3.12250226e-17 -1.17961196e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="housing_mat">
+        <color rgba="0.25 0.25 0.280000001 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.73472348e-18 1.73472348e-18 6.9388939e-18" rpy="-4.85722573e-17 3.12250226e-17 -1.17961196e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/wheel_to_base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="b_steer_body">
+    <inertial>
+      <origin xyz="3.4431261e-05 7.2473145e-07 -0.012039447" rpy="0.00210896857 -1.55368958 3.13922662" />
+      <mass value="0.0743539" />
+      <inertia ixx="4.595945e-05" ixy="0" ixz="0" iyy="3.2657432e-05" iyz="0" izz="2.4766277e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-4.4655577e-18 -2.11758237e-22 0" rpy="3.47283508e-20 3.709037e-16 5.05043395e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="steer_motor_mat">
+        <color rgba="0.100000001 0.349999994 0.75 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-4.4655577e-18 -2.11758237e-22 0" rpy="3.47283508e-20 3.709037e-16 5.05043395e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/steering_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="b_wheel">
+    <inertial>
+      <origin xyz="-8.6550403e-07 -1.5526468e-06 -0.00045443722" rpy="0 -1.57077205 1.61047246" />
+      <mass value="0.208434" />
+      <inertia ixx="0.00011329833" ixy="0" ixz="0" iyy="6.5071521e-05" iyz="0" izz="6.5022891e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.9693516e-20 4.23516474e-22 1.08420217e-19" rpy="4.02617534e-20 4.37126823e-17 7.7603807e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="drive_motor_mat">
+        <color rgba="0.75 0.200000003 0.200000003 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.9693516e-20 4.23516474e-22 1.08420217e-19" rpy="4.02617534e-20 4.37126823e-17 7.7603807e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/swerve_drive/drive_motor.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    <collision><origin xyz="0 0 0" rpy="0 0 0" /><geometry><sphere radius="0.038" /></geometry></collision></link>
+  <link name="lift_base">
+    <inertial>
+      <origin xyz="-0.0346393926 -0.000129478022 0.108097868" rpy="0.140841647 0.00188412959 1.56170148" />
+      <mass value="6.80757267" />
+      <inertia ixx="0.167428989" ixy="0" ixz="0" iyy="0.162242188" iyz="0" izz="0.0131951679" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.38777878e-17 -2.22261445e-18 1.38777878e-17" rpy="1.10588622e-17 -3.40778295e-17 -2.90701707e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/lift/lift_base_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_base">
+        <color rgba="0.200000003 0.200000003 0.200000003 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.38777878e-17 -2.22261445e-18 1.38777878e-17" rpy="1.10588622e-17 -3.40778295e-17 -2.90701707e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/lift/lift_base_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="lift_mid">
+    <inertial>
+      <origin xyz="1.17109949e-12 -2.09711729e-12 0.25" rpy="0 -0 0" />
+      <mass value="2.21171602" />
+      <inertia ixx="0.0328424931" ixy="0" ixz="0" iyy="0.0328424931" iyz="0" izz="0.00138452985" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/lift/lift_mid_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_mid">
+        <color rgba="0.400000006 0.400000006 0.400000006 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="lift_top">
+    <inertial>
+      <origin xyz="2.71466734e-13 3.29666424e-15 0.139357097" rpy="0 -0 1.57079633" />
+      <mass value="5.49801364" />
+      <inertia ixx="0.246519192" ixy="0" ixz="0" iyy="0.246519192" iyz="0" izz="0.00528284584" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/lift/lift_top_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_top">
+        <color rgba="0.600000024 0.600000024 0.600000024 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="body_mount">
+    <inertial>
+      <origin xyz="5.9105267e-05 -0.015092891 -0.047821146" rpy="1.01917334 -0.506469455 0.354574182" />
+      <mass value="1.95836" />
+      <inertia ixx="0.0035741105" ixy="0" ixz="0" iyy="0.0035256756" iyz="0" izz="0.0032254595" />
+    </inertial>
+    <visual>
+      <origin xyz="1.03676833e-18 -3.46944695e-18 -6.9388939e-18" rpy="-5.55111512e-17 -1.73472348e-17 1.38777878e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/body/lift_to_body.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_mount">
+        <color rgba="0.300000012 0.300000012 0.349999994 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="1.03676833e-18 -3.46944695e-18 -6.9388939e-18" rpy="-5.55111512e-17 -1.73472348e-17 1.38777878e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/body/lift_to_body.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="torso">
+    <inertial>
+      <origin xyz="0.0050530103 0.097628617 -0.044603704" rpy="1.53688374 -0.00784105742 -0.0939501893" />
+      <mass value="4.51091" />
+      <inertia ixx="0.034278941" ixy="0" ixz="0" iyy="0.028676702" iyz="0" izz="0.022475771" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.08420217e-18 0 0" rpy="9.6819254e-17 -1.38777878e-17 1.98137947e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/body/body_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_torso">
+        <color rgba="0.699999988 0.699999988 0.699999988 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.08420217e-18 0 0" rpy="9.6819254e-17 -1.38777878e-17 1.98137947e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/body/body_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="invisible">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="head_mount">
+    <inertial>
+      <origin xyz="2.9485514e-06 -0.00045869441 0.021005005" rpy="1.54429499 -1.23114599 1.58468209" />
+      <mass value="0.0379181" />
+      <inertia ixx="1.2163842e-05" ixy="0" ixz="0" iyy="1.1354899e-05" iyz="0" izz="1.1185905e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-4.86535725e-18 -1.84314369e-18 3.46944695e-18" rpy="8.31040965e-17 -2.32452946e-16 3.59955121e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/head/1_body_to_head.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_h_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-4.86535725e-18 -1.84314369e-18 3.46944695e-18" rpy="8.31040965e-17 -2.32452946e-16 3.59955121e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/head/1_body_to_head.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="m_h_1_mount_mat">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="neck_1">
+    <inertial>
+      <origin xyz="5.8965299e-08 2.7720524e-08 0.017283191" rpy="1.57079633 -0 1.57079633" />
+      <mass value="0.0140212" />
+      <inertia ixx="4.8794924e-06" ixy="0" ixz="0" iyy="4.055205e-06" iyz="0" izz="2.9871522e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/head/2_neck_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_h_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="neck_2">
+    <inertial>
+      <origin xyz="-0.012331342 0.00030064264 0.019151689" rpy="1.41731285 -1.17319411 -1.49887809" />
+      <mass value="0.0344612" />
+      <inertia ixx="7.7219582e-06" ixy="0" ixz="0" iyy="7.7060711e-06" iyz="0" izz="5.0780044e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="3.46944695e-18 -2.60208521e-18 0" rpy="7.97972799e-17 2.32452946e-16 -1.570796" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/head/3_neck_2.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_h_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="head">
+    <inertial>
+      <origin xyz="-3.107847e-05 0.011905083 -0.050737528" rpy="-1.60484451 -1.51279684 -1.53261219" />
+      <mass value="1.44503" />
+      <inertia ixx="0.0033390523" ixy="0" ixz="0" iyy="0.002346851" iyz="0" izz="0.0021407056" />
+    </inertial>
+    <visual>
+      <origin xyz="-8.67361738e-19 3.46944695e-18 -0.043712" rpy="-3.14159265 -3.46410207e-07 -3.14159265" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/head/4_head.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_h_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-8.67361738e-19 3.46944695e-18 -0.043712" rpy="-3.14159265 -3.46410207e-07 -3.14159265" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/head/4_head.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="m_h_4_head_mat">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_arm_mount">
+    <inertial>
+      <origin xyz="0.00092058093 0.0018274949 -0.035022636" rpy="1.99461881 -1.29843197 -0.31592346" />
+      <mass value="0.697682" />
+      <inertia ixx="0.00086775425" ixy="0" ixz="0" iyy="0.00070530438" iyz="0" izz="0.00054501147" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.07336015e-17 2.81892565e-18 2.08166817e-17" rpy="1.31838984e-16 2.75821033e-16 4.54497551e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/1_body_to_shoulder.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-1.07336015e-17 2.81892565e-18 2.08166817e-17" rpy="1.31838984e-16 2.75821033e-16 4.54497551e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/1_body_to_shoulder.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="m_l_1_mount_mat">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_shoulder_1">
+    <inertial>
+      <origin xyz="-0.0011466777 0.00011025871 0.048578497" rpy="0.0150103695 -0.0527321229 0.0003997825" />
+      <mass value="0.732088" />
+      <inertia ixx="0.0010757844" ixy="0" ixz="0" iyy="0.00082958094" iyz="0" izz="0.00061763062" />
+    </inertial>
+    <visual>
+      <origin xyz="-2.16840434e-19 -8.13151629e-20 6.9388939e-18" rpy="1.75166413e-18 -3.40846058e-18 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/2_shoulder.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_shoulder_2">
+    <inertial>
+      <origin xyz="-0.00034722938 -0.017612826 -0.027176968" rpy="0.242031677 0.00230992412 -0.0219490795" />
+      <mass value="0.698691" />
+      <inertia ixx="0.0010942296" ixy="0" ixz="0" iyy="0.00088867713" iyz="0" izz="0.00079540705" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="-4.46081431e-17 4.33680869e-19 1.30104261e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/3_shoulder_to_elbow.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_shoulder_3">
+    <inertial>
+      <origin xyz="-0.00073130413 0.0049936454 0.086680351" rpy="-0.0238438792 -0.0244910286 -0.145936233" />
+      <mass value="1.46697" />
+      <inertia ixx="0.0047280852" ixy="0" ixz="0" iyy="0.0046624958" iyz="0" izz="0.0012642778" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="2.16840434e-18 -0 1.08420217e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/4_upper_arm.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_elbow">
+    <inertial>
+      <origin xyz="0.0031611927 -0.044765735 0.030496717" rpy="1.5038073 0.0201507196 -0.0730322526" />
+      <mass value="0.943183" />
+      <inertia ixx="0.0016140189" ixy="0" ixz="0" iyy="0.0014265884" iyz="0" izz="0.0010609133" />
+    </inertial>
+    <visual>
+      <origin xyz="0 6.9388939e-18 0" rpy="2.27682456e-17 -7.80625564e-18 -1.51788304e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/5_elbow.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_forearm">
+    <inertial>
+      <origin xyz="-0.00070688287 -0.00027560931 0.051771681" rpy="0.189472863 -0.0244565672 1.55716398" />
+      <mass value="0.837592" />
+      <inertia ixx="0.0012248752" ixy="0" ixz="0" iyy="0.00092446955" iyz="0" izz="0.00089396916" />
+    </inertial>
+    <visual>
+      <origin xyz="1.08420217e-19 5.96311195e-19 0" rpy="-1.01915004e-17 8.67361738e-19 1.994932e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/6_forearm.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_wrist">
+    <inertial>
+      <origin xyz="-0.0052024156 -0.00040404052 0.033716311" rpy="1.18739399 -0.656727036 1.98375858" />
+      <mass value="0.302966" />
+      <inertia ixx="0.00016883191" ixy="0" ixz="0" iyy="0.00016242116" iyz="0" izz="0.00015017384" />
+    </inertial>
+    <visual>
+      <origin xyz="1.73472348e-17 5.80048162e-18 -1.38777878e-17" rpy="-1.94289029e-16 4.30211422e-16 -2.22044605e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/7_wrist.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="l_hand_mount">
+    <inertial>
+      <origin xyz="9.5180055e-07 -0.036665736 -0.0097976747" rpy="3.14155663 -0.847847719 -1.57074828" />
+      <mass value="0.318773" />
+      <inertia ixx="0.00037016871" ixy="0" ixz="0" iyy="0.00031218091" iyz="0" izz="0.00020093097" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.47383733e-19 6.9388939e-18 -3.46944695e-18" rpy="-7.53369241e-17 -1.07009505e-16 -3.26152521e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/left/8_arm_to_hand.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_la_acc">
+        <color rgba="0.800000012 0.300000012 0.100000001 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_arm_mount">
+    <inertial>
+      <origin xyz="-0.00092050288 0.0018274729 0.026677458" rpy="-1.99461258 -1.29843532 -2.8256692" />
+      <mass value="0.69702" />
+      <inertia ixx="0.00086692284" ixy="0" ixz="0" iyy="0.00070463176" iyz="0" izz="0.00054448939" />
+    </inertial>
+    <visual>
+      <origin xyz="5.09575021e-18 -9.75781955e-18 -6.9388939e-18" rpy="3.57353036e-16 1.994932e-16 2.25514052e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/1_body_to_shoulder.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="5.09575021e-18 -9.75781955e-18 -6.9388939e-18" rpy="3.57353036e-16 1.994932e-16 2.25514052e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/1_body_to_shoulder.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="m_r_1_mount_mat">
+        <color rgba="1 1 1 0" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_shoulder_1">
+    <inertial>
+      <origin xyz="0.0011466438 0.00011024107 0.04857799" rpy="0.0150127838 0.0527299881 -0.00040019826" />
+      <mass value="0.731383" />
+      <inertia ixx="0.0010747227" ixy="0" ixz="0" iyy="0.00082875785" iyz="0" izz="0.00061702434" />
+    </inertial>
+    <visual>
+      <origin xyz="2.16840434e-19 4.06575815e-20 0" rpy="-9.38512506e-19 5.43795152e-18 -5.42101086e-20" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/2_shoulder.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_shoulder_2">
+    <inertial>
+      <origin xyz="-0.00034722484 -0.017612584 0.027176837" rpy="-0.242054256 -0.00231043874 -0.021949996" />
+      <mass value="0.698035" />
+      <inertia ixx="0.0010931957" ixy="0" ixz="0" iyy="0.00088783594" iyz="0" izz="0.00079465327" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="2.32290315e-17 -0 -4.33680869e-19" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/3_shoulder_to_elbow.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_shoulder_3">
+    <inertial>
+      <origin xyz="-0.00073126156 -0.0049937085 0.086681345" rpy="0.0238408859 -0.0244912445 0.14598677" />
+      <mass value="1.4656" />
+      <inertia ixx="0.0047236506" ixy="0" ixz="0" iyy="0.0046581135" iyz="0" izz="0.0012630927" />
+    </inertial>
+    <visual>
+      <origin xyz="6.50521303e-19 -8.67361738e-19 0" rpy="-4.33680869e-18 6.50521303e-18 1.35525272e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/4_upper_arm.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_elbow">
+    <inertial>
+      <origin xyz="-0.0031611522 -0.04476586 0.032196804" rpy="1.50381262 -0.0201566434 0.0730298811" />
+      <mass value="0.942285" />
+      <inertia ixx="0.0016124682" ixy="0" ixz="0" iyy="0.0014252153" iyz="0" izz="0.0010598928" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -6.9388939e-18 0" rpy="2.08166817e-17 -9.54097912e-18 9.97465999e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/5_elbow.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_forearm">
+    <inertial>
+      <origin xyz="-0.00027558112 -0.0007069156 0.051771391" rpy="-0.189558884 -0.024466734 0.0136309835" />
+      <mass value="0.836794" />
+      <inertia ixx="0.0012236909" ixy="0" ixz="0" iyy="0.00092357437" iyz="0" izz="0.0008931156" />
+    </inertial>
+    <visual>
+      <origin xyz="-5.42101086e-20 -1.08420217e-19 0" rpy="2.43945489e-18 -1.51788304e-18 -1.73472348e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/6_forearm.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_light">
+        <color rgba="0.800000012 0.800000012 0.800000012 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_wrist">
+    <inertial>
+      <origin xyz="0.005401 -0.0003930308 0.034032267" rpy="1.73899416 -0.435269721 1.3244859" />
+      <mass value="0.309131" />
+      <inertia ixx="0.00017286144" ixy="0" ixz="0" iyy="0.00016606252" iyz="0" izz="0.00015409259" />
+    </inertial>
+    <visual>
+      <origin xyz="3.46944695e-18 -3.25260652e-19 -6.9388939e-18" rpy="3.12250226e-17 1.73472348e-16 -1.14491749e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/7_wrist.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_dark">
+        <color rgba="0.239999995 0.239999995 0.239999995 1" />
+      </material>
+    </visual>
+    </link>
+  <link name="r_hand_mount">
+    <inertial>
+      <origin xyz="8.56678e-07 0.036666424 -0.0097979071" rpy="3.14622157e-05 -0.847849131 1.57075436" />
+      <mass value="0.318463" />
+      <inertia ixx="0.00036979903" ixy="0" ixz="0" iyy="0.00031187236" iyz="0" izz="0.00020073125" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.97993951e-19 -6.9388939e-18 -3.46944695e-18" rpy="8.92316578e-17 1.25347324e-16 -2.81079413e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/arms/right/8_arm_to_hand.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_ra_acc">
+        <color rgba="0.800000012 0.300000012 0.100000001 1" />
+      </material>
+    </visual>
+    </link>
+  <joint name="mabel_chassis_to_lidar" type="fixed">
+    <parent link="mabel_chassis" />
+    <child link="lidar" />
+    <origin xyz="0.122 0 0.25" rpy="0 -0 0" />
+  </joint>
+  <joint name="mabel_chassis_to_fl_swerve_housing" type="fixed">
+    <parent link="mabel_chassis" />
+    <child link="fl_swerve_housing" />
+    <origin xyz="-0.17 -0.17 0" rpy="0 -0 1.570795" />
+  </joint>
+  <joint name="fl_steer" type="fixed">
+    <parent link="fl_swerve_housing" />
+    <child link="fl_steer_body" />
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    </joint>
+  <joint name="fl_drive" type="fixed">
+    <parent link="fl_steer_body" />
+    <child link="fl_wheel" />
+    <origin xyz="0 0 -0.04" rpy="0 -1.57079633 0" />
+    </joint>
+  <joint name="mabel_chassis_to_fr_swerve_housing" type="fixed">
+    <parent link="mabel_chassis" />
+    <child link="fr_swerve_housing" />
+    <origin xyz="-0.17 0.17 0" rpy="0 -0 0" />
+  </joint>
+  <joint name="fr_steer" type="fixed">
+    <parent link="fr_swerve_housing" />
+    <child link="fr_steer_body" />
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    </joint>
+  <joint name="fr_drive" type="fixed">
+    <parent link="fr_steer_body" />
+    <child link="fr_wheel" />
+    <origin xyz="0 0 -0.04" rpy="0 -1.57079633 0" />
+    </joint>
+  <joint name="mabel_chassis_to_b_swerve_housing" type="fixed">
+    <parent link="mabel_chassis" />
+    <child link="b_swerve_housing" />
+    <origin xyz="0.15 0 0" rpy="0 -0 -2.35619271" />
+  </joint>
+  <joint name="b_steer" type="fixed">
+    <parent link="b_swerve_housing" />
+    <child link="b_steer_body" />
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    </joint>
+  <joint name="b_drive" type="fixed">
+    <parent link="b_steer_body" />
+    <child link="b_wheel" />
+    <origin xyz="0 0 -0.04" rpy="0 -1.57079633 0" />
+    </joint>
+  <joint name="mabel_chassis_to_lift_base" type="fixed">
+    <parent link="mabel_chassis" />
+    <child link="lift_base" />
+    <origin xyz="-0.096 0 0" rpy="0 -0 3.1415926" />
+  </joint>
+  <joint name="lift_lower" type="prismatic">
+    <parent link="lift_base" />
+    <child link="lift_mid" />
+    <origin xyz="0 0 0.17575" rpy="0 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="0" upper="0.3175" effort="100" velocity="10" />
+  </joint>
+  <joint name="lift_upper" type="prismatic">
+    <parent link="lift_mid" />
+    <child link="lift_top" />
+    <origin xyz="0 0 0.16575" rpy="0 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="0" upper="0.3175" effort="100" velocity="10" />
+  </joint>
+  <joint name="lift_top_to_body_mount" type="fixed">
+    <parent link="lift_top" />
+    <child link="body_mount" />
+    <origin xyz="0 -0.043 0.56" rpy="1.570796 -0 0" />
+  </joint>
+  <joint name="torso" type="revolute">
+    <parent link="body_mount" />
+    <child link="torso" />
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.0472" upper="0.2618" effort="100" velocity="10" />
+  </joint>
+  <joint name="torso_to_head_mount" type="fixed">
+    <parent link="torso" />
+    <child link="head_mount" />
+    <origin xyz="0 0.21 -0.045" rpy="0 1.57 1.57" />
+  </joint>
+  <joint name="neck_yaw" type="revolute">
+    <parent link="head_mount" />
+    <child link="neck_1" />
+    <origin xyz="0 0 0.045" rpy="0 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="neck_pitch" type="revolute">
+    <parent link="neck_1" />
+    <child link="neck_2" />
+    <origin xyz="-0.02 0 0.035" rpy="0 1.570796 -0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="0.925025" effort="100" velocity="10" />
+  </joint>
+  <joint name="neck_roll" type="revolute">
+    <parent link="neck_2" />
+    <child link="head" />
+    <origin xyz="-0.025 0.02 0.019" rpy="0 1.57 1.57" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.785398" upper="0.785398" effort="100" velocity="10" />
+  </joint>
+  <joint name="torso_to_l_arm_mount" type="fixed">
+    <parent link="torso" />
+    <child link="l_arm_mount" />
+    <origin xyz="0 0.15 -0.15" rpy="2.96705965 0.00159265359 3.14159265" />
+  </joint>
+  <joint name="left_arm_1" type="revolute">
+    <parent link="l_arm_mount" />
+    <child link="l_shoulder_1" />
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.490659" upper="1.396263" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_arm_2" type="revolute">
+    <parent link="l_shoulder_1" />
+    <child link="l_shoulder_2" />
+    <origin xyz="-0.0301 0 0.06" rpy="0 -1.570796 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.174533" upper="3.316125" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_arm_3" type="revolute">
+    <parent link="l_shoulder_2" />
+    <child link="l_shoulder_3" />
+    <origin xyz="0 -0.06625 -0.0301" rpy="-1.570796 -0 3.1415926" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_arm_4" type="revolute">
+    <parent link="l_shoulder_3" />
+    <child link="l_elbow" />
+    <origin xyz="0.0315 0 0.15375" rpy="0 -1.570796 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.943" upper="1.542" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_arm_5" type="revolute">
+    <parent link="l_elbow" />
+    <child link="l_forearm" />
+    <origin xyz="0 -0.0955 0.0315" rpy="1.570796 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_arm_6" type="revolute">
+    <parent link="l_forearm" />
+    <child link="l_wrist" />
+    <origin xyz="-0.0375 0 0.1205" rpy="-1.57079665 0.00159265359 -1.57079665" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.785398" upper="0.785398" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_arm_7" type="revolute">
+    <parent link="l_wrist" />
+    <child link="l_hand_mount" />
+    <origin xyz="0.02 0 0.035" rpy="0 1.570796 1.74435848e-20" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="torso_to_r_arm_mount" type="fixed">
+    <parent link="torso" />
+    <child link="r_arm_mount" />
+    <origin xyz="0 0.14 -0.002" rpy="-0.174533 0 0" />
+  </joint>
+  <joint name="right_arm_1" type="revolute">
+    <parent link="r_arm_mount" />
+    <child link="r_shoulder_1" />
+    <origin xyz="0 0 0.062" rpy="0 -0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.396263" upper="3.490659" effort="100" velocity="10" />
+  </joint>
+  <joint name="right_arm_2" type="revolute">
+    <parent link="r_shoulder_1" />
+    <child link="r_shoulder_2" />
+    <origin xyz="-0.0301 0 0.06" rpy="0 1.570796 -0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.316125" upper="0.174533" effort="100" velocity="10" />
+  </joint>
+  <joint name="right_arm_3" type="revolute">
+    <parent link="r_shoulder_2" />
+    <child link="r_shoulder_3" />
+    <origin xyz="0 -0.06625 0.0301" rpy="1.57079665 5.35897932e-08 -5.35897932e-08" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="right_arm_4" type="revolute">
+    <parent link="r_shoulder_3" />
+    <child link="r_elbow" />
+    <origin xyz="0.033 0 0.15375" rpy="0 1.570796 3.1415926" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.67" upper="0.773461" effort="100" velocity="10" />
+  </joint>
+  <joint name="right_arm_5" type="revolute">
+    <parent link="r_elbow" />
+    <child link="r_forearm" />
+    <origin xyz="0 -0.0955 0.0315" rpy="0 1.570796 -1.570796" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="right_arm_6" type="revolute">
+    <parent link="r_forearm" />
+    <child link="r_wrist" />
+    <origin xyz="0 0.0375 0.1205" rpy="-1.57079665 0.00159265359 3.14159265" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.785398" upper="0.785398" effort="100" velocity="10" />
+  </joint>
+  <joint name="right_arm_7" type="revolute">
+    <parent link="r_wrist" />
+    <child link="r_hand_mount" />
+    <origin xyz="-0.02 0 0.035" rpy="0 1.570796 3.141592" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.570796" upper="1.570796" effort="100" velocity="10" />
+  </joint>
+  <joint name="left_tower_fixed" type="fixed">
+    <parent link="l_hand_mount" />
+    <child link="left_tower" />
+    <origin xyz="0.04 -0.111 -0.02" rpy="1.5708 -0 0" />
+  </joint>
+  <link name="left_tower">
+    <inertial>
+      <origin xyz="-0.04034 -0.00091 0.01912" rpy="-0.00261 -0.00737 -0.04145" />
+      <mass value="0.9" />
+      <inertia ixx="0.00150422" ixy="0" ixz="0" iyy="0.00125262" iyz="0" izz="0.0007962" />
+    </inertial>
+    <visual>
+      <origin xyz="2.0816682e-17 -4.1199683e-18 0" rpy="0 2.6020852e-18 -1.0221634e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_tower_main.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-6.9388939e-18 -1.1689055e-19 0" rpy="1.3010426e-17 -5.3363076e-20 1.678999e-19" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_tower_hull.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="2.7755576e-17 2.5410988e-20 -2.0816682e-17" rpy="2.8785568e-16 1.2753267e-16 1.9560636e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_tower_text.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_wrist" type="revolute">
+    <parent link="left_tower" />
+    <child link="left_palm__anchor" />
+    <origin xyz="-0.04063 0 0.10487" rpy="0 -0 0" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0472" upper="0.5236" effort="50" velocity="10" />
+  </joint>
+  <link name="left_palm__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="left_palm_anchor_fixed" type="fixed">
+    <parent link="left_palm__anchor" />
+    <child link="left_palm" />
+    <origin xyz="0.002 0.00144 0.03872" rpy="0 0 0" />
+  </joint>
+  <link name="left_palm">
+    <inertial>
+      <origin xyz="-0.00193 -0.00052 -0.00664" rpy="1.67519 -0.0475 -1.55556" />
+      <mass value="0.0257" />
+      <inertia ixx="1.612e-05" ixy="0" ixz="0" iyy="1.151e-05" iyz="0" izz="6.72e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="-4.3368087e-19 1.0842022e-19 0" rpy="3.469447e-18 -0 1.5983924e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_palm.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="2.6020852e-18 -1.7347235e-18 -1.0842022e-18" rpy="-3.105155e-16 3.0531133e-16 -2.9677192e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_palm_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_thumb_mcp" type="fixed">
+    <parent link="left_palm" />
+    <child link="left_thumb_mp" />
+    <origin xyz="0.02821 0.01777 -0.01321" rpy="0.53857 0.05595 1.27047" />
+    </joint>
+  <link name="left_thumb_mp">
+    <inertial>
+      <origin xyz="-0.00247 0 0.004" rpy="0 -0.01625 0" />
+      <mass value="0.00586" />
+      <inertia ixx="8.4e-07" ixy="0" ixz="0" iyy="6.6e-07" iyz="0" izz="2.7e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 1.6940659e-21 0" rpy="-8.6736174e-19 -0 7.8126146e-22" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_thumb_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="left_index_abd" type="fixed">
+    <parent link="left_palm" />
+    <child link="left_index_mp__anchor" />
+    <origin xyz="0.024088797 0.0018999643 0.025164929" rpy="1.6067 -1.13552 0.05339" />
+    </joint>
+  <link name="left_index_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="left_middle_abd" type="fixed">
+    <parent link="left_palm" />
+    <child link="left_middle_mp__anchor" />
+    <origin xyz="-7.3463783e-08 0 0.03" rpy="1.5708 -1.5707927 0" />
+    </joint>
+  <link name="left_middle_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="left_ring_abd" type="fixed">
+    <parent link="left_palm" />
+    <child link="left_ring_mp__anchor" />
+    <origin xyz="-0.021521022 0.0015382095 0.020824784" rpy="-1.53597 -1.30836 3.05441" />
+    </joint>
+  <link name="left_ring_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="left_pinky_abd" type="fixed">
+    <parent link="left_palm" />
+    <child link="left_pinky_mp__anchor" />
+    <origin xyz="-0.042584529 0.0049881431 0.0072437229" rpy="-1.49694 -0.86149 2.88373" />
+    </joint>
+  <link name="left_pinky_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="left_pinky_mp_anchor_fixed" type="fixed">
+    <parent link="left_pinky_mp__anchor" />
+    <child link="left_pinky_mp" />
+    <origin xyz="0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="left_pinky_mp">
+    <inertial>
+      <origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="left_pinky_mcp" type="fixed">
+    <parent link="left_pinky_mp" />
+    <child link="left_pinky_pp" />
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0" />
+    </joint>
+  <link name="left_pinky_pp">
+    <inertial>
+      <origin xyz="-0.00135 2e-05 0.01383" rpy="0.00037 -0.03263 -0.00034" />
+      <mass value="0.01402" />
+      <inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_pinky_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="6.0715322e-18 -1.5881868e-22 -3.469447e-18" rpy="6.5481618e-33 3.3306691e-16 5.2130141e-33" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_thumb_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_pinky_pip" type="fixed">
+    <parent link="left_pinky_pp" />
+    <child link="left_pinky_ip" />
+    <origin xyz="-0.0005 0 0.033" rpy="0 -0 0" />
+    </joint>
+  <link name="left_pinky_ip">
+    <inertial>
+      <origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_ring_mp_anchor_fixed" type="fixed">
+    <parent link="left_ring_mp__anchor" />
+    <child link="left_ring_mp" />
+    <origin xyz="0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="left_ring_mp">
+    <inertial>
+      <origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="left_ring_mcp" type="fixed">
+    <parent link="left_ring_mp" />
+    <child link="left_ring_pp" />
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0" />
+    </joint>
+  <link name="left_ring_pp">
+    <inertial>
+      <origin xyz="-0.00144 2e-05 0.02021" rpy="-3e-05 -0.01386 -0.0006" />
+      <mass value="0.02006" />
+      <inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="2.1684043e-19 6.7762636e-21 0" rpy="0 3.469447e-18 2.9274185e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 3.469447e-18" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_pp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_ring_pip" type="fixed">
+    <parent link="left_ring_pp" />
+    <child link="left_ring_ip" />
+    <origin xyz="-0.0005 0 0.046" rpy="0 -0 0" />
+    </joint>
+  <link name="left_ring_ip">
+    <inertial>
+      <origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_middle_mp_anchor_fixed" type="fixed">
+    <parent link="left_middle_mp__anchor" />
+    <child link="left_middle_mp" />
+    <origin xyz="0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="left_middle_mp">
+    <inertial>
+      <origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="left_middle_mcp" type="fixed">
+    <parent link="left_middle_mp" />
+    <child link="left_middle_pp" />
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0" />
+    </joint>
+  <link name="left_middle_pp">
+    <inertial>
+      <origin xyz="-0.00144 2e-05 0.02021" rpy="-3e-05 -0.01386 -0.0006" />
+      <mass value="0.02006" />
+      <inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="2.1684043e-19 6.7762636e-21 0" rpy="0 3.469447e-18 2.9274185e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 3.469447e-18" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_pp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_middle_pip" type="fixed">
+    <parent link="left_middle_pp" />
+    <child link="left_middle_ip" />
+    <origin xyz="-0.0005 0 0.046" rpy="0 -0 0" />
+    </joint>
+  <link name="left_middle_ip">
+    <inertial>
+      <origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_index_mp_anchor_fixed" type="fixed">
+    <parent link="left_index_mp__anchor" />
+    <child link="left_index_mp" />
+    <origin xyz="0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="left_index_mp">
+    <inertial>
+      <origin xyz="-0.01155 0 -4e-05" rpy="3.14159 1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="8.6736174e-18 -1.6940659e-20 -7.8062556e-18" rpy="-5.0957502e-18 7.6327833e-16 -2.2519112e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="left_index_mcp" type="fixed">
+    <parent link="left_index_mp" />
+    <child link="left_index_pp" />
+    <origin xyz="0 0 0" rpy="-0 1.5707927 0" />
+    </joint>
+  <link name="left_index_pp">
+    <inertial>
+      <origin xyz="-0.00135 2e-05 0.01637" rpy="0.00034 -0.02055 -0.00038" />
+      <mass value="0.0165" />
+      <inertia ixx="2.39e-06" ixy="0" ixz="0" iyy="2.31e-06" iyz="0" izz="7.1e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -1.3552527e-20 -3.469447e-18" rpy="8.6736174e-19 -0 2.7090261e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_index_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="8.4567769e-18 -6.6174449e-23 -3.469447e-18" rpy="-3.0814879e-33 3.8857806e-16 4.7986962e-34" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_index_pp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_index_pip" type="fixed">
+    <parent link="left_index_pp" />
+    <child link="left_index_ip" />
+    <origin xyz="-0.0005 0 0.038" rpy="0 -0 0" />
+    </joint>
+  <link name="left_index_ip">
+    <inertial>
+      <origin xyz="-0.00071 1e-05 0.01929" rpy="-0.00042 0.18549 -0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="2.1684043e-19 1.0842022e-19 -1.7347235e-18" rpy="-3.469447e-18 -0 7.9351247e-17" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_ring_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_thumb_abd" type="fixed">
+    <parent link="left_thumb_mp" />
+    <child link="left_thumb_pp__anchor" />
+    <origin xyz="0 0 0" rpy="-1.22173 0 0" />
+    </joint>
+  <link name="left_thumb_pp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="left_thumb_pp_anchor_fixed" type="fixed">
+    <parent link="left_thumb_pp__anchor" />
+    <child link="left_thumb_pp" />
+    <origin xyz="0.03 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="left_thumb_pp">
+    <inertial>
+      <origin xyz="-0.01848 1e-05 2e-05" rpy="1.5708 -0.77392 -1.5708" />
+      <mass value="0.00655" />
+      <inertia ixx="7.5e-07" ixy="0" ixz="0" iyy="7.1e-07" iyz="0" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="1.0408341e-17 2.8951586e-18 -1.1180835e-17" rpy="1.6288698e-16 6.3317407e-16 1.6392303e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_thumb_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="left_thumb_pip" type="fixed">
+    <parent link="left_thumb_pp" />
+    <child link="left_thumb_ip" />
+    <origin xyz="0 0 0" rpy="3.14159 -1.5707927 0" />
+    </joint>
+  <link name="left_thumb_ip">
+    <inertial>
+      <origin xyz="-0.00135 2e-05 0.01383" rpy="0.00037 -0.03263 -0.00034" />
+      <mass value="0.01402" />
+      <inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_pinky_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="6.0715322e-18 -1.5881868e-22 -3.469447e-18" rpy="6.5481618e-33 3.3306691e-16 5.2130141e-33" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_thumb_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="left_thumb_dip" type="fixed">
+    <parent link="left_thumb_ip" />
+    <child link="left_thumb_dp" />
+    <origin xyz="-0.0005 0 0.033" rpy="0 -0 0" />
+    </joint>
+  <link name="left_thumb_dp">
+    <inertial>
+      <origin xyz="-0.00233 1e-05 0.01133" rpy="0.00075 -0.08211 -0.00013" />
+      <mass value="0.0132" />
+      <inertia ixx="1.4e-06" ixy="0" ixz="0" iyy="1.37e-06" iyz="0" izz="4.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="4.3368087e-19 0 -8.6736174e-19" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_thumb_dp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="0.009 -1.0587912e-22 -0.011" rpy="1.7754205e-33 -0.52 -2.0957269e-33" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/left/visual/left_visual_thumb_dp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_tower_fixed" type="fixed">
+    <parent link="r_hand_mount" />
+    <child link="right_tower" />
+    <origin xyz="0.04 0.111 -0.02" rpy="1.5708 -0 3.14159" />
+  </joint>
+  <link name="right_tower">
+    <inertial>
+      <origin xyz="0.04034 -0.00091 0.01912" rpy="-0.00261 0.00737 0.04145" />
+      <mass value="0.9" />
+      <inertia ixx="0.00150422" ixy="0" ixz="0" iyy="0.00125262" iyz="0" izz="0.0007962" />
+    </inertial>
+    <visual>
+      <origin xyz="-2.0816682e-17 5.4210109e-19 0" rpy="2.6020852e-18 -0 -9.0397447e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_tower_main.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="6.9388939e-18 2.1133472e-19 -3.469447e-18" rpy="-2.3852448e-17 -1.2843137e-19 2.8269681e-19" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_tower_hull.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-1.3877788e-17 -1.8599149e-17 1.0408341e-17" rpy="3.7545921e-16 4.592511e-16 2.0844623e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_tower_text.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_wrist" type="revolute">
+    <parent link="right_tower" />
+    <child link="right_palm__anchor" />
+    <origin xyz="0.04063 0 0.10487" rpy="0 -0 0" />
+    <axis xyz="1 0 0" />
+    <limit lower="-0.5236" upper="1.0472" effort="50" velocity="10" />
+  </joint>
+  <link name="right_palm__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="right_palm_anchor_fixed" type="fixed">
+    <parent link="right_palm__anchor" />
+    <child link="right_palm" />
+    <origin xyz="-0.002 0.00144 0.03872" rpy="0 0 0" />
+  </joint>
+  <link name="right_palm">
+    <inertial>
+      <origin xyz="0.00193 -0.00052 -0.00664" rpy="1.67519 0.0475 1.55556" />
+      <mass value="0.0257" />
+      <inertia ixx="1.612e-05" ixy="0" ixz="0" iyy="1.151e-05" iyz="0" izz="6.72e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="-6.9388939e-18 -3.9573379e-18 1.3877788e-17" rpy="-3.7816972e-16 4.4408921e-16 -4.2931844e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_palm.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-4.3368087e-18 1.9515639e-18 2.6020852e-18" rpy="-3.4174052e-16 2.4980018e-16 -3.5548411e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_palm_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_thumb_mcp" type="fixed">
+    <parent link="right_palm" />
+    <child link="right_thumb_mp" />
+    <origin xyz="-0.02821 0.01777 -0.01321" rpy="0.53857 -0.05595 -1.27047" />
+    </joint>
+  <link name="right_thumb_mp">
+    <inertial>
+      <origin xyz="0.00247 0 0.004" rpy="0 0.01625 0" />
+      <mass value="0.00586" />
+      <inertia ixx="8.4e-07" ixy="0" ixz="0" iyy="6.6e-07" iyz="0" izz="2.7e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 1.2705494e-21 0" rpy="-8.6736174e-19 -0 -7.8126146e-22" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_thumb_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="right_index_abd" type="fixed">
+    <parent link="right_palm" />
+    <child link="right_index_mp__anchor" />
+    <origin xyz="-0.024088797 0.0018999643 0.025164929" rpy="1.6067 1.13552 -0.05339" />
+    </joint>
+  <link name="right_index_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="right_middle_abd" type="fixed">
+    <parent link="right_palm" />
+    <child link="right_middle_mp__anchor" />
+    <origin xyz="7.3463783e-08 0 0.03" rpy="1.5708 1.5707927 0" />
+    </joint>
+  <link name="right_middle_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="right_ring_abd" type="fixed">
+    <parent link="right_palm" />
+    <child link="right_ring_mp__anchor" />
+    <origin xyz="0.021521022 0.0015382095 0.020824784" rpy="-1.53597 1.30836 -3.05441" />
+    </joint>
+  <link name="right_ring_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="right_pinky_abd" type="fixed">
+    <parent link="right_palm" />
+    <child link="right_pinky_mp__anchor" />
+    <origin xyz="0.042584529 0.0049881431 0.0072437229" rpy="-1.49694 0.86149 -2.88373" />
+    </joint>
+  <link name="right_pinky_mp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="right_pinky_mp_anchor_fixed" type="fixed">
+    <parent link="right_pinky_mp__anchor" />
+    <child link="right_pinky_mp" />
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="right_pinky_mp">
+    <inertial>
+      <origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_pinky_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="right_pinky_mcp" type="fixed">
+    <parent link="right_pinky_mp" />
+    <child link="right_pinky_pp" />
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0" />
+    </joint>
+  <link name="right_pinky_pp">
+    <inertial>
+      <origin xyz="0.00135 2e-05 0.01383" rpy="0.00037 0.03263 0.00034" />
+      <mass value="0.01402" />
+      <inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_pinky_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="5.2041704e-18 -1.5881868e-22 -6.9388939e-18" rpy="-3.4666739e-33 3.3306691e-16 -8.6536815e-33" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_thumb_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_pinky_pip" type="fixed">
+    <parent link="right_pinky_pp" />
+    <child link="right_pinky_ip" />
+    <origin xyz="0.0005 0 0.033" rpy="0 -0 0" />
+    </joint>
+  <link name="right_pinky_ip">
+    <inertial>
+      <origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_ring_mp_anchor_fixed" type="fixed">
+    <parent link="right_ring_mp__anchor" />
+    <child link="right_ring_mp" />
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="right_ring_mp">
+    <inertial>
+      <origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_pinky_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="right_ring_mcp" type="fixed">
+    <parent link="right_ring_mp" />
+    <child link="right_ring_pp" />
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0" />
+    </joint>
+  <link name="right_ring_pp">
+    <inertial>
+      <origin xyz="0.00144 2e-05 0.02021" rpy="-3e-05 0.01386 0.0006" />
+      <mass value="0.02006" />
+      <inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="-2.1684043e-19 1.3552527e-20 0" rpy="0 -3.469447e-18 -2.9274185e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="8.6736174e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_pp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_ring_pip" type="fixed">
+    <parent link="right_ring_pp" />
+    <child link="right_ring_ip" />
+    <origin xyz="0.0005 0 0.046" rpy="0 -0 0" />
+    </joint>
+  <link name="right_ring_ip">
+    <inertial>
+      <origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_middle_mp_anchor_fixed" type="fixed">
+    <parent link="right_middle_mp__anchor" />
+    <child link="right_middle_mp" />
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="right_middle_mp">
+    <inertial>
+      <origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_pinky_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="right_middle_mcp" type="fixed">
+    <parent link="right_middle_mp" />
+    <child link="right_middle_pp" />
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0" />
+    </joint>
+  <link name="right_middle_pp">
+    <inertial>
+      <origin xyz="0.00144 2e-05 0.02021" rpy="-3e-05 0.01386 0.0006" />
+      <mass value="0.02006" />
+      <inertia ixx="3.78e-06" ixy="0" ixz="0" iyy="3.69e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="-2.1684043e-19 1.3552527e-20 0" rpy="0 -3.469447e-18 -2.9274185e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="8.6736174e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_pp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_middle_pip" type="fixed">
+    <parent link="right_middle_pp" />
+    <child link="right_middle_ip" />
+    <origin xyz="0.0005 0 0.046" rpy="0 -0 0" />
+    </joint>
+  <link name="right_middle_ip">
+    <inertial>
+      <origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_index_mp_anchor_fixed" type="fixed">
+    <parent link="right_index_mp__anchor" />
+    <child link="right_index_mp" />
+    <origin xyz="-0.02 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="right_index_mp">
+    <inertial>
+      <origin xyz="0.01155 0 -4e-05" rpy="3.14159 -1.5707927 0" />
+      <mass value="0.00498" />
+      <inertia ixx="3.4e-07" ixy="0" ixz="0" iyy="3.1e-07" iyz="0" izz="2e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="6.9388939e-18 2.879912e-20 -7.1015242e-18" rpy="-4.6620693e-18 -6.5225603e-16 -5.5084776e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_pinky_mp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="right_index_mcp" type="fixed">
+    <parent link="right_index_mp" />
+    <child link="right_index_pp" />
+    <origin xyz="0 0 0" rpy="0 -1.5707927 0" />
+    </joint>
+  <link name="right_index_pp">
+    <inertial>
+      <origin xyz="0.00135 2e-05 0.01637" rpy="0.00034 0.02055 0.00038" />
+      <mass value="0.0165" />
+      <inertia ixx="2.39e-06" ixy="0" ixz="0" iyy="2.31e-06" iyz="0" izz="7.1e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 -3.469447e-18" rpy="8.6736174e-19 -0 -2.7090261e-18" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_index_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="5.4210109e-18 -3.9704669e-23 -1.3877788e-17" rpy="-1.0785208e-32 3.3306691e-16 -1.1458258e-32" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_index_pp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_index_pip" type="fixed">
+    <parent link="right_index_pp" />
+    <child link="right_index_ip" />
+    <origin xyz="0.0005 0 0.038" rpy="0 -0 0" />
+    </joint>
+  <link name="right_index_ip">
+    <inertial>
+      <origin xyz="0.00071 1e-05 0.01929" rpy="-0.00042 -0.18549 0.0044" />
+      <mass value="0.01521" />
+      <inertia ixx="2.08e-06" ixy="0" ixz="0" iyy="2.06e-06" iyz="0" izz="5.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -2.3039296e-19 -1.7347235e-18" rpy="4.3368087e-18 -0 1.4255783e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_middle_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_thumb_abd" type="fixed">
+    <parent link="right_thumb_mp" />
+    <child link="right_thumb_pp__anchor" />
+    <origin xyz="0 0 0" rpy="-1.22173 0 0" />
+    </joint>
+  <link name="right_thumb_pp__anchor">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1e-4" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <joint name="right_thumb_pp_anchor_fixed" type="fixed">
+    <parent link="right_thumb_pp__anchor" />
+    <child link="right_thumb_pp" />
+    <origin xyz="-0.03 -0 -0" rpy="0 0 0" />
+  </joint>
+  <link name="right_thumb_pp">
+    <inertial>
+      <origin xyz="0.01848 1e-05 2e-05" rpy="1.5708 0.77392 1.5708" />
+      <mass value="0.00655" />
+      <inertia ixx="7.5e-07" ixy="0" ixz="0" iyy="7.1e-07" iyz="0" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="-1.0408341e-17 -2.1141942e-18 1.1085967e-17" rpy="1.0805515e-16 6.2276573e-16 1.1878513e-16" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_thumb_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    </link>
+  <joint name="right_thumb_pip" type="fixed">
+    <parent link="right_thumb_pp" />
+    <child link="right_thumb_ip" />
+    <origin xyz="0 0 0" rpy="3.14159 1.5707927 0" />
+    </joint>
+  <link name="right_thumb_ip">
+    <inertial>
+      <origin xyz="0.00135 2e-05 0.01383" rpy="0.00037 0.03263 0.00034" />
+      <mass value="0.01402" />
+      <inertia ixx="1.7e-06" ixy="0" ixz="0" iyy="1.64e-06" iyz="0" izz="5.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -1.7347235e-18" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_pinky_pp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="5.2041704e-18 -1.5881868e-22 -6.9388939e-18" rpy="-3.4666739e-33 3.3306691e-16 -8.6536815e-33" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_thumb_ip_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+  <joint name="right_thumb_dip" type="fixed">
+    <parent link="right_thumb_ip" />
+    <child link="right_thumb_dp" />
+    <origin xyz="0.0005 0 0.033" rpy="0 -0 0" />
+    </joint>
+  <link name="right_thumb_dp">
+    <inertial>
+      <origin xyz="0.00233 1e-05 0.01133" rpy="0.00075 0.08211 0.00013" />
+      <mass value="0.0132" />
+      <inertia ixx="1.4e-06" ixy="0" ixz="0" iyy="1.37e-06" iyz="0" izz="4.4e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="-2.1684043e-19 0 -8.6736174e-19" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_thumb_dp.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_11" />
+    </visual>
+    <visual>
+      <origin xyz="-0.009 3.1763736e-22 -0.011" rpy="-4.4385512e-34 0.52 -9.2335779e-34" />
+      <geometry>
+        <mesh filename="../../../../simulation/mabel_mujoco/assets/meshes/hands/right/visual/right_visual_thumb_dp_skin.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="mat_12" />
+    </visual>
+    </link>
+</robot>

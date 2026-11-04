@@ -1,0 +1,26 @@
+# MABEL hardware bridge — Python deps (beyond ROS rclpy + the base ROS install).
+#
+# Install into the SAME python the bridge runs under (the one with rclpy). Most are
+# already present on the robot (dev_up installs the camera SDKs); listed here so a
+# fresh host is reproducible. Each subsystem only needs ITS deps — a bridge running
+# base-only does not need python-can / pyzed, etc.
+
+# Base (MAXSwerve Teensy link — the vendored maxswerve_host library).
+numpy>=1.21
+protobuf>=5.28,<7
+
+# Arms + body (DaMiao over CAN/socketcan).
+python-can>=4.0
+
+# Hands (ORCA / Feetech STS-SCS over TTL serial) and Lift (Pico over USB serial).
+# The vendored hands/orcahand HAL loads its joint<->ID map from YAML (PyYAML).
+pyserial>=3.5
+PyYAML>=5.4
+
+# Neck (XC330 Dynamixels, Protocol 2.0 over the FT232H TTL bus). GroupSyncRead bulk
+# telemetry (both servos in ONE transaction) runs the neck at 50 Hz+; ACK'd writes.
+dynamixel_sdk>=3.7
+
+# Cameras — vendor SDK python bindings, installed by dev_up (NOT pip-installable here):
+#   pyrealsense2   (Intel RealSense D435)
+#   pyzed          (Stereolabs ZED-M; matches the installed ZED SDK)

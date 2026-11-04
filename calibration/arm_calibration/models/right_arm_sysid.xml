@@ -1,0 +1,87 @@
+<mujoco model="mabel_right_arm_sysid">
+  <compiler angle="radian" eulerseq="XYZ" meshdir="../../../simulation/mabel_mujoco/assets/meshes" />
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast" />
+  <default>
+    <mesh scale="0.001 0.001 0.001" />
+    <default class="ra_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2" />
+    </default>
+    <default class="ra_collision">
+      <geom type="mesh" contype="0" conaffinity="0" group="1" rgba="1 1 1 0" />
+    </default>
+    <default class="motor_DM8009">
+      <joint type="hinge" limited="true" damping="0.0" frictionloss="0.0" armature="0.10" />
+    </default>
+    <default class="motor_DM4340">
+      <joint type="hinge" limited="true" damping="0.0" frictionloss="0.0" armature="0.08" />
+    </default>
+    <default class="motor_DM4310">
+      <joint type="hinge" limited="true" damping="0.0" frictionloss="0.0" armature="0.05" />
+    </default>
+  </default>
+  <asset>
+    <mesh file="arms/right/1_body_to_shoulder.stl" name="m_r_1_mount" />
+    <mesh file="arms/right/2_shoulder.stl" name="m_r_2_shoulder" />
+    <mesh file="arms/right/3_shoulder_to_elbow.stl" name="m_r_3_s_link" />
+    <mesh file="arms/right/4_upper_arm.stl" name="m_r_4_s_link" />
+    <mesh file="arms/right/5_elbow.stl" name="m_r_5_elbow" />
+    <mesh file="arms/right/6_forearm.stl" name="m_r_6_forearm" />
+    <mesh file="arms/right/7_wrist.stl" name="m_r_7_wrist" />
+    <mesh file="arms/right/8_arm_to_hand.stl" name="m_r_8_hand_mount" />
+    <material name="mat_ra_dark" rgba="0.24 0.24 0.24 1" />
+    <material name="mat_ra_light" rgba="0.80 0.80 0.80 1" />
+    <material name="mat_ra_acc" rgba="0.80 0.30 0.10 1" />
+  </asset>
+  <worldbody>
+    <light name="sun" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8" />
+    <body name="r_arm_mount" pos="-0.0959999978 0.0409999542 0.893999999" quat="2.05260851e-08 1.72234234e-08 0.642787456 0.766044572">
+      <inertial pos="-0.00092050288 0.0018274729 0.026677458" quat="0.43353297 0.42918837 -0.60918853 0.50669107" mass="0.69702" diaginertia="0.00086692284 0.00070463176 0.00054448939" />
+      <geom class="ra_visual" mesh="m_r_1_mount" material="mat_ra_dark" />
+      <geom class="ra_collision" mesh="m_r_1_mount" />
+      <body name="r_shoulder_1" pos="0.0 0.0 0.062" euler="0 0 0">
+        <inertial pos="0.0011466438 0.00011024107 0.04857799" quat="0.99962424 0.0075089874 0.026359695 -0.00039790514" mass="0.731383" diaginertia="0.0010747227 0.00082875785 0.00061702434" />
+        <joint name="Right Arm 1" class="motor_DM8009" axis="0 0 1" range="-1.396263 3.490659" />
+        <geom class="ra_visual" mesh="m_r_2_shoulder" material="mat_ra_light" />
+        <body name="r_shoulder_2" pos="-0.0301 0.0 0.06" euler="0 1.570796 0">
+          <inertial pos="-0.00034722484 -0.017612584 0.027176837" quat="0.99262318 -0.12073712 0.00017830492 -0.011033955" mass="0.698035" diaginertia="0.0010931957 0.00088783594 0.00079465327" />
+          <joint name="Right Arm 2" class="motor_DM8009" axis="0 0 1" range="-3.316125 0.174533" />
+          <geom class="ra_visual" mesh="m_r_3_s_link" material="mat_ra_dark" />
+          <body name="r_shoulder_3" pos="0.0 -0.06625 0.0301" euler="-1.570796 3.1415926 3.1415926">
+            <inertial pos="-0.00073126156 -0.0049937085 0.086681345" quat="0.99718089 0.012780498 -0.011342586 0.073063512" mass="1.4656" diaginertia="0.0047236506 0.0046581135 0.0012630927" />
+            <joint name="Right Arm 3" class="motor_DM4340" axis="0 0 1" range="-1.570796 1.570796" />
+            <geom class="ra_visual" mesh="m_r_4_s_link" material="mat_ra_light" />
+            <body name="r_elbow" pos="0.033 0.0 0.15375" euler="0 1.570796 3.1415926">
+              <inertial pos="-0.0031611522 -0.04476586 0.032196804" quat="0.72961288 0.6828111 0.017578022 0.033541913" mass="0.942285" diaginertia="0.0016124682 0.0014252153 0.0010598928" />
+              <joint name="Right Arm 4" class="motor_DM4340" axis="0 0 1" range="-1.67 0.773461" />
+              <geom class="ra_visual" mesh="m_r_5_elbow" material="mat_ra_dark" />
+              <body name="r_forearm" pos="0.0 -0.0955 0.0315" euler="1.570796 1.570796 0">
+                <inertial pos="-0.00027558112 -0.0007069156 0.051771391" quat="0.99542207 -0.094545324 -0.012822823 0.0056266614" mass="0.836794" diaginertia="0.0012236909 0.00092357437 0.0008931156" />
+                <joint name="Right Arm 5" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796" />
+                <geom class="ra_visual" mesh="m_r_6_forearm" material="mat_ra_light" />
+                <body name="r_wrist" pos="0.0 0.0375 0.1205" euler="1.570796 3.14 0">
+                  <inertial pos="0.005401 -0.0003930308 0.034032267" quat="0.39538572 0.67395561 0.3488295 0.51746687" mass="0.309131" diaginertia="0.00017286144 0.00016606252 0.00015409259" />
+                  <joint name="Right Arm 6" class="motor_DM4310" axis="0 0 1" range="-0.785398 0.785398" />
+                  <geom class="ra_visual" mesh="m_r_7_wrist" material="mat_ra_dark" />
+                  <body name="r_hand_mount" pos="-0.02 0.0 0.035" euler="-1.570796 1.570796 1.570796">
+                    <inertial pos="-0.000460003495 0.134799574 -0.0161770345" quat="0.317316136 0.625184549 0.636918852 0.320607432" mass="1.435193" diaginertia="0.0016660824 0.0112160414 0.0114041857" />
+                    <joint name="Right Arm 7" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796" />
+                    <geom class="ra_visual" mesh="m_r_8_hand_mount" material="mat_ra_acc" />
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position name="act_r_j1" joint="Right Arm 1" kp="100" kv="20" forcerange="-40 40" />
+    <position name="act_r_j2" joint="Right Arm 2" kp="100" kv="20" forcerange="-40 40" />
+    <position name="act_r_j3" joint="Right Arm 3" kp="100" kv="20" forcerange="-27 27" />
+    <position name="act_r_j4" joint="Right Arm 4" kp="100" kv="20" forcerange="-27 27" />
+    <position name="act_r_j5" joint="Right Arm 5" kp="100" kv="20" forcerange="-7 7" />
+    <position name="act_r_j6" joint="Right Arm 6" kp="100" kv="20" forcerange="-7 7" />
+    <position name="act_r_j7" joint="Right Arm 7" kp="100" kv="20" forcerange="-7 7" />
+  </actuator>
+</mujoco>

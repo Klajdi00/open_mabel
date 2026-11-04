@@ -1,0 +1,181 @@
+{
+ "groups": [
+  {
+   "name": "left_openarm_link7",
+   "parent": "l_hand_mount",
+   "m": [
+    1.0,
+    5.596929463063552e-16,
+    -1.6735427168475867e-17,
+    0.0,
+    1.6735427168475867e-17,
+    1.0376325673649943e-18,
+    1.0,
+    0.0,
+    5.596929463063552e-16,
+    -1.0,
+    0.0,
+    0.0,
+    -5.2935505143749537e-17,
+    -7.462201612946632e-18,
+    -0.020000006118295943,
+    1.0
+   ],
+   "type": "fixed",
+   "parts": [
+    {
+     "file": "mabel_gripper_v1_left_openarm_link7_link7_0.ply",
+     "rgb": [
+      203,
+      203,
+      203
+     ]
+    },
+    {
+     "file": "mabel_gripper_v1_left_openarm_link7_link7_1.ply",
+     "rgb": [
+      63,
+      63,
+      63
+     ]
+    }
+   ]
+  },
+  {
+   "name": "left_gripper_base",
+   "parent": "left_openarm_link7",
+   "m": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    -0.0045,
+    0.1001,
+    1.0
+   ],
+   "type": "fixed",
+   "parts": [
+    {
+     "file": "mabel_gripper_v1_left_gripper_base_hand_0.ply",
+     "rgb": [
+      203,
+      203,
+      203
+     ]
+    },
+    {
+     "file": "mabel_gripper_v1_left_gripper_base_hand_1.ply",
+     "rgb": [
+      203,
+      203,
+      203
+     ]
+    }
+   ]
+  },
+  {
+   "name": "left_gripper_finger1",
+   "parent": "left_gripper_base",
+   "m": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.015,
+    1.0
+   ],
+   "joint": "left_gripper",
+   "type": "prismatic",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "parts": [
+    {
+     "file": "mabel_gripper_v1_left_gripper_finger1_finger_0.ply",
+     "rgb": [
+      217,
+      217,
+      217
+     ]
+    },
+    {
+     "file": "mabel_gripper_v1_left_gripper_finger1_finger_1.ply",
+     "rgb": [
+      63,
+      63,
+      63
+     ]
+    }
+   ]
+  },
+  {
+   "name": "left_gripper_finger2",
+   "parent": "left_gripper_base",
+   "m": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.012,
+    0.015,
+    1.0
+   ],
+   "joint": "left_gripper_mirror",
+   "type": "prismatic",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "mimic": "left_gripper",
+   "parts": [
+    {
+     "file": "mabel_gripper_v1_left_gripper_finger2_finger_0.ply",
+     "rgb": [
+      217,
+      217,
+      217
+     ]
+    },
+    {
+     "file": "mabel_gripper_v1_left_gripper_finger2_finger_1.ply",
+     "rgb": [
+      63,
+      63,
+      63
+     ]
+    }
+   ]
+  }
+ ]
+}

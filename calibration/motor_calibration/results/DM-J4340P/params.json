@@ -1,0 +1,64 @@
+{
+  "motor": "DM-J4340P",
+  "model": "stribeck",
+  "n_levels": 16,
+  "friction_rms_Nm": 0.0030240416847928295,
+  "friction_rms_inlier_Nm": 0.0030240416847928295,
+  "friction_r2": 0.9999487514191289,
+  "gravity_split_tau_g_Nm": 0.0,
+  "params": {
+    "Fc_pos": 0.3330806719612709,
+    "Fc_neg": 0.3453774421308448,
+    "Fv": 0.18397297113085181,
+    "Fs_pos": 0.3498847637563538,
+    "Fs_neg": 0.38228662255225404,
+    "v_s": 0.08798941798944766,
+    "delta": 2.0,
+    "J": 0.025900133622966826
+  },
+  "mujoco": {
+    "frictionloss": 0.339229,
+    "damping": 0.183973,
+    "armature": 0.02590013
+  },
+  "inertia_J_kgm2": 0.025900133622966826,
+  "inertia_rms_Nm": 0.4235214132888752,
+  "dc_motor": {
+    "tau_stall": 0.0,
+    "w_noload": 5.894603174603175,
+    "tau_cont": 9.0,
+    "tau_peak": 1.2118681318681312,
+    "r2": 0.0,
+    "observed": false
+  },
+  "isaaclab": {
+    "armature": {
+      "value": 0.02590013,
+      "source": "MEASURED (chirp inertia sweep)"
+    },
+    "friction": {
+      "value": 0.339229,
+      "source": "MEASURED (velocity staircase)"
+    },
+    "velocity_limit": {
+      "value": 5.8946,
+      "source": "MEASURED (max-effort terminal speed \u2248 no-load)"
+    },
+    "saturation_effort": {
+      "value": 27.0,
+      "source": "DATASHEET / peak t_max \u2014 FLAG: stall torque needs a load (dynamometer/brake); not measurable on a free shaft"
+    },
+    "effort_limit": {
+      "value": 9.0,
+      "source": "DATASHEET \u2014 FLAG: continuous/thermal limit, not bench-measurable"
+    },
+    "damping": {
+      "value": 0.183973,
+      "source": "viscous Fv MEASURED; but Isaac PD `damping` is a CONTROL gain \u2014 set per policy (this is the physical value for reference)"
+    },
+    "stiffness": {
+      "value": null,
+      "source": "CONTROL POLICY \u2014 choose per task (not a physical parameter)"
+    }
+  }
+}

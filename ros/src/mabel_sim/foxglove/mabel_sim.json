@@ -1,0 +1,61 @@
+{
+  "configById": {
+    "3D!robot": {
+      "cameraState": {
+        "distance": 4.5,
+        "perspective": true,
+        "phi": 65,
+        "thetaOffset": 50,
+        "targetOffset": [0, 0, 0.4],
+        "target": [0, 0, 0],
+        "targetOrientation": [0, 0, 0, 1],
+        "fovy": 45,
+        "near": 0.01,
+        "far": 5000
+      },
+      "followMode": "follow-pose",
+      "followTf": "odom",
+      "scene": { "transforms": { "showLabel": false } },
+      "transforms": {},
+      "topics": {},
+      "layers": {
+        "urdf-layer": {
+          "visible": true,
+          "label": "MABEL URDF",
+          "instanceId": "urdf-layer",
+          "layerId": "foxglove.Urdf",
+          "order": 1,
+          "sourceType": "url",
+          "url": "package://mabel_description/urdf/mabel_full.urdf",
+          "framePrefix": "",
+          "displayMode": "visual",
+          "fallbackColor": "#cccccc"
+        }
+      }
+    },
+    "RawMessages!state": { "topicPath": "/odom.pose.pose" },
+    "Plot!base": {
+      "paths": [
+        { "value": "/odom.twist.twist.linear.x", "enabled": true, "label": "vx" },
+        { "value": "/odom.twist.twist.linear.y", "enabled": true, "label": "vy" },
+        { "value": "/odom.twist.twist.angular.z", "enabled": true, "label": "wz" }
+      ],
+      "xAxisVal": "timestamp",
+      "showLegend": true
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": { "speed": 1 },
+  "layout": {
+    "first": "3D!robot",
+    "second": {
+      "first": "RawMessages!state",
+      "second": "Plot!base",
+      "direction": "column",
+      "splitPercentage": 45
+    },
+    "direction": "row",
+    "splitPercentage": 62
+  }
+}

@@ -1,0 +1,126 @@
+<mujoco model="mabel_office_environment">
+  <!-- MABEL in an office: two desk pods with monitors, office chairs, filing
+       cabinets, whiteboard, bookshelf, potted plant. Textured primitives (textures
+       from scripts/tools/gen_env_textures.py / gen_home_textures.py); graspable
+       clutter (laptop, keyboard, mouse, mug) wired by gen_env_objects.py.
+       Run from repo root:  python scripts/visualize_sensors.py --scene scenes/mabel_office.xml -->
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <include file="../models/mabel_full.xml"/>
+
+  <visual>
+    <headlight ambient="0.47 0.47 0.49" diffuse="0.25 0.25 0.25" specular="0.1 0.1 0.1"/>
+    <quality shadowsize="4096"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.52 0.58 0.66" rgb2="0.86 0.89 0.93" width="256" height="256"/>
+    <texture type="2d" name="t_carpet" file="../assets/textures/carpet_gray.png"/>
+    <texture type="2d" name="t_wood"   file="../assets/textures/wood_furniture.png"/>
+    <texture type="2d" name="t_wall"   file="../assets/textures/wall.png"/>
+    <texture type="2d" name="t_screen" file="../assets/textures/monitor.png"/>
+    <texture type="2d" name="t_board"  file="../assets/textures/whiteboard.png"/>
+    <texture type="2d" name="t_books"  file="../assets/textures/book_spines.png"/>
+
+    <material name="m_carpet" texture="t_carpet" texuniform="true" texrepeat="2 2" reflectance="0.0" shininess="0.0"/>
+    <material name="m_desk"   texture="t_wood"   texuniform="true" texrepeat="2 2" reflectance="0.05" shininess="0.3"/>
+    <material name="m_wall"   texture="t_wall"   texuniform="true" texrepeat="2 2" reflectance="0.0"/>
+    <material name="m_screen" texture="t_screen" texrepeat="1 1" reflectance="0.3" shininess="0.8" emission="0.55"/>
+    <material name="m_board"  texture="t_board"  texrepeat="1 1" reflectance="0.1" shininess="0.3"/>
+    <material name="m_books"  texture="t_books"  texrepeat="2 3" reflectance="0.0" shininess="0.05"/>
+    <material name="m_black"  rgba="0.10 0.10 0.11 1" reflectance="0.2" shininess="0.5"/>
+    <material name="m_chair"  rgba="0.22 0.23 0.26 1" reflectance="0.05" shininess="0.2"/>
+    <material name="m_steel"  rgba="0.70 0.72 0.75 1" reflectance="0.35" shininess="0.7" specular="0.6"/>
+    <material name="m_alum"   rgba="0.82 0.83 0.85 1" reflectance="0.3" shininess="0.6"/>
+  </asset>
+
+  <worldbody>
+    <!-- ===== lighting (even office panels) ===== -->
+    <light name="panel1" directional="true" pos=" 1.5  0.0 3.0" dir="-0.25 0.0 -1" diffuse="0.50 0.50 0.52" specular="0.2 0.2 0.2" castshadow="true"/>
+    <light name="panel2" directional="true" pos="-1.5  0.0 3.0" dir=" 0.25 0.0 -1" diffuse="0.34 0.34 0.36" castshadow="false"/>
+    <light name="panel3" directional="true" pos=" 0.0  2.0 3.0" dir=" 0.0 -0.4 -1" diffuse="0.26 0.26 0.28" castshadow="false"/>
+
+    <!-- ===== room shell 8 x 6 m ===== -->
+    <geom name="floor" type="plane" size="4 3 0.1" material="m_carpet"
+          contype="1" conaffinity="1" friction="1.5 0.05 0.001"/>
+    <geom name="wall_back"  type="box" pos=" 4.05 0    1.3" size="0.05 3.0 1.3" material="m_wall"/>
+    <geom name="wall_front" type="box" pos="-4.05 0    1.3" size="0.05 3.0 1.3" material="m_wall"/>
+    <geom name="wall_left"  type="box" pos=" 0    3.05 1.3" size="4.0 0.05 1.3" material="m_wall"/>
+    <geom name="wall_right" type="box" pos=" 0   -3.05 1.3" size="4.0 0.05 1.3" material="m_wall"/>
+
+    <!-- ===== desk pod A (-X side): desk + monitor + chair; laptop + mug on top ===== -->
+    <geom name="deskA_top"   type="box" pos="-2.35 -1.50 0.72" size="0.80 0.45 0.02" material="m_desk"/>
+    <geom name="deskA_panelL" type="box" pos="-3.10 -1.50 0.36" size="0.02 0.43 0.36" material="m_desk"/>
+    <geom name="deskA_panelR" type="box" pos="-1.60 -1.50 0.36" size="0.02 0.43 0.36" material="m_desk"/>
+    <geom name="deskA_modesty" type="box" pos="-2.35 -1.90 0.42" size="0.72 0.015 0.28" material="m_desk"/>
+    <geom name="monA_foot"   type="box" pos="-2.55 -1.72 0.75" size="0.12 0.08 0.012" material="m_black"/>
+    <geom name="monA_post"   type="box" pos="-2.55 -1.76 0.85" size="0.02 0.02 0.10" material="m_black"/>
+    <geom name="monA_frame"  type="box" pos="-2.55 -1.74 1.06" size="0.30 0.025 0.19" material="m_black"/>
+    <geom name="monA_screen" type="box" pos="-2.55 -1.71 1.06" size="0.27 0.004 0.16" material="m_screen"/>
+    <geom name="chairA_base" type="cylinder" pos="-2.35 -0.75 0.03"  size="0.26 0.03"  material="m_black"/>
+    <geom name="chairA_post" type="cylinder" pos="-2.35 -0.75 0.25"  size="0.03 0.20"  material="m_steel"/>
+    <geom name="chairA_seat" type="box" pos="-2.35 -0.75 0.49" size="0.23 0.23 0.045" material="m_chair"/>
+    <geom name="chairA_back" type="box" pos="-2.35 -0.53 0.80" size="0.22 0.05 0.27" material="m_chair"/>
+
+    <!-- ===== desk pod B (+X side, facing the other way): keyboard + mouse on top ===== -->
+    <geom name="deskB_top"   type="box" pos="2.45 1.00 0.72" size="0.80 0.45 0.02" material="m_desk"/>
+    <geom name="deskB_panelL" type="box" pos="1.70 1.00 0.36" size="0.02 0.43 0.36" material="m_desk"/>
+    <geom name="deskB_panelR" type="box" pos="3.20 1.00 0.36" size="0.02 0.43 0.36" material="m_desk"/>
+    <geom name="deskB_modesty" type="box" pos="2.45 1.40 0.42" size="0.72 0.015 0.28" material="m_desk"/>
+    <geom name="monB_foot"   type="box" pos="2.45 1.24 0.75" size="0.12 0.08 0.012" material="m_black"/>
+    <geom name="monB_post"   type="box" pos="2.45 1.28 0.85" size="0.02 0.02 0.10" material="m_black"/>
+    <geom name="monB_frame"  type="box" pos="2.45 1.26 1.06" size="0.30 0.025 0.19" material="m_black"/>
+    <geom name="monB_screen" type="box" pos="2.45 1.23 1.06" size="0.27 0.004 0.16" material="m_screen"/>
+    <geom name="chairB_base" type="cylinder" pos="2.45 0.25 0.03"  size="0.26 0.03"  material="m_black"/>
+    <geom name="chairB_post" type="cylinder" pos="2.45 0.25 0.25"  size="0.03 0.20"  material="m_steel"/>
+    <geom name="chairB_seat" type="box" pos="2.45 0.25 0.49" size="0.23 0.23 0.045" material="m_chair"/>
+    <geom name="chairB_back" type="box" pos="2.45 0.47 0.80" size="0.22 0.05 0.27" material="m_chair"/>
+
+    <!-- ===== filing cabinets along the -Y wall ===== -->
+    <geom name="filecab1"    type="box" pos="2.80 -2.70 0.60" size="0.25 0.30 0.60" material="m_steel"/>
+    <geom name="filecab2"    type="box" pos="3.40 -2.70 0.60" size="0.25 0.30 0.60" material="m_steel"/>
+    <geom name="filecab1_h1" type="box" pos="2.80 -2.38 0.30" size="0.10 0.012 0.012" material="m_black"/>
+    <geom name="filecab1_h2" type="box" pos="2.80 -2.38 0.70" size="0.10 0.012 0.012" material="m_black"/>
+    <geom name="filecab1_h3" type="box" pos="2.80 -2.38 1.05" size="0.10 0.012 0.012" material="m_black"/>
+    <geom name="filecab2_h1" type="box" pos="3.40 -2.38 0.30" size="0.10 0.012 0.012" material="m_black"/>
+    <geom name="filecab2_h2" type="box" pos="3.40 -2.38 0.70" size="0.10 0.012 0.012" material="m_black"/>
+    <geom name="filecab2_h3" type="box" pos="3.40 -2.38 1.05" size="0.10 0.012 0.012" material="m_black"/>
+
+    <!-- ===== whiteboard on the +Y wall ===== -->
+    <geom name="board_frame" type="box" pos="0.0 2.985 1.45" size="1.28 0.015 0.78" material="m_alum"/>
+    <geom name="board_face"  type="box" pos="0.0 2.965 1.45" size="1.22 0.006 0.72" material="m_board"/>
+    <geom name="board_tray"  type="box" pos="0.0 2.93 0.70" size="1.0 0.035 0.012" material="m_alum"/>
+
+    <!-- ===== bookshelf against the -X wall ===== -->
+    <geom name="shelf_body"  type="box" pos="-3.72 1.60 0.92" size="0.28 0.75 0.92" material="m_desk"/>
+    <geom name="shelf_books" type="box" pos="-3.42 1.60 0.90" size="0.02 0.71 0.84" material="m_books"/>
+
+    <!-- ===== potted plant in the +X/+Y corner ===== -->
+    <geom name="plant_pot"   type="cylinder" pos="3.60 2.55 0.16" size="0.17 0.16" rgba="0.62 0.38 0.28 1"/>
+    <geom name="plant_bush"  type="sphere"   pos="3.60 2.55 0.62" size="0.32" rgba="0.28 0.45 0.22 1"/>
+    <geom name="plant_bush2" type="sphere"   pos="3.48 2.42 0.85" size="0.21" rgba="0.32 0.50 0.25 1"/>
+
+    <!-- ===== low storage credenza along the -Y wall (-X side) ===== -->
+    <geom name="credenza"    type="box" pos="-2.20 -2.70 0.35" size="0.80 0.28 0.35" material="m_desk"/>
+    <geom name="credenza_gap" type="box" pos="-2.20 -2.41 0.35" size="0.006 0.006 0.30" rgba="0.25 0.16 0.10 1"/>
+
+    <!-- ===== teleop mocap targets (kept compatible with the teleop / WBC scripts) ===== -->
+    <body name="target_l" mocap="true" pos="0.45 0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="target_r" mocap="true" pos="0.45 -0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="gaze_point" mocap="true" pos="0.85 0 1.0">
+      <geom group="3" type="sphere" size="0.04" rgba="1 0.5 0 0.4" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- graspable clutter (scanned objects): laptop + mug on desk A, keyboard + mouse on desk B -->
+  <include file="office_objects.xml"/>
+
+</mujoco>

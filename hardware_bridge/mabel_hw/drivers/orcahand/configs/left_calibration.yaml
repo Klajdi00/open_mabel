@@ -1,0 +1,102 @@
+'6':
+  joint: index_abd
+  min: 1686
+  max: 2331
+  center: 2008
+  range: 645
+'7':
+  joint: index_mcp
+  min: 1792
+  max: 2884
+  center: 2338
+  range: 1092
+'8':
+  joint: index_pip
+  min: 1735
+  max: 3014
+  center: 2374
+  range: 1279
+'5':
+  joint: middle_abd
+  min: 721
+  max: 1387
+  center: 1054
+  range: 666
+'16':
+  joint: middle_mcp
+  min: 1537
+  max: 2688
+  center: 2112
+  range: 1151
+'1':
+  joint: middle_pip
+  min: 1468
+  max: 2747
+  center: 2107
+  range: 1279
+'13':
+  joint: ring_abd
+  min: 29
+  max: 597
+  center: 313
+  range: 568
+'15':
+  joint: ring_mcp
+  min: 1538
+  max: 2681
+  center: 2109
+  range: 1143
+'14':
+  joint: ring_pip
+  min: 1574
+  max: 2890
+  center: 2232
+  range: 1316
+'4':
+  joint: pinky_abd
+  min: 1305
+  max: 1959
+  center: 1632
+  range: 654
+'2':
+  joint: pinky_mcp
+  min: 1699
+  max: 2939
+  center: 2319
+  range: 1240
+'3':
+  joint: pinky_pip
+  min: 1691
+  max: 2952
+  center: 2321
+  range: 1261
+'12':
+  joint: thumb_cmc
+  min: 1628
+  max: 2640
+  center: 2134
+  range: 1012
+'11':
+  joint: thumb_abd
+  min: 1420
+  max: 1928
+  center: 1674
+  range: 508
+'9':
+  joint: thumb_mp
+  min: 956
+  max: 2237
+  center: 1596
+  range: 1281
+'10':
+  joint: thumb_ip
+  min: 655
+  max: 1896
+  center: 1275
+  range: 1241
+'17':
+  joint: wrist
+  min: 1960
+  max: 3256
+  center: 2608
+  range: 1296

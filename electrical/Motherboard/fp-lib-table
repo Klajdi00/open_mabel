@@ -1,0 +1,8 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Teensy41") (type "KiCad") (uri "${KIPRJMOD}/parts/Teensy") (options "") (descr ""))
+	(lib (name "power") (type "KiCad") (uri "${KIPRJMOD}/parts/Power-Connectors") (options "") (descr ""))
+	(lib (name "imu") (type "KiCad") (uri "${KIPRJMOD}/parts/BNO085") (options "") (descr ""))
+	(lib (name "buck") (type "KiCad") (uri "${KIPRJMOD}/parts/MP1584EN") (options "") (descr ""))
+	(lib (name "ethernet") (type "KiCad") (uri "${KIPRJMOD}/parts/J1B1211CCD") (options "") (descr ""))
+)

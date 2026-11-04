@@ -1,0 +1,11 @@
+# MABEL Mac proxy server dependencies
+# Install with:  pip install -r requirements.txt
+
+websockets>=12.0        # async WebSocket server
+aiohttp>=3.9            # async HTTP server for MJPEG
+opencv-python>=4.8      # webcam capture + JPEG encode
+numpy>=1.24             # used by Transform4x4.to_numpy() and pose visualizer
+mujoco>=3.0             # pose visualization (mujoco_pose_viz.py); >=3.5 for mj_geomDistance
+quadprog>=0.1.11        # fast dense QP for the self-collision CBF layer (mabel/self_collision.py)
+osqp>=0.6               # automatic QP fallback if quadprog is unavailable
+

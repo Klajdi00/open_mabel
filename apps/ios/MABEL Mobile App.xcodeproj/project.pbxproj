@@ -1,0 +1,795 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4010FBBD595AC5885796159B /* MabelLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72620B05B03678F8A7525803 /* MabelLiveActivityWidget.swift */; };
+		563E78335794154646C4AF4B /* MabelStatusWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E897AEF88A5AF0FEB4FFC31B /* MabelStatusWidget.swift */; };
+		6F98C90BBED702FED601C9F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CBF2DB2DFC10F05BBD88D9 /* Foundation.framework */; };
+		9BA0DA597F864CE2D9ACE225 /* MabelWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7B18D8EEA76272BD99703096 /* MabelWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B63A757C3724FAC0B0278E45 /* MabelWidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E03CB04A15C11494ABE45CF /* MabelWidgetSnapshot.swift */; };
+		B6D6269119E91193D5D8B043 /* MabelWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991EB2B1701B53ABF5FDB949 /* MabelWidgetViews.swift */; };
+		BD518B5DAD747C04F8E1CCAF /* MabelWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E408AA3F79F9BE46FFEE2B /* MabelWidgetBundle.swift */; };
+		FD94837F10457A8888168CF6 /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE58E692E256FABE3A1FB53 /* WidgetTheme.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		81E7ABCE597238DBC3834409 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECBF3CDD2FD9CB550099F2B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1585FA6296AA123DCF2FC7C6;
+			remoteInfo = MabelWidgetExtension;
+		};
+		ECBF3CF32FD9CB570099F2B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECBF3CDD2FD9CB550099F2B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECBF3CE42FD9CB550099F2B7;
+			remoteInfo = "MABEL Mobile App";
+		};
+		ECBF3CFD2FD9CB570099F2B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECBF3CDD2FD9CB550099F2B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECBF3CE42FD9CB550099F2B7;
+			remoteInfo = "MABEL Mobile App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		075919C94B7EBF62A992FC3F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9BA0DA597F864CE2D9ACE225 /* MabelWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1900E165F58F0F27EE080CC3 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		22CBF2DB2DFC10F05BBD88D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		3EE58E692E256FABE3A1FB53 /* WidgetTheme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
+		72620B05B03678F8A7525803 /* MabelLiveActivityWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MabelLiveActivityWidget.swift; sourceTree = "<group>"; };
+		7B18D8EEA76272BD99703096 /* MabelWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MabelWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E03CB04A15C11494ABE45CF /* MabelWidgetSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MabelWidgetSnapshot.swift; path = "../MABEL Mobile App/Widget/MabelWidgetSnapshot.swift"; sourceTree = "<group>"; };
+		991EB2B1701B53ABF5FDB949 /* MabelWidgetViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MabelWidgetViews.swift; sourceTree = "<group>"; };
+		A62E295292F9D2A418A1D37D /* MabelWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = MabelWidget.entitlements; sourceTree = "<group>"; };
+		D6E408AA3F79F9BE46FFEE2B /* MabelWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MabelWidgetBundle.swift; sourceTree = "<group>"; };
+		DD6B2CBE7D767C791543A419 /* MABEL Mobile App.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "MABEL Mobile App.entitlements"; sourceTree = "<group>"; };
+		E897AEF88A5AF0FEB4FFC31B /* MabelStatusWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MabelStatusWidget.swift; sourceTree = "<group>"; };
+		ECBF3CE52FD9CB550099F2B7 /* MABEL Mobile App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MABEL Mobile App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECBF3CF22FD9CB570099F2B7 /* MABEL Mobile AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MABEL Mobile AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECBF3CFC2FD9CB570099F2B7 /* MABEL Mobile AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MABEL Mobile AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		ECBF3CE72FD9CB550099F2B7 /* MABEL Mobile App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "MABEL Mobile App";
+			sourceTree = "<group>";
+		};
+		ECBF3CF52FD9CB570099F2B7 /* MABEL Mobile AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "MABEL Mobile AppTests";
+			sourceTree = "<group>";
+		};
+		ECBF3CFF2FD9CB570099F2B7 /* MABEL Mobile AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "MABEL Mobile AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		82F0773F008A759F9ECFFEE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F98C90BBED702FED601C9F8 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CE22FD9CB550099F2B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CEF2FD9CB570099F2B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CF92FD9CB570099F2B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		64F0E5D3F457124BC57503A0 /* MabelWidget */ = {
+			isa = PBXGroup;
+			children = (
+				D6E408AA3F79F9BE46FFEE2B /* MabelWidgetBundle.swift */,
+				E897AEF88A5AF0FEB4FFC31B /* MabelStatusWidget.swift */,
+				991EB2B1701B53ABF5FDB949 /* MabelWidgetViews.swift */,
+				3EE58E692E256FABE3A1FB53 /* WidgetTheme.swift */,
+				1900E165F58F0F27EE080CC3 /* Info.plist */,
+				8E03CB04A15C11494ABE45CF /* MabelWidgetSnapshot.swift */,
+				72620B05B03678F8A7525803 /* MabelLiveActivityWidget.swift */,
+			);
+			path = MabelWidget;
+			sourceTree = "<group>";
+		};
+		A8949F0468B68141CBE5B42A /* Entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				DD6B2CBE7D767C791543A419 /* MABEL Mobile App.entitlements */,
+				A62E295292F9D2A418A1D37D /* MabelWidget.entitlements */,
+			);
+			path = Entitlements;
+			sourceTree = "<group>";
+		};
+		ECBF3CDC2FD9CB550099F2B7 = {
+			isa = PBXGroup;
+			children = (
+				ECBF3CE72FD9CB550099F2B7 /* MABEL Mobile App */,
+				ECBF3CF52FD9CB570099F2B7 /* MABEL Mobile AppTests */,
+				ECBF3CFF2FD9CB570099F2B7 /* MABEL Mobile AppUITests */,
+				ECBF3CE62FD9CB550099F2B7 /* Products */,
+				F2D1C7CC1E1C7E15C9F9E89A /* Frameworks */,
+				64F0E5D3F457124BC57503A0 /* MabelWidget */,
+				A8949F0468B68141CBE5B42A /* Entitlements */,
+			);
+			sourceTree = "<group>";
+		};
+		ECBF3CE62FD9CB550099F2B7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ECBF3CE52FD9CB550099F2B7 /* MABEL Mobile App.app */,
+				ECBF3CF22FD9CB570099F2B7 /* MABEL Mobile AppTests.xctest */,
+				ECBF3CFC2FD9CB570099F2B7 /* MABEL Mobile AppUITests.xctest */,
+				7B18D8EEA76272BD99703096 /* MabelWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F2D1C7CC1E1C7E15C9F9E89A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F842091C3318F3ECAB38B834 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F842091C3318F3ECAB38B834 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				22CBF2DB2DFC10F05BBD88D9 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1585FA6296AA123DCF2FC7C6 /* MabelWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE7C77E3AD3C78F07142FC76 /* Build configuration list for PBXNativeTarget "MabelWidgetExtension" */;
+			buildPhases = (
+				18ACCAAB347A7605F9EB9E6A /* Sources */,
+				82F0773F008A759F9ECFFEE7 /* Frameworks */,
+				CC6835923AC2E89237F3FEDB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MabelWidgetExtension;
+			productName = MabelWidgetExtension;
+			productReference = 7B18D8EEA76272BD99703096 /* MabelWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		ECBF3CE42FD9CB550099F2B7 /* MABEL Mobile App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECBF3D062FD9CB570099F2B7 /* Build configuration list for PBXNativeTarget "MABEL Mobile App" */;
+			buildPhases = (
+				ECBF3CE12FD9CB550099F2B7 /* Sources */,
+				ECBF3CE22FD9CB550099F2B7 /* Frameworks */,
+				ECBF3CE32FD9CB550099F2B7 /* Resources */,
+				075919C94B7EBF62A992FC3F /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A39C4943DE24EB9417179FC2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				ECBF3CE72FD9CB550099F2B7 /* MABEL Mobile App */,
+			);
+			name = "MABEL Mobile App";
+			productName = "MABEL Mobile App";
+			productReference = ECBF3CE52FD9CB550099F2B7 /* MABEL Mobile App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		ECBF3CF12FD9CB570099F2B7 /* MABEL Mobile AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECBF3D092FD9CB570099F2B7 /* Build configuration list for PBXNativeTarget "MABEL Mobile AppTests" */;
+			buildPhases = (
+				ECBF3CEE2FD9CB570099F2B7 /* Sources */,
+				ECBF3CEF2FD9CB570099F2B7 /* Frameworks */,
+				ECBF3CF02FD9CB570099F2B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECBF3CF42FD9CB570099F2B7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				ECBF3CF52FD9CB570099F2B7 /* MABEL Mobile AppTests */,
+			);
+			name = "MABEL Mobile AppTests";
+			productName = "MABEL Mobile AppTests";
+			productReference = ECBF3CF22FD9CB570099F2B7 /* MABEL Mobile AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ECBF3CFB2FD9CB570099F2B7 /* MABEL Mobile AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECBF3D0C2FD9CB570099F2B7 /* Build configuration list for PBXNativeTarget "MABEL Mobile AppUITests" */;
+			buildPhases = (
+				ECBF3CF82FD9CB570099F2B7 /* Sources */,
+				ECBF3CF92FD9CB570099F2B7 /* Frameworks */,
+				ECBF3CFA2FD9CB570099F2B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECBF3CFE2FD9CB570099F2B7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				ECBF3CFF2FD9CB570099F2B7 /* MABEL Mobile AppUITests */,
+			);
+			name = "MABEL Mobile AppUITests";
+			productName = "MABEL Mobile AppUITests";
+			productReference = ECBF3CFC2FD9CB570099F2B7 /* MABEL Mobile AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ECBF3CDD2FD9CB550099F2B7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					1585FA6296AA123DCF2FC7C6 = {
+						CreatedOnToolsVersion = 16.0;
+						ProvisioningStyle = Automatic;
+					};
+					ECBF3CE42FD9CB550099F2B7 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					ECBF3CF12FD9CB570099F2B7 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = ECBF3CE42FD9CB550099F2B7;
+					};
+					ECBF3CFB2FD9CB570099F2B7 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = ECBF3CE42FD9CB550099F2B7;
+					};
+				};
+			};
+			buildConfigurationList = ECBF3CE02FD9CB550099F2B7 /* Build configuration list for PBXProject "MABEL Mobile App" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ECBF3CDC2FD9CB550099F2B7;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = ECBF3CE62FD9CB550099F2B7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ECBF3CE42FD9CB550099F2B7 /* MABEL Mobile App */,
+				ECBF3CF12FD9CB570099F2B7 /* MABEL Mobile AppTests */,
+				ECBF3CFB2FD9CB570099F2B7 /* MABEL Mobile AppUITests */,
+				1585FA6296AA123DCF2FC7C6 /* MabelWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CC6835923AC2E89237F3FEDB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CE32FD9CB550099F2B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CF02FD9CB570099F2B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CFA2FD9CB570099F2B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18ACCAAB347A7605F9EB9E6A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD518B5DAD747C04F8E1CCAF /* MabelWidgetBundle.swift in Sources */,
+				563E78335794154646C4AF4B /* MabelStatusWidget.swift in Sources */,
+				B6D6269119E91193D5D8B043 /* MabelWidgetViews.swift in Sources */,
+				FD94837F10457A8888168CF6 /* WidgetTheme.swift in Sources */,
+				B63A757C3724FAC0B0278E45 /* MabelWidgetSnapshot.swift in Sources */,
+				4010FBBD595AC5885796159B /* MabelLiveActivityWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CE12FD9CB550099F2B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CEE2FD9CB570099F2B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECBF3CF82FD9CB570099F2B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A39C4943DE24EB9417179FC2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MabelWidgetExtension;
+			target = 1585FA6296AA123DCF2FC7C6 /* MabelWidgetExtension */;
+			targetProxy = 81E7ABCE597238DBC3834409 /* PBXContainerItemProxy */;
+		};
+		ECBF3CF42FD9CB570099F2B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECBF3CE42FD9CB550099F2B7 /* MABEL Mobile App */;
+			targetProxy = ECBF3CF32FD9CB570099F2B7 /* PBXContainerItemProxy */;
+		};
+		ECBF3CFE2FD9CB570099F2B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECBF3CE42FD9CB550099F2B7 /* MABEL Mobile App */;
+			targetProxy = ECBF3CFD2FD9CB570099F2B7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		36F7721A88563F49D975BC2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/MabelWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MabelWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "MABEL Status";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2.MabelWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D5FA7AE8D91A64705883C3DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/MabelWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MabelWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "MABEL Status";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2.MabelWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ECBF3D042FD9CB570099F2B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		ECBF3D052FD9CB570099F2B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ECBF3D072FD9CB570099F2B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/MABEL Mobile App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ECBF3D082FD9CB570099F2B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/MABEL Mobile App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		ECBF3D0A2FD9CB570099F2B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MABEL Mobile App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MABEL Mobile App";
+			};
+			name = Debug;
+		};
+		ECBF3D0B2FD9CB570099F2B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MABEL Mobile App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MABEL Mobile App";
+			};
+			name = Release;
+		};
+		ECBF3D0D2FD9CB570099F2B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "MABEL Mobile App";
+			};
+			name = Debug;
+		};
+		ECBF3D0E2FD9CB570099F2B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.example.MABEL-Mobile-App-V2UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "MABEL Mobile App";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ECBF3CE02FD9CB550099F2B7 /* Build configuration list for PBXProject "MABEL Mobile App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECBF3D042FD9CB570099F2B7 /* Debug */,
+				ECBF3D052FD9CB570099F2B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECBF3D062FD9CB570099F2B7 /* Build configuration list for PBXNativeTarget "MABEL Mobile App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECBF3D072FD9CB570099F2B7 /* Debug */,
+				ECBF3D082FD9CB570099F2B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECBF3D092FD9CB570099F2B7 /* Build configuration list for PBXNativeTarget "MABEL Mobile AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECBF3D0A2FD9CB570099F2B7 /* Debug */,
+				ECBF3D0B2FD9CB570099F2B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECBF3D0C2FD9CB570099F2B7 /* Build configuration list for PBXNativeTarget "MABEL Mobile AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECBF3D0D2FD9CB570099F2B7 /* Debug */,
+				ECBF3D0E2FD9CB570099F2B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FE7C77E3AD3C78F07142FC76 /* Build configuration list for PBXNativeTarget "MabelWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5FA7AE8D91A64705883C3DE /* Release */,
+				36F7721A88563F49D975BC2F /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ECBF3CDD2FD9CB550099F2B7 /* Project object */;
+}

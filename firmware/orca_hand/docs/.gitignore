@@ -1,0 +1,9 @@
+# LaTeX build artifacts (keep the .tex, .pdf, figures, and scripts)
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.synctex.gz
+__pycache__/

@@ -1,0 +1,38 @@
+[
+  {
+    "label": "cameras idle\n(no video pulled)",
+    "hz_med": 160.0,
+    "hz_lo": 148,
+    "hz_hi": 177,
+    "fps": 0.0,
+    "age50": 2.1,
+    "age95": 9.8
+  },
+  {
+    "label": "default priority\n(+video) \u2014 old",
+    "hz_med": 99,
+    "hz_lo": 67,
+    "hz_hi": 105,
+    "fps": 67.5,
+    "age50": 1.9,
+    "age95": 6.5
+  },
+  {
+    "label": "utility QoS\n(+video) \u2014 fix",
+    "hz_med": 143.0,
+    "hz_lo": 140,
+    "hz_hi": 217,
+    "fps": 66.7,
+    "age50": 1.9,
+    "age95": 5.2
+  },
+  {
+    "label": "--max-fps 12\n(+video)",
+    "hz_med": 135.5,
+    "hz_lo": 75,
+    "hz_hi": 212,
+    "fps": 61.4,
+    "age50": 1.9,
+    "age95": 5.7
+  }
+]

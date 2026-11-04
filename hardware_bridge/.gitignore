@@ -1,0 +1,22 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Singleton lock + any runtime temp
+*.lock
+
+# LaTeX build artifacts (keep docs/*.tex and docs/*.pdf)
+docs/*.aux
+docs/*.log
+docs/*.fls
+docs/*.fdb_latexmk
+docs/*.toc
+docs/*.out
+
+# Stray colcon artifacts (this dir is NOT a colcon package)
+docs/build/
+docs/install/
+docs/log/
+
+# local bridge env overrides (arm-enable flag etc.)
+.env.local*

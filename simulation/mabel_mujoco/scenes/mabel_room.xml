@@ -1,0 +1,25 @@
+<mujoco model="mabel_room">
+  <!-- A simple collidable ROOM (floor + 4 walls) for the photoreal Unity ENVIRONMENT
+       scenes (warehouse/garage/loft). It gives the lidar + depth pointcloud real
+       geometry to hit and the robot walls to collide with, so the sensor view roughly
+       matches the enclosed indoor Unity render. NOTE: it can't pixel-match a photo HDRI
+       backdrop — true geometry match needs scanned/Infinigen scenes. -->
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast" cone="elliptic" noslip_iterations="3"/>
+  <include file="../models/mabel_full.xml"/>
+  <visual><headlight ambient="0.4 0.4 0.4" diffuse="0.6 0.6 0.6"/><quality shadowsize="4096"/></visual>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.5 0.55 0.6" rgb2="0.2 0.25 0.3" width="256" height="256"/>
+  </asset>
+  <worldbody>
+    <geom name="floor" type="plane" size="10 8 0.1" rgba="0.32 0.33 0.35 1" condim="3" friction="1 0.05 0.001"/>
+    <!-- 14 m x 10 m room, 4 m tall walls (half-sizes below) -->
+    <geom name="wall_n" type="box" pos="0 5 2"  size="7 0.15 2" rgba="0.7 0.7 0.72 1"/>
+    <geom name="wall_s" type="box" pos="0 -5 2" size="7 0.15 2" rgba="0.7 0.7 0.72 1"/>
+    <geom name="wall_e" type="box" pos="7 0 2"  size="0.15 5 2" rgba="0.7 0.7 0.72 1"/>
+    <geom name="wall_w" type="box" pos="-7 0 2" size="0.15 5 2" rgba="0.7 0.7 0.72 1"/>
+    <body name="target_l" mocap="true" pos="0.5 0.2 0.9"><geom group="3" type="sphere" size="0.01" contype="0" conaffinity="0" rgba="1 0 0 0.3"/></body>
+    <body name="target_r" mocap="true" pos="0.5 -0.2 0.9"><geom group="3" type="sphere" size="0.01" contype="0" conaffinity="0" rgba="0 1 0 0.3"/></body>
+    <body name="gaze_point" mocap="true" pos="1.0 0 1.2"><geom group="3" type="sphere" size="0.01" contype="0" conaffinity="0" rgba="0 0 1 0.3"/></body>
+  </worldbody>
+</mujoco>

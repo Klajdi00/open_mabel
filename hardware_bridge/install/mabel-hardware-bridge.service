@@ -1,0 +1,27 @@
+[Unit]
+Description=MABEL hardware bridge (single HAL: base + arms + body + hands + lift + cameras)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=mabel
+# The bridge owns ALL hardware and must be up before the ROS stack; it auto-restarts.
+WorkingDirectory=/home/mabel/open_mabel/hardware_bridge
+Environment=MABEL_ROOT=/home/mabel/open_mabel
+# Enable subsystems here (override config.py defaults). BASE, HANDS and CAMERAS are now
+# ON BY DEFAULT in config.py (right ORCA hand by-id + D435/ZED/wrist cams); these env
+# lines only need uncommenting to FORCE a subsystem on/off regardless of config.py.
+Environment=MABEL_HW_BASE=true
+# Environment=MABEL_HW_ARMS=true      # default-on in config.py (teensy transport,
+#                                      # 192.168.125.10:5800, torque off / limp; see
+#                                      # docs/ARMLINK.md + install/setup_arms_lane.sh)
+# Environment=MABEL_HW_BODY=true
+# Environment=MABEL_HW_HANDS=true     # default-on in config.py (free-drive; torque off)
+# Environment=MABEL_HW_LIFT=true
+# Environment=MABEL_HW_CAMERAS=true   # default-on in config.py (realsense+zed+wrist)
+ExecStart=/home/mabel/open_mabel/hardware_bridge/run_bridge.sh
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

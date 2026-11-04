@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orcahand"
+version = "0.1.0"
+description = "Clean hardware-abstraction layer for the MABEL ORCA dexterous hand (Feetech bus)."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "MABEL Authors", email = "maintainers@example.com" }]
+license = { text = "MIT" }
+dependencies = [
+    "pyserial>=3.5",
+    "pyyaml>=6.0",
+    "numpy>=1.21",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+orcahand-scan = "orcahand.cli:scan_main"
+orcahand-calibrate = "orcahand.calibrate:calibrate_main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["orcahand"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"orcahand/configs" = "orcahand/configs"

@@ -1,0 +1,152 @@
+<mujoco model="mabel_warehouse_environment">
+  <!-- MABEL in a warehouse aisle: two 9 m runs of tall pallet racking (3 beam levels)
+       loaded with cardboard boxes, floor pallets, hazard aisle markings. Textured
+       primitives (textures from scripts/tools/gen_env_textures.py); graspable clutter
+       (storage bin, hammer) on the level-1 deck wired by gen_env_objects.py.
+       Run from repo root:  python scripts/visualize_sensors.py --scene scenes/mabel_warehouse.xml -->
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <include file="../models/mabel_full.xml"/>
+
+  <visual>
+    <headlight ambient="0.42 0.42 0.44" diffuse="0.25 0.25 0.25" specular="0.1 0.1 0.1"/>
+    <quality shadowsize="4096"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.52 0.58 0.66" rgb2="0.86 0.89 0.93" width="256" height="256"/>
+    <texture type="2d" name="t_concrete"  file="../assets/textures/concrete.png"/>
+    <texture type="2d" name="t_wall"      file="../assets/textures/wall.png"/>
+    <texture type="2d" name="t_hazard"    file="../assets/textures/hazard.png"/>
+    <texture type="2d" name="t_wood"      file="../assets/textures/wood_furniture.png"/>
+    <texture type="2d" name="t_cardboard" file="../assets/textures/cardboard.png"/>
+    <texture type="2d" name="t_metal"     file="../assets/textures/metal_brushed.png"/>
+
+    <material name="m_concrete"  texture="t_concrete"  texuniform="true" texrepeat="0.6 0.6" reflectance="0.08" shininess="0.2"/>
+    <material name="m_wall"      texture="t_wall"      texuniform="true" texrepeat="3 2" reflectance="0.0"/>
+    <material name="m_hazard"    texture="t_hazard"    texuniform="true" texrepeat="2 2" reflectance="0.0" shininess="0.1"/>
+    <material name="m_wood"      texture="t_wood"      texuniform="true" texrepeat="2 2" reflectance="0.05" shininess="0.2"/>
+    <material name="m_cardboard" texture="t_cardboard" texrepeat="1 1" reflectance="0.0" shininess="0.0"/>
+    <material name="m_metal"     texture="t_metal"     texuniform="true" texrepeat="2 2" reflectance="0.35" shininess="0.7" specular="0.5"/>
+    <material name="m_rack"      rgba="0.86 0.42 0.10 1" reflectance="0.2" shininess="0.4"/>
+    <material name="m_beam"      rgba="0.90 0.50 0.12 1" reflectance="0.2" shininess="0.4"/>
+  </asset>
+
+  <worldbody>
+    <!-- ===== lighting (high-bay, cool) ===== -->
+    <light name="bay1" directional="true" pos=" 2.0  0.0 5.0" dir="-0.25 0.0 -1" diffuse="0.52 0.52 0.54" specular="0.25 0.25 0.25" castshadow="true"/>
+    <light name="bay2" directional="true" pos="-3.0  0.0 5.0" dir=" 0.35 0.0 -1" diffuse="0.30 0.30 0.32" castshadow="false"/>
+    <light name="bay3" directional="true" pos=" 0.0  0.0 5.0" dir=" 0.0  0.0 -1" diffuse="0.22 0.22 0.24" castshadow="false"/>
+
+    <!-- ===== hall shell 12 x 9 m ===== -->
+    <geom name="floor" type="plane" size="6 4.5 0.1" material="m_concrete"
+          contype="1" conaffinity="1" friction="1.5 0.05 0.001"/>
+    <geom name="wall_back"  type="box" pos=" 6.05 0    1.8" size="0.05 4.5 1.8" material="m_wall"/>
+    <geom name="wall_front" type="box" pos="-6.05 0    1.8" size="0.05 4.5 1.8" material="m_wall"/>
+    <geom name="wall_left"  type="box" pos=" 0    4.55 1.8" size="6.0 0.05 1.8" material="m_wall"/>
+    <geom name="wall_right" type="box" pos=" 0   -4.55 1.8" size="6.0 0.05 1.8" material="m_wall"/>
+
+    <!-- ===== aisle markings ===== -->
+    <geom name="aisle_stripe_n" type="box" pos="0  1.60 0.002" size="4.60 0.06 0.002" material="m_hazard"/>
+    <geom name="aisle_stripe_s" type="box" pos="0 -1.60 0.002" size="4.60 0.06 0.002" material="m_hazard"/>
+
+    <!-- ===== rack row A (y = -2.8): uprights, 3 beam levels, wood decks ===== -->
+    <geom name="ra_u1" type="box" pos="-4.50 -3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u2" type="box" pos="-4.50 -2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u3" type="box" pos="-1.50 -3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u4" type="box" pos="-1.50 -2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u5" type="box" pos=" 1.50 -3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u6" type="box" pos=" 1.50 -2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u7" type="box" pos=" 4.50 -3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_u8" type="box" pos=" 4.50 -2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="ra_b1f" type="box" pos="0 -2.35 0.77" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="ra_b1b" type="box" pos="0 -3.25 0.77" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="ra_b2f" type="box" pos="0 -2.35 1.57" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="ra_b2b" type="box" pos="0 -3.25 1.57" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="ra_b3f" type="box" pos="0 -2.35 2.37" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="ra_b3b" type="box" pos="0 -3.25 2.37" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="ra_d1" type="box" pos="0 -2.80 0.79" size="4.55 0.42 0.02" material="m_wood"/>
+    <geom name="ra_d2" type="box" pos="0 -2.80 1.59" size="4.55 0.42 0.02" material="m_wood"/>
+    <geom name="ra_d3" type="box" pos="0 -2.80 2.39" size="4.55 0.42 0.02" material="m_wood"/>
+
+    <!-- boxes on rack row A -->
+    <geom name="ra_box1" type="box" pos="-3.60 -2.80 1.09" size="0.42 0.36 0.28" material="m_cardboard"/>
+    <geom name="ra_box2" type="box" pos="-2.40 -2.85 1.03" size="0.30 0.30 0.22" material="m_cardboard" euler="0 0 0.1"/>
+    <geom name="ra_box3" type="box" pos=" 0.30 -2.80 1.06" size="0.36 0.34 0.25" material="m_cardboard"/>
+    <geom name="ra_box4" type="box" pos=" 3.40 -2.78 1.01" size="0.34 0.30 0.20" material="m_cardboard" euler="0 0 -0.12"/>
+    <geom name="ra_box5" type="box" pos="-3.30 -2.82 1.86" size="0.38 0.34 0.25" material="m_cardboard"/>
+    <geom name="ra_box6" type="box" pos="-0.60 -2.80 1.83" size="0.30 0.28 0.22" material="m_cardboard" euler="0 0 0.18"/>
+    <geom name="ra_box7" type="box" pos=" 2.20 -2.84 1.88" size="0.40 0.32 0.27" material="m_cardboard"/>
+    <geom name="ra_box8" type="box" pos=" 4.00 -2.80 2.62" size="0.30 0.30 0.21" material="m_cardboard"/>
+    <geom name="ra_box9" type="box" pos="-1.90 -2.80 2.66" size="0.36 0.32 0.25" material="m_cardboard" euler="0 0 -0.08"/>
+
+    <!-- ===== rack row B (y = +2.8), mirrored ===== -->
+    <geom name="rb_u1" type="box" pos="-4.50  3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u2" type="box" pos="-4.50  2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u3" type="box" pos="-1.50  3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u4" type="box" pos="-1.50  2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u5" type="box" pos=" 1.50  3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u6" type="box" pos=" 1.50  2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u7" type="box" pos=" 4.50  3.25 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_u8" type="box" pos=" 4.50  2.35 1.45" size="0.05 0.05 1.45" material="m_rack"/>
+    <geom name="rb_b1f" type="box" pos="0  2.35 0.77" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="rb_b1b" type="box" pos="0  3.25 0.77" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="rb_b2f" type="box" pos="0  2.35 1.57" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="rb_b2b" type="box" pos="0  3.25 1.57" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="rb_b3f" type="box" pos="0  2.35 2.37" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="rb_b3b" type="box" pos="0  3.25 2.37" size="4.55 0.04 0.04" material="m_beam"/>
+    <geom name="rb_d1" type="box" pos="0  2.80 0.79" size="4.55 0.42 0.02" material="m_wood"/>
+    <geom name="rb_d2" type="box" pos="0  2.80 1.59" size="4.55 0.42 0.02" material="m_wood"/>
+    <geom name="rb_d3" type="box" pos="0  2.80 2.39" size="4.55 0.42 0.02" material="m_wood"/>
+
+    <!-- boxes on rack row B -->
+    <geom name="rb_box1" type="box" pos="-4.00  2.80 1.05" size="0.36 0.32 0.24" material="m_cardboard"/>
+    <geom name="rb_box2" type="box" pos="-1.10  2.82 1.08" size="0.42 0.36 0.27" material="m_cardboard" euler="0 0 0.1"/>
+    <geom name="rb_box3" type="box" pos=" 1.10  2.78 1.00" size="0.28 0.28 0.19" material="m_cardboard"/>
+    <geom name="rb_box4" type="box" pos=" 3.60  2.80 1.07" size="0.38 0.34 0.26" material="m_cardboard" euler="0 0 -0.15"/>
+    <geom name="rb_box5" type="box" pos="-2.60  2.80 1.85" size="0.36 0.32 0.24" material="m_cardboard"/>
+    <geom name="rb_box6" type="box" pos=" 0.40  2.84 1.87" size="0.40 0.34 0.26" material="m_cardboard" euler="0 0 0.14"/>
+    <geom name="rb_box7" type="box" pos=" 3.00  2.80 2.63" size="0.32 0.30 0.22" material="m_cardboard"/>
+    <geom name="rb_box8" type="box" pos="-3.90  2.80 2.65" size="0.34 0.32 0.24" material="m_cardboard" euler="0 0 -0.1"/>
+
+    <!-- ===== floor pallets with box stacks (ground level, under the racks) ===== -->
+    <geom name="pa1_deck" type="box" pos="-3.20 -2.80 0.12" size="0.55 0.40 0.03" material="m_wood"/>
+    <geom name="pa1_box"  type="box" pos="-3.20 -2.80 0.45" size="0.40 0.34 0.30" material="m_cardboard"/>
+    <geom name="pa2_deck" type="box" pos=" 0.40 -2.80 0.12" size="0.55 0.40 0.03" material="m_wood"/>
+    <geom name="pa2_box1" type="box" pos=" 0.30 -2.85 0.33" size="0.34 0.30 0.18" material="m_cardboard"/>
+    <geom name="pa2_box2" type="box" pos=" 0.48 -2.72 0.63" size="0.26 0.24 0.12" material="m_cardboard" euler="0 0 0.2"/>
+    <geom name="pb1_deck" type="box" pos="-0.90  2.80 0.12" size="0.55 0.40 0.03" material="m_wood"/>
+    <geom name="pb1_box"  type="box" pos="-0.90  2.80 0.43" size="0.42 0.34 0.28" material="m_cardboard"/>
+    <geom name="pb2_deck" type="box" pos=" 3.30  2.80 0.12" size="0.55 0.40 0.03" material="m_wood"/>
+
+    <!-- ===== staged pallet at the +X end of the aisle ===== -->
+    <geom name="stage_deck" type="box" pos="5.45 0.90 0.12" size="0.50 0.42 0.03" material="m_wood"/>
+    <geom name="stage_box1" type="box" pos="5.42 0.85 0.40" size="0.34 0.30 0.25" material="m_cardboard"/>
+    <geom name="stage_box2" type="box" pos="5.50 1.00 0.83" size="0.26 0.22 0.18" material="m_cardboard" euler="0 0 0.25"/>
+
+    <!-- ===== hand truck leaning near the -X end ===== -->
+    <geom name="truck_plate" type="box" pos="-5.55 -0.70 0.05" size="0.25 0.18 0.012" material="m_metal"/>
+    <geom name="truck_frame" type="box" pos="-5.75 -0.70 0.60" size="0.02 0.18 0.55" euler="0 -0.25 0" material="m_rack"/>
+    <geom name="truck_wheel_l" type="cylinder" pos="-5.72 -0.85 0.09" size="0.09 0.03" euler="1.570795 0 0" rgba="0.1 0.1 0.1 1"/>
+    <geom name="truck_wheel_r" type="cylinder" pos="-5.72 -0.55 0.09" size="0.09 0.03" euler="1.570795 0 0" rgba="0.1 0.1 0.1 1"/>
+
+    <!-- ===== teleop mocap targets (kept compatible with the teleop / WBC scripts) ===== -->
+    <body name="target_l" mocap="true" pos="0.45 0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="target_r" mocap="true" pos="0.45 -0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="gaze_point" mocap="true" pos="0.85 0 1.0">
+      <geom group="3" type="sphere" size="0.04" rgba="1 0.5 0 0.4" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- graspable clutter (scanned objects) on the level-1 deck of rack row A -->
+  <include file="warehouse_objects.xml"/>
+
+</mujoco>

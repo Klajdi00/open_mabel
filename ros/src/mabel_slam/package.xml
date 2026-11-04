@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mabel_slam</name>
+  <version>0.0.0</version>
+  <description>SLAM for MABEL -- two independent, hardware-decoupled stacks: visual_slam (cuVSLAM + nvblox, GPU; navigation/manipulation envs) and lidar_slam (slam_toolbox, 2D). Pure consumers of camera/scan topics; start no robot or camera driver.</description>
+  <maintainer email="maintainers@example.com">MABEL Authors</maintainer>
+  <license>TODO: License declaration</license>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <!-- Pure SLAM: this package starts NO camera driver. It only consumes the
+       camera/scan topics that mabel_sim (sim) or mabel_sensors (real) already
+       publish, so it depends on neither camera bringup. -->
+
+  <!-- Isaac ROS GEMs (visual_slam.launch.py); apt: ros-jazzy-isaac-ros-* -->
+  <exec_depend>isaac_ros_visual_slam</exec_depend>
+  <exec_depend>isaac_ros_nvblox</exec_depend>
+  <exec_depend>isaac_ros_image_proc</exec_depend>
+
+  <!-- 2D LiDAR SLAM (lidar_slam.launch.py); apt: ros-jazzy-slam-toolbox -->
+  <exec_depend>slam_toolbox</exec_depend>
+
+  <!-- mesh_to_pointcloud node -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>nvblox_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

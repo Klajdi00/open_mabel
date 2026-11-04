@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head>
+<link rel="stylesheet" href="css/studio.css"><link rel="stylesheet" href="css/control.css">
+<script type="importmap">{ "imports": {
+  "three": "/website-assets/three/three.module.js",
+  "three/addons/": "/website-assets/three/jsm/" } }</script>
+</head><body style="background:#222">
+<div id="vp" class="viewport3d" style="position:relative;width:900px;height:520px"></div>
+<pre id="diag" style="color:#0f0;font:12px monospace"></pre>
+<script>
+(function(){ var s = new URLSearchParams(location.search).get('e2e');
+  if (s) document.write('<img src="/api/delay?s=' + (+s||6) + '" style="display:none">'); })();
+</script>
+<script type="module">
+import { Viewport3D } from './js/viewport3d.js';
+const diag = document.getElementById('diag');
+const log = (...a) => diag.textContent += a.join(' ') + '\n';
+window.addEventListener('error', e => log('ERROR:', e.message, e.filename?.split('/').pop(), e.lineno));
+window.addEventListener('unhandledrejection', e => log('REJECT:', e.reason?.message || e.reason));
+try {
+  const vp = new Viewport3D(document.getElementById('vp'));
+  setTimeout(() => {
+    const c = vp.stage.canvas;
+    log('canvas', c.width + 'x' + c.height, 'css', c.clientWidth + 'x' + c.clientHeight);
+    log('scene children:', vp.stage.scene.children.length);
+    log('rig loaded:', !!vp.rig, vp.rig ? Object.keys(vp.rig.joints).length + ' joints' : '');
+    log('render calls:', vp.stage.renderer.info.render.calls,
+        'tris:', vp.stage.renderer.info.render.triangles);
+    let meshes = 0, visible = 0, verts = 0;
+    vp.rig.root.traverse(o => { if (o.isMesh){ meshes++; if (o.visible) visible++;
+      verts += o.geometry?.attributes?.position?.count || 0; } });
+    log('rig meshes:', meshes, 'visible:', visible, 'verts:', verts);
+    log('world visible:', vp.rig.world.visible, 'root visible:', vp.rig.root.visible);
+    import('three').then(THREE => {
+      const box = new THREE.Box3().setFromObject(vp.rig.world);
+      log('bbox min', box.min.toArray().map(v=>v.toFixed(2)).join(','),
+          'max', box.max.toArray().map(v=>v.toFixed(2)).join(','));
+      const p2 = new THREE.Vector3();
+      vp.rig.base.getWorldPosition(p2);
+      log('base world pos', p2.toArray().map(v=>v.toFixed(2)).join(','));
+      log('camera pos', vp.stage.camera.position.toArray().map(v=>v.toFixed(2)).join(','));
+    });
+  }, 12000);
+} catch (e){ log('CONSTRUCT ERROR:', e.message); }
+</script></body></html>

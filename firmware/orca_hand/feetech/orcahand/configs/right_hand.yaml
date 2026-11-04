@@ -1,0 +1,32 @@
+# ORCA RIGHT hand. angle_min/max come from the mabel_description URDF
+# (right_* joint limits = orca_core v1 joint_roms in rad); see left_hand.yaml
+# header. Motor IDs match right_calibration.json. If a joint moves the wrong
+# way in RViz, flip its `invert`.
+
+side: right
+calibration_file: right_calibration.json
+
+joints:
+  # ---- index ----
+  index_pip:  { id: 1,  angle_min: -0.3491, angle_max: 1.8850, invert: true }
+  index_mcp:  { id: 2,  angle_min: -0.3491, angle_max: 1.6581, invert: true }
+  index_abd:  { id: 3,  angle_min: -0.6458, angle_max: 0.6458, invert: true }
+  # ---- middle ----
+  middle_abd: { id: 4,  angle_min: -0.6458, angle_max: 0.6458, invert: true }
+  middle_pip: { id: 8,  angle_min: -0.3491, angle_max: 1.8675, invert: true }
+  middle_mcp: { id: 9,  angle_min: -0.3491, angle_max: 1.5882, invert: true }
+  # ---- pinky ----
+  pinky_abd:  { id: 5,  angle_min: -0.6458, angle_max: 0.6458, invert: true }
+  pinky_pip:  { id: 6,  angle_min: -0.3491, angle_max: 1.8850, invert: true }
+  pinky_mcp:  { id: 7,  angle_min: -0.3491, angle_max: 1.7104, invert: true }
+  # ---- ring ----
+  ring_mcp:   { id: 10, angle_min: -0.3491, angle_max: 1.5882, invert: true }
+  ring_pip:   { id: 11, angle_min: -0.3491, angle_max: 1.8675, invert: true }
+  ring_abd:   { id: 12, angle_min: -0.6458, angle_max: 0.6358, invert: true }
+  # ---- thumb (ORCA cmc/mp/ip == URDF mcp/pip/dip) ----
+  thumb_cmc:  { id: 13, angle_min: -0.8727, angle_max: 0.8727, invert: true }
+  thumb_abd:  { id: 14, angle_min: -0.3491, angle_max: 0.7330, invert: true }
+  thumb_mp:   { id: 16, angle_min: -0.2094, angle_max: 1.8150, invert: false }
+  thumb_ip:   { id: 15, angle_min: -0.3491, angle_max: 1.9548, invert: false }
+  # ---- wrist ----
+  wrist:      { id: 17, angle_min: -0.5236, angle_max: 1.0472, invert: true }

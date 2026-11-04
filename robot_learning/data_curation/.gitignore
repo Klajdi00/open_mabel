@@ -1,0 +1,10 @@
+# Studio-private workspace: EDL autosaves + on-demand mp4 transcode cache.
+workspace/
+__pycache__/
+*.pyc
+# LaTeX aux (keep the .pdf)
+docs/*.aux
+docs/*.log
+docs/*.fls
+docs/*.fdb_latexmk
+docs/*.out

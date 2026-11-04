@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mabel_gateway</name>
+  <version>0.1.0</version>
+  <description>
+    App-facing teleop gateway for MABEL on the real robot. Runs the standalone teleop
+    server (server/, the same WebSocket wire protocol + MJPEG/UDP video + multi-client
+    arbitration the Vision Pro / iOS / web apps already use) with the ROS plant selected
+    (MABEL_DISPATCH_TARGET=real:ros): the gateway hosts the controller against a MuJoCo
+    mirror and publishes the canonical command contract that the mabel_*_hardware drivers
+    consume. Video stays out-of-band (MJPEG/UDP), not over ROS.
+  </description>
+  <maintainer email="maintainers@example.com">MABEL Authors</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- The control half the gateway's ROS plant uses (command_extract, ros_plant,
+       joint_mirror) + the canonical contract. The server itself lives in server/ and is
+       launched as a process; it is a plain Python program, not an ament package. -->
+  <exec_depend>mabel_control</exec_depend>
+  <exec_depend>mabel_interfaces</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

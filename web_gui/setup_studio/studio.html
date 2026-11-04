@@ -1,0 +1,395 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MABEL · Hardware Setup Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Geist:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"./assets/three.module.js","three/addons/":"./assets/jsm/"}}</script>
+<style>
+:root{--accent:#C25B2A;--accent-soft:#f0b68b;--live:#3FB56B;--warn:#E9A679;--danger:#D23B2A;--bg:#0d0c0b;--bg2:#151311;--ink:#efeae3;--ash:#97908a;--ash2:#6b655f;--glass:rgba(242,238,230,.055);--glass2:rgba(242,238,230,.10);--bd:rgba(242,238,230,.14);--bd2:rgba(242,238,230,.22);--hair:rgba(242,238,230,.09);--mono:'Geist Mono',ui-monospace,Menlo,monospace;--font:'Geist',-apple-system,system-ui,sans-serif;--serif:'Instrument Serif',Georgia,serif}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}
+body{background:radial-gradient(1200px 600px at 70% -10%,rgba(194,91,42,.07),transparent) var(--bg);color:var(--ink);font:13px var(--font);-webkit-font-smoothing:antialiased;display:grid;grid-template-columns:var(--rail-w,260px) 5px 1fr 5px var(--work-w,38vw);grid-template-rows:50px 1fr;grid-template-areas:"top top top top top" "rail g1 vp g2 stage"}
+.gut{cursor:col-resize;z-index:3;transition:background .15s}.gut:hover,.gut.drag{background:var(--accent)}#g1{grid-area:g1}#g2{grid-area:g2}
+header{grid-area:top;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--bd)}
+.mark{font-weight:700;font-size:15px;letter-spacing:.04em}.sub{font:italic 20px var(--serif);color:var(--accent-soft);margin-right:auto}
+.vp{grid-area:vp;position:relative;background:#0b0a09;overflow:hidden}.vp canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vp-bar{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(13,12,11,.72);border:1px solid var(--bd);backdrop-filter:blur(14px) saturate(1.5);box-shadow:0 20px 44px -22px rgba(0,0,0,.6);max-width:calc(100% - 24px);flex-wrap:wrap;justify-content:center}.vp-nav{top:16px}.vp-cam{bottom:16px}
+.vp-err{position:absolute;left:16px;right:16px;bottom:64px;font:10.5px var(--mono);color:var(--warn);text-align:center}
+.mod{display:flex;gap:7px;align-items:center;border-radius:999px;padding:5px 11px;border:1px solid transparent;background:none;color:var(--ink);cursor:pointer;font-family:var(--mono)}.mod.on{border-color:var(--accent);background:var(--glass2)}
+.mod span:nth-child(2){font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}.mod span:nth-child(3){font-size:9.5px;color:var(--ash)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ash2);display:inline-block;flex:none}.dot.ok{background:var(--live)}.dot.warn{background:var(--warn)}.dot.bad{background:var(--danger)}
+.gbtn{font:10.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;padding:9px 14px;border-radius:999px;background:var(--glass);border:1px solid var(--bd);color:var(--ink);cursor:pointer;box-shadow:inset 0 1px 0 rgba(242,238,230,.14);transition:.18s}
+.gbtn:hover{background:var(--glass2)}.gbtn:disabled{opacity:.35;cursor:default}.gbtn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.gbtn.live{background:var(--live);border-color:var(--live);color:var(--bg)}
+.gbtn.armed{background:var(--danger);border-color:var(--danger);color:#fff;animation:pulse 1s infinite}.gbtn.estop{background:var(--danger);border-color:var(--danger);color:#fff;font-weight:600}.gbtn.estop.live{background:var(--live);border-color:var(--live);color:var(--bg)}.gbtn.ghost{opacity:.55}.gbtn.sm{padding:5px 10px;font-size:9.5px}
+@keyframes pulse{50%{filter:brightness(1.25)}}
+.conn{color:var(--danger)}.conn.ok{color:var(--live)}.hint{font:10px var(--mono);color:var(--ash)}
+aside.rail{grid-area:rail;border-right:1px solid var(--bd);background:rgba(20,18,16,.5);overflow:auto;padding:10px}
+.ph{font:500 10px var(--mono);text-transform:uppercase;letter-spacing:.16em;color:var(--ash);margin:8px 0 6px;display:flex;justify-content:space-between;align-items:center}
+.st{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid var(--hair);font-family:var(--mono)}.k{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ash);white-space:nowrap}.v{font-size:11px;text-align:right}.ok{color:var(--live)}.warn{color:var(--warn)}.bad{color:var(--danger)}
+.sj{font:10px var(--mono);margin:6px 0 2px}.sj div{display:flex;justify-content:space-between}.off{color:var(--ash2)}.bar{position:relative;height:5px;background:var(--glass);border-radius:3px;margin-top:3px}.bar i{position:absolute;top:0;bottom:0;width:2px;background:var(--accent-soft)}.bar i.des{background:var(--accent)}.bar.dead{opacity:.35}
+.ev{font:10px var(--mono);padding:4px 8px;margin:3px 0;border-left:2px solid var(--live);background:var(--glass);color:var(--ash)}.ev.fail{border-color:var(--danger)}.ev b{color:var(--ink);margin-right:6px;text-transform:uppercase;font-size:9px}
+main{grid-area:stage;overflow:auto;padding:12px 16px;border-left:1px solid var(--bd);background:rgba(20,18,16,.5)}
+#banner{background:var(--danger);color:#fff;font:10.5px var(--mono);letter-spacing:.06em;padding:8px 12px;border-radius:9px;margin-bottom:10px;animation:pulse 1s infinite}
+.tabs{display:flex;gap:4px;margin-bottom:12px}.tab{background:none;border:1px solid transparent;color:var(--ash);border-radius:999px;padding:6px 14px;font:10.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;cursor:pointer}.tab.on{color:var(--ink);border-color:var(--bd2);background:var(--glass)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.row .hint{margin-left:auto}
+.lede{font:italic 15px var(--serif);color:var(--accent-soft);margin:0 0 10px}.note{font:10.5px var(--mono);color:var(--ash);line-height:1.7;margin-top:14px}.note.warn,.note.bad{border-left:2px solid var(--warn);padding-left:8px;margin:4px 0 8px}.note.bad{border-color:var(--danger)}
+.jrow{display:grid;grid-template-columns:128px 1fr auto;gap:10px;align-items:center;padding:4px 8px;border-radius:9px}.jrow:nth-child(even){background:var(--glass)}.jrow.dead{opacity:.45}
+.jname{font:11px var(--mono);text-transform:uppercase;display:flex;gap:7px;align-items:center;white-space:nowrap;overflow:hidden}.chip{font-size:9px;padding:1px 6px;border:1px solid var(--bd);border-radius:999px;margin-left:auto}.chip.hot{border-color:var(--danger);color:var(--danger);animation:pulse 1s infinite}.chip.warm{border-color:var(--warn);color:var(--warn)}
+.sl{position:relative;padding-bottom:6px}.sl input{width:100%;margin:0;height:16px;accent-color:var(--accent);display:block}.sl .tk{position:absolute;bottom:0;width:2px;height:5px;background:var(--accent-soft);transition:left .12s linear}
+.uncal{font:10.5px var(--mono);color:var(--ash);white-space:nowrap}.val{font:10px var(--mono);min-width:56px;text-align:right;display:inline-block}.val.cur{color:var(--ash)}
+.jcal{border-radius:9px;margin:2px 0}.jcal:nth-child(even){background:var(--glass)}.jh{display:grid;grid-template-columns:8px 92px 1fr 88px auto 14px;gap:10px;align-items:center;padding:7px 8px;cursor:pointer;font:11px var(--mono)}.jh .rng,.jh .chev{font-size:10px;color:var(--ash)}
+.badge{font-size:9px;padding:2px 7px;border-radius:999px;border:1px solid;white-space:nowrap}.badge.warn{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,transparent)}.badge.ok{border-color:var(--live);color:var(--live)}.badge.bad{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 15%,transparent)}
+.jb{padding:4px 8px 12px 26px}
+.rbar{position:relative;height:11px;background:var(--glass);border:1px solid var(--bd);border-radius:6px;overflow:hidden}.rbar.big{height:26px;margin:6px 0}.rbar.rec{border-color:var(--accent);animation:pulse 1s infinite}.rbar .fill{position:absolute;top:0;bottom:0;background:var(--glass2)}.rbar .mk{position:absolute;top:0;bottom:0;width:2px;background:var(--accent-soft)}.rbar .mk.live{background:#fff;box-shadow:0 0 6px #fff}.rbar .cap{position:absolute;top:0;bottom:0;width:2px;background:var(--live)}.rbar .lab{position:absolute;right:6px;top:0;font:9px/11px var(--mono);color:var(--ash)}.rbar.big .lab{line-height:26px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0;font-family:var(--mono)}.stats small{display:block;font-size:8.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--ash)}.stats b{font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}.stats .span b{color:var(--accent-soft)}
+.mcap{display:grid;grid-template-columns:64px 1fr 58px 58px 58px;gap:8px 10px;align-items:center;font:10px var(--mono)}.mcap .h{color:var(--ash);text-transform:uppercase;font-size:9px;letter-spacing:.1em}.mcap .got{color:var(--ink)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font:10.5px var(--mono)}th{text-align:left;color:var(--ash);font-weight:500;text-transform:uppercase;font-size:9px;letter-spacing:.1em;padding:6px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}td{padding:5px 8px;border-bottom:1px solid var(--hair);font-variant-numeric:tabular-nums;white-space:nowrap}
+input.f,select.f{background:var(--bg2);color:var(--ink);border:1px solid var(--bd);border-radius:6px;padding:3px 5px;font:10.5px var(--mono);width:58px}select.f{width:auto}
+.idchip{display:inline-block;background:var(--accent);color:#fff;padding:2px 8px;border-radius:999px;cursor:grab;font-size:10px}.idchip.over{outline:2px dashed var(--accent-soft)}
+.ph-box{font:11px var(--mono);color:var(--ash);line-height:1.7;padding:22px;border:1px dashed var(--bd2);border-radius:14px;max-width:560px}.ph-box b{color:var(--ink)}
+body.estopped main button:not(.keep),body.estopped main input,body.estopped main select{pointer-events:none;opacity:.35}
+/* ---- swerve base: the top-down diagram is the whole interface, so it has to read at a glance ---- */
+.bwrap{display:grid;grid-template-columns:300px minmax(0,520px);gap:18px;align-items:start;justify-content:start}@media(max-width:860px){.bwrap{grid-template-columns:minmax(0,1fr)}}
+.bwrap .hint,.bpage .note{max-width:62ch}.bpage .lede{max-width:56ch}
+.bsvg{width:100%;max-width:300px;display:block;user-select:none}
+.bsvg .chassis{fill:var(--glass);stroke:var(--bd);stroke-width:1.5}
+.bsvg .fwd{stroke:var(--accent-soft);stroke-width:1.5;fill:none}.bsvg .fwdt{fill:var(--accent-soft);font:8px var(--mono);letter-spacing:.18em;text-anchor:middle;stroke:none}
+.bsvg .halo{fill:none;stroke:none}
+.bsvg .wheel{cursor:pointer}.bsvg .wheel.on .halo{fill:var(--glass2);stroke:var(--accent);stroke-width:1.5}
+.bsvg .tyre{fill:#1b1815;stroke:var(--ash2);stroke-width:1.5}
+.bsvg .wheel.live .tyre{stroke:var(--ink)}.bsvg .wheel.cal .tyre{stroke:var(--live)}.bsvg .wheel.on .tyre{stroke:var(--accent)}
+.bsvg .tip{fill:var(--ash2)}.bsvg .wheel.live .tip{fill:var(--accent-soft)}
+.bsvg .spin{stroke:var(--live);stroke-width:2;fill:none;stroke-linecap:round}
+.bsvg .vec{stroke:var(--live);stroke-width:2.5;stroke-linecap:round}.bsvg .vech{fill:var(--live)}
+.bsvg .wl{fill:var(--ash);font:8.5px var(--mono);text-anchor:middle;letter-spacing:.1em;text-transform:uppercase}
+.bsvg .wh{fill:var(--ink);font:11px var(--mono);text-anchor:middle;font-variant-numeric:tabular-nums}
+.bsvg .wx{fill:var(--ash2);font:8px var(--mono);text-anchor:middle}
+.step{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px;background:var(--glass)}
+.step.done{border-color:color-mix(in srgb,var(--live) 45%,transparent)}
+.step h4{margin:0 0 8px;font:10px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ash);font-weight:500;display:flex;gap:8px;align-items:center}
+.step h4 b{color:var(--ink);font-weight:500}.step h4 .tick{color:var(--live)}
+.big{font:17px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.bpage .tw{max-width:838px}.drow{display:grid;grid-template-columns:52px 1fr 104px;gap:10px;align-items:center;margin:8px 0}
+.drow input[type=range]{accent-color:var(--accent);height:16px;margin:0;width:100%}
+.drow .k{font-size:9.5px}.drow .rv{font:11px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.mstat{display:flex;gap:14px;flex-wrap:wrap;margin:2px 0 10px}
+.mstat span{display:inline-flex;gap:6px;align-items:center;font:10px var(--mono);color:var(--ash)}
+.mstat b{color:var(--ink);font-weight:500}
+.jogs{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.bpill{display:inline-flex;gap:6px;align-items:center;font:10px var(--mono);padding:3px 9px;border-radius:999px;border:1px solid var(--bd);color:var(--ash)}
+.bpill.ok{border-color:var(--live);color:var(--live)}.bpill.bad{border-color:var(--danger);color:var(--danger)}.bpill.warn{border-color:var(--warn);color:var(--warn)}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:rgba(242,238,230,.12);border-radius:5px}
+</style></head><body>
+<header><span class="mark">MABEL</span><span class="sub">Hardware Setup Studio</span>
+ <button class="gbtn estop keep" id="estop" title="torque OFF every module — instant, no confirm (also Esc / Space)">E-STOP · TORQUE OFF</button>
+ <span class="conn" id="conn">●</span><span class="hint" id="connl">connecting…</span></header>
+<aside class="rail"><div class="ph"><span id="stt">Status</span></div><div id="status"></div><div class="ph">Events</div><div id="events"></div></aside>
+<div class="gut" id="g1" title="drag to resize · double-click to reset"></div><aside class="vp" id="vp"><canvas id="vp-canvas"></canvas><nav class="vp-bar vp-nav" id="mods"></nav><nav class="vp-bar vp-cam"><button class="gbtn sm" id="cam-home">⌂ Reset view</button><button class="gbtn sm" id="cam-frame">◎ Frame module</button></nav></aside>
+<div class="gut" id="g2" title="drag to resize · double-click to reset"></div><main><div id="banner" hidden>E-STOP ENGAGED — controls locked · every joint group torque off (zero-torque damping / free-drive) · lift halted · RE-ENGAGE unlocks the controls, torque stays off — support the arms</div>
+<nav class="tabs"><button class="tab on" data-tab="control">Control</button><button class="tab" data-tab="calibration">Calibration</button><button class="tab" data-tab="setup">Setup</button></nav>
+<section id="view"></section></main>
+<script type="module">
+// ---- 3D rig: the shared mabel_rig.glb + joint manifest (generated from the MJCF), posed from the calibrated joint angles ----
+import*as THREE from'three';import{GLTFLoader}from'three/addons/loaders/GLTFLoader.js';import{OrbitControls}from'three/addons/controls/OrbitControls.js';import{MeshoptDecoder}from'three/addons/libs/meshopt_decoder.module.js';
+const VIEWS={'arm-left':{pos:[-1,1.35,1.4],target:[0,.95,.17]},'arm-right':{pos:[-1,1.35,-1.4],target:[0,.95,-.17]},'hand-left':{pos:[-.85,1.15,.75],target:[-.3,.92,.2]},'hand-right':{pos:[-.85,1.15,-.75],target:[-.3,.92,-.2]},neck:{pos:[-.9,1.55,.6],target:[.14,1.27,0]},torso:{pos:[-1.5,1.3,1.2],target:[.14,.95,0]},base:{pos:[-1.6,.9,1.6],target:[.2,.15,0]},lift:{pos:[-1.8,1.1,1.6],target:[.14,.6,0]}},HOME={pos:[-2.2,1.5,1.6],target:[.1,.75,0]};   // the rig faces −x, its left is +z
+const el=document.getElementById('vp'),cv=document.getElementById('vp-canvas'),r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+r.setPixelRatio(Math.min(devicePixelRatio,2));r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(42,1,.02,200);scene.add(new THREE.AmbientLight(0xffffff,.55));
+for(const[c,i,p]of[[0xffffff,1.6,[2.5,3.5,2]],[0xffffff,.5,[-2.5,1.4,-1.6]],[0xffe6cf,.55,[0,1.9,-3.2]]]){const l=new THREE.DirectionalLight(c,i);l.position.set(...p);scene.add(l)}
+const g=new THREE.Mesh(new THREE.CircleGeometry(6,64).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({color:0x14110f,roughness:.95}));g.position.y=-.004;scene.add(g);
+const grid=new THREE.GridHelper(12,48,0x2a2622,0x1d1a17);grid.material.transparent=true;grid.material.opacity=.5;scene.add(grid);
+const ctl=new OrbitControls(cam,cv);ctl.enableDamping=true;ctl.dampingFactor=.08;ctl.maxPolarAngle=Math.PI*.52;
+const resize=()=>{const w=el.clientWidth||2,h=el.clientHeight||2;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};new ResizeObserver(resize).observe(el);resize();
+const J={},q={};let dirty=false;const fly=v=>{cam.position.set(...v.pos);ctl.target.set(...v.target);ctl.update()};
+window.VP={set(n,v){if(n in J&&Number.isFinite(v)&&q[n]!==v){q[n]=v;dirty=true}},lim:n=>J[n]?[J[n].lo,J[n].hi]:null,home:()=>fly(HOME),frame:k=>fly(VIEWS[k]||HOME)};fly(HOME);
+try{const res=await fetch('assets/joints.json');if(!res.ok)throw new Error('assets/joints.json → HTTP '+res.status);const man=await res.json();const ld=new GLTFLoader();ld.setMeshoptDecoder(MeshoptDecoder);const gltf=await ld.loadAsync('assets/rig.glb');scene.add(gltf.scene);
+ for(const j of man.joints){const n=gltf.scene.getObjectByName(j.node);if(n)J[j.name]={n,p0:n.position.clone(),q0:n.quaternion.clone(),ax:new THREE.Vector3(...j.axis).normalize(),pr:j.type==='prismatic',lo:j.lower,hi:j.upper,ref:j.ref||0}}}
+catch(e){const d=document.createElement('div');d.className='vp-err';d.textContent='3D model unavailable — '+e.message;el.appendChild(d)}
+// A joint is driven by the DISPLACEMENT qpos - ref: the GLB is baked at the ASSEMBLED pose
+// (qpos == ref), not at qpos 0. Ignoring ref was harmless while only the 14 ORCA finger/wrist
+// joints and the LIFT have one (the column is baked at mid-stroke, ref = 0.15875), so
+// rendering raw qpos would contort the hands and misplace the column.
+r.setAnimationLoop(()=>{if(dirty){for(const n in q){const j=J[n],d=q[n]-(j.ref||0);if(j.pr){j.n.position.copy(j.p0).add(j.ax.clone().applyQuaternion(j.q0).multiplyScalar(d));j.n.quaternion.copy(j.q0)}else{j.n.quaternion.copy(j.q0).multiply(new THREE.Quaternion().setFromAxisAngle(j.ax,d));j.n.position.copy(j.p0)}}dirty=false}ctl.update();r.render(scene,cam)});
+</script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],set=(el,p,v)=>{if(el&&el[p]!==v)el[p]=v};   // write DOM only on change (Safari drops clicks under a rewrite)
+const hex=n=>n==null?'—':'0x'+n.toString(16).toUpperCase().padStart(2,'0'),deg=r=>r==null?'—':(r*57.29578).toFixed(1)+'°',r5=x=>Math.round(x*1e5)/1e5,cl=t=>Math.max(0,Math.min(100,t*100));
+const MIN_SPAN=.14,OUT_TOL=.035,THUMB={thumb_cmc:'thumb_mcp',thumb_mp:'thumb_dip',thumb_ip:'thumb_pip'};   // ORCA→URDF thumb swap (hardware-validated)
+const Q=new URLSearchParams(location.search);   // ?tab=calibration&open=l_j1&module=arm-left deep-links a view
+let st=null,sel=Q.get('module'),tab=Q.get('tab')||'control',open=Q.get('open'),goals={},gT=null,lgoal=null,lT=null,sync={},cev=[];
+$$('.tab').forEach(x=>x.classList.toggle('on',x.dataset.tab===tab));
+async function api(c,b={}){const r=await fetch('/api/'+c,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();if(!r.ok)ev(c,j.error,false);return r.ok?j.result:null}
+const ev=(op,msg,ok=true)=>{cev.push([Date.now()/1000,op,ok,msg]);cev=cev.slice(-40)};
+// ---- calibration model (mirrors studio.py): model = model_mid + dir·(raw − raw_mid) ----
+const calib=n=>{const c=st.cfg.joints[n]?.calib;return c&&c.raw_min!=null&&c.raw_max!=null&&c.raw_max>c.raw_min?{dir:1,model_mid:0,...c}:null};
+// 2π-fold the raw angle into the saved window first, exactly like the HAL (schema.JointCalib.unwrap): a window
+// recorded a turn away (MABEL's v1 hands) otherwise reads 360° off.
+const genOf=()=>(st?.modules?.[sel]?.generation)||'v1';
+const unwrapRaw=(c,raw)=>{const m=(c.raw_min+c.raw_max)/2;return raw+6.283185307179586*Math.round((m-raw)/6.283185307179586)},
+toModel=(c,raw)=>c.model_mid+c.dir*(unwrapRaw(c,raw)-(c.raw_min+c.raw_max)/2),limits=c=>{const h=(c.raw_max-c.raw_min)/2;return[c.model_mid-h,c.model_mid+h]};
+const disp=n=>{const m=M();return m.side&&n.startsWith(m.side+'_')?n.slice(m.side.length+1):n};
+const M=()=>st.modules[sel],J=n=>M().joints[n],jl=()=>Object.keys(M().joints),isCan=()=>M().kind==='can',isOrca=()=>M().kind==='orca',isServo=()=>['orca','servo'].includes(M().kind),hasJ=()=>['can','orca','servo'].includes(M().kind),idf=e=>e==null?'—':isOrca()?'ID '+e:hex(e);
+// A GROUPED card (the neck) holds joints from two different buses, so the id format is
+// per JOINT, not per module: the yaw's CAN ESC is hex, a Feetech servo is a decimal ID.
+// Reading it off the card would print one of them in the other one's notation.
+const jkind=n=>st.cfg.joints[n]?.kind||M().kind,idfj=(n,e)=>e==null?'—':(jkind(n)==='can'?hex(e):'ID '+e);
+// Which bus each half of a grouped card is on, for the header line.
+const partsLine=m=>(m.parts||[]).map(p=>`${p.joints.map(n=>n.replace(/^neck_/,'')).join('/')} on ${p.bus}${p.connected?'':' (offline)'}`).join(' · ');
+// Where a joint that is NOT answering is drawn. The URDF zero folds both arms UP and out
+// with the elbows square — the pose homepose.js measured at 9.38 N·m of holding torque and
+// nothing rests in — so a robot that is simply not on the bus looked wrong. These are the
+// REST_POSE values the studio, the iOS app and the Vision Pro app all home to, by RIG name.
+// The SAME numbers as RobotController.restBodyPose (iOS), the Vision Pro app and
+// homepose.js: torso 0 so the robot stands UPRIGHT (it was +0.2618, the +15° lean-BACK
+// stop, which tilted the whole body and pointed the head at the ceiling), arm_1 0, and
+// elbows ±1.52 rather than hard against the ±1.542 limit. Everything else is 0 — which for
+// the neck IS the horizon, so the head looks straight ahead.
+const REST={left_arm_2:-0.1711,left_arm_4:1.52,right_arm_2:0.1711,right_arm_4:-1.52,torso:0};
+function rigName(m,n){const a=/^([lr])_j([1-7])$/.exec(n);if(a)return(a[1]==='l'?'left':'right')+'_arm_'+a[2];if(/^neck_|^torso$/.test(n))return n;if(!m.side)return null;const b=n.startsWith(m.side+'_')?n.slice(m.side.length+1):n;return m.side+'_'+(THUMB[b]||b)}   // hand joints are side-prefixed ORCA names; the thumb is renamed to the URDF's
+function issue(n){const c=calib(n),j=J(n);if(!c)return{sev:'bad',chip:'uncalibrated',fix:M().anchor==='level'?'no window yet — hold the head level, ◎ Level head (or ② Level this joint)':isOrca()?(n.endsWith('_wrist')?`no safe range — ⌀ Set mid, hold the wrist upright, ◎ Upright (window = 90 % of the ${genOf()} range, automatic)`:'no safe range — ⌀ Set mid at mid-travel, then ② Manual calibrate (move to both ends by hand)'):'no safe range — run ② Manual calibrate (move the joint to both stops by hand)'};
+ const rng=st.cfg.joints[n].range,mid=(c.raw_min+c.raw_max)/2;if(isOrca()&&n.endsWith('_wrist'))return null;   // an Upright window is DERIVED (90 % of the range) — coverage is not a fault
+ if(j.live&&j.pos!=null){const p=unwrapRaw(c,j.pos),out=p<c.raw_min?c.raw_min-p:p>c.raw_max?p-c.raw_max:0;   // whole turns folded, like the HAL
+  if(out>OUT_TOL){const big=out>.3;return{sev:big?'bad':'warn',chip:deg(out)+(p<c.raw_min?' past min':' past max'),extend:!big,fix:big?'the encoder and the saved range disagree — re-calibrate and move this joint to BOTH hard stops':'a small excursion — ⊕ Extend to here widens that end of the window'}}}
+ if(M().kind==='can'&&Math.abs(mid)>Math.PI)return{sev:'warn',chip:(mid>0?'+':'')+(mid/6.2832).toFixed(1)+' turns from zero',fix:'the window sits a turn or more from the motor zero — the HAL folds whole turns (multi-turn DaMiao); if the rig pose reads wrong, re-calibrate this joint'};
+ if(rng){const rel=(c.raw_max-c.raw_min)/(rng[1]-rng[0]);
+  if(isOrca()){if(rel<.5)return{sev:'warn',chip:Math.round(rel*100)+'% of '+genOf()+' URDF',fix:'well under the ORCA '+genOf()+' CAD range ('+deg(rng[0])+' … '+deg(rng[1])+') — confirm both mechanical stops were reached; if they were, this IS the hand\'s travel and the window is right'};if(rel>1.3)return{sev:'warn',chip:Math.round(rel*100)+'% of '+genOf()+' URDF',fix:'well over the '+genOf()+' CAD range — fine if both stops were real; a window that wrapped the 0/4095 seam would also look like this'};return null}
+  if(rel<.85)return{sev:rel<.6?'bad':'warn',chip:'only '+Math.round(rel*100)+'% of the URDF range',fix:'the sweep did not reach both stops — recalibrate'};if(rel>1.1)return{sev:'warn',chip:Math.round(rel*100)+'% of the URDF range',fix:'wider than the URDF range ('+deg(rng[0])+' … '+deg(rng[1])+') — a stop is missing or the range in Setup is wrong'}}
+ return null}
+// ---- poll at 20 Hz on one keep-alive connection; each poll is the torque heartbeat ----
+(async function poll(){for(;;){try{const r=await fetch('/api/state?hb=1');st=await r.json();$('#conn').className='conn ok';$('#connl').textContent='studio link up';if(!sel||!st.modules[sel])sel=Object.keys(st.modules)[0];render()}catch(e){$('#conn').className='conn';$('#connl').textContent='reconnecting…'}await new Promise(r=>setTimeout(r,50))}})();
+function render(){const m=M(),mk=Object.keys(st.modules).join();
+ if(sync.mk!==mk){sync.mk=mk;$('#mods').innerHTML=Object.entries(st.modules).map(([k,v])=>`<button class="mod" data-m="${k}"><span class="dot"></span><span>${v.label}</span><span></span></button>`).join('')}
+ for(const b of $$('#mods .mod')){const v=st.modules[b.dataset.m],js=Object.values(v.joints),live=js.filter(j=>j.live).length,fresh=js.some(j=>st.t-j.t<2);
+  set(b,'className','mod'+(b.dataset.m===sel?' on':''));const hj=['can','orca','servo'].includes(v.kind);set(b.children[0],'className','dot '+(v.base?(!v.base.connected?'':'ok'):v.lift?(v.detected?'ok':v.connected?'warn':''):!hj?'':!v.connected?'':live&&fresh?(live===js.length?'ok':'warn'):'warn'));set(b.children[2],'textContent',v.base?(!v.base.connected?'offline':'read-only'):v.lift?(v.detected?(v.lift.calibrated?'live':'uncal'):v.connected?'no frames':'offline'):!hj?'no driver':!v.connected?'offline':live?live+'/'+js.length:'not on bus');set(b,'title',v.esc?(v.kind==='orca'?`servo IDs ${v.esc[0]}–${v.esc[1]} on ${v.bus}`:`identified by its motor IDs: ESC ${hex(v.esc[0])}–${hex(v.esc[1])} on ${v.bus}`):'')}
+ if(window.VP){if(!sync.framed){sync.framed=1;VP.frame(sel)}for(const m of Object.values(st.modules))for(const n in m.joints){const j=m.joints[n],c=st.cfg.joints[n]?.calib,rn=rigName(m,n),q=!j.live?(REST[rn]??0):(j.model_pos??(j.pos!=null?rawPose(m,n,j.pos,c):0));if(rn)VP.set(rn,q)}vpLift()}   // not on the bus -> the REST pose, never a stale/limit angle
+ document.body.classList.toggle('estopped',st.estop);$('#banner').hidden=!st.estop;set($('#estop'),'textContent',st.estop?'RE-ENGAGE CONTROLS':'E-STOP · TORQUE OFF');set($('#estop'),'className','gbtn estop keep'+(st.estop?' live':''));
+ status();events();
+ const key=[tab,sel,st.estop,JSON.stringify(st.cfg),m.connected,Object.values(m.joints).map(j=>+j.live+''+(+j.on)+(+j.relax)+(j.limits?1:0)+(j.err>=8?1:0)).join(''),m.cap?Object.keys(m.cap).join():'',open,m.found.map(f=>f.esc).join(),m.lift?[m.lift.live,m.lift.calibrated,m.lift.torque,m.lift.min,m.lift.max,JSON.stringify(m.lift.travel)].join():'',
+  m.base?[m.base.connected,m.base.estop,m.base.modules.length].join():'',st.sim].join('|');
+ if(sync.key!==key){sync.key=key;build()}
+ paint()}
+// an uncalibrated joint's pose on the rig: a Feetech servo reads 0…2π with its mid at π (tick 2048), so raw alone rotated an
+// uncalibrated hand by ~180° per joint and folded it out of sight — show dir·(raw − π), clamped to the URDF range; motors (multi-turn, zero = motor zero) keep dir·raw
+const rawPose=(m,n,pos,c)=>{const d=c?.dir??1;if(!['orca','servo'].includes(m.kind))return d*pos;const r=st.cfg.joints[n]?.range,q=d*(pos-Math.PI);return r?Math.min(r[1],Math.max(r[0],q)):q};
+function build(){if(!st)return;(hasJ()?{control:buildControl,calibration:buildCalib,setup:buildSetupRO}[tab]
+ :M().lift?{control:buildLift,calibration:buildLiftCalib,setup:buildLiftSetup}[tab]
+ :M().kind==='swerve'?buildBaseView:buildStub)();paint()}
+function buildStub(){const m=M();$('#view').innerHTML=`<div class="ph-box"><b>${m.label}</b> — not brought up by the hardware layer this run, so this tab is reserved.<br><br>${m.note||''}<br><br>Enable it in hardware_bridge/mabel_hw/config.py (or its MABEL_HW_* environment switch) and restart the studio.</div>`}
+// ---- Lift (kind "pico"): one axis in millimetres, the Pico owns the loop ----
+const mm=x=>x==null?'—':(x*1000).toFixed(1)+' mm';
+function vpLift(){const m=Object.values(st.modules).find(m=>m.lift);if(!m)return;const l=m.lift,span=l.max-l.min;
+ // The rig's column is TWO telescoping prismatic stages (lift_lower -> node lift_mid, lift_upper ->
+ // node lift_top, which is its CHILD and carries the torso), each with its own travel in
+ // assets/joints.json. The measured height drives the same fraction of both, so the model extends
+ // exactly as far as the real column does.
+ //
+ // It follows the telemetry whenever there IS telemetry — including on an UNCALIBRATED column. That
+ // was gated on `calibrated` and it was the wrong call: uncalibrated only means the counts->mm scale
+ // was never measured, so the height is nominal, NOT unknown — it still moves with the column.
+ // Freezing the rig at mid-stroke while the real column jogged up and down made the viewer look
+ // broken and hid the one motion an uncalibrated column can still make. Nominal is a display error
+ // of a few percent; commanding is what stays refused until the sweep has run.
+ const u=(l.live&&span>.01)?Math.max(0,Math.min(1,(l.height-l.min)/span)):.5;   // no telemetry -> mid, the baked pose
+ for(const n of['lift_lower','lift_upper']){const r=VP.lim(n);if(r)VP.set(n,r[0]+u*(r[1]-r[0]))}}   // qpos, ref subtracted at render
+function liftBtns(l){const m=M(),hold=(id,v)=>{const b=$('#'+id);if(!b)return;
+  b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);api('lift',{module:sel,action:'jog',value:v})};
+  b.onpointerup=b.onpointercancel=()=>api('lift',{module:sel,action:'stop'})};
+ $('#ltq')?.addEventListener('click',()=>api('lift',{module:sel,action:'torque',value:!l.torque}));
+ $('#lstop')?.addEventListener('click',()=>api('lift',{module:sel,action:'stop'}));
+ $('#lhome')?.addEventListener('click',()=>api('lift',{module:sel,action:'park'}));       // HOME = mid-stroke
+ $('#lfloor')?.addEventListener('click',e=>armed(e.target,'CONFIRM — drives to the floor',()=>api('lift',{module:sel,action:'home'})));
+ $('#lcal')?.addEventListener('click',e=>armed(e.target,'CONFIRM — drives into both stops',()=>api('lift',{module:sel,action:'calibrate'})));
+ $('#lrec')?.addEventListener('click',()=>api('lift',{module:sel,action:'record'}));
+ hold('ljup',.6);hold('ljdn',-.6)}
+function buildLift(){const m=M(),l=m.lift,cal=l.calibrated&&l.max>l.min,ready=l.live&&cal&&l.torque;
+ let h=`<div class="row"><button class="gbtn ${l.torque?'live':'primary'}" id="ltq" ${l.live?'':'disabled'}>${l.torque?'⚡ Torque ON — tap to release':'⚡ Enable torque'}</button>
+  <button class="gbtn keep" id="lstop">■ Stop</button>
+  <button class="gbtn" id="lhome" ${ready?'':'disabled'} title="${ready?'mid-stroke — the resting height, clear of both hard stops':'needs telemetry + a calibrated column + torque ON — '+(!l.live?'no telemetry':!cal?'UNCALIBRATED':'torque is off')}">⌂ Home</button>
+  <span class="hint">${!m.connected?'no Pico on USB — plug the lift in (VID 2e8a); the link retries every 2 s':!l.live?'port open, waiting for telemetry…':!cal?'uncalibrated — jog is the only move until Calibration has run':!l.torque?'torque off — the column free-wheels':'the slider commands an absolute height; Home parks it mid-stroke'}</span></div>
+ <p class="lede">${ready?'The column holds station. The slider is an absolute height.':'Height, target and travel all come from the Pico — it owns the 100 Hz loop and the counts→mm scale.'}</p>`;
+ if(l.live&&!cal)h+=`<div class="note warn"><b>Uncalibrated — the slider and Home are disabled, and that is not this page misbehaving.</b>
+  The Pico has no measured counts→mm scale, so every height it reports is nominal (the ${mm(l.min)} … ${mm(l.max)} travel included) and a move could drive into a hard stop believing it had room. The HAL refuses <code>set_height</code> outright in this state.
+  <b>Jog still works</b> — it is open loop. To get the slider back: <b>Calibration → Calibrate</b>, once. The result is written to the Pico's own flash, so it survives restarts of this studio, but NOT a reflash of the firmware.</div>`;
+ else if(l.live&&cal&&!l.torque)h+=`<div class="note warn"><b>Torque is off</b> — the H-bridge is disabled, so the column free-wheels and the slider and Home are disabled. Enable torque above; nothing here energizes it implicitly.</div>`;
+ h+=`<div class="jrow${l.live?'':' dead'}"><div class="jname">height</div>`;
+ h+= cal ? `<div class="sl"><input type="range" data-l="sl" min="${l.min}" max="${l.max}" step="0.001" value="${l.height}" ${ready?'':'disabled'} title="${mm(l.min)} … ${mm(l.max)} (measured travel)"><i class="tk" data-l="tk"></i></div>`
+         : `<div class="uncal">${l.live?'uncalibrated — no measured travel to command into (Calibration tab)':'no telemetry from the Pico'}</div>`;
+ h+=`<div><span class="val" data-l="des"></span><span class="val cur" data-l="cur"></span></div></div>`;
+ h+=`<div class="row" style="margin-top:14px"><span class="hint" style="margin-left:0">jog · open loop, works uncalibrated</span>
+  <button class="gbtn sm" id="ljup" ${l.live&&l.torque?'':'disabled'}>▲ up</button><button class="gbtn sm" id="ljdn" ${l.live&&l.torque?'':'disabled'}>▼ down</button>
+  <span class="hint">press and hold — releasing sends Stop</span></div>`;
+ h+=`<div class="note">· the Pico closes the position loop itself; this page only latches a target, so a slow page can never stall a move<br>
+ · set_height is refused while the torque is off or the column is uncalibrated — nothing here energizes the H-bridge implicitly<br>
+ · Home is MID-STROKE — the resting height, clear of both hard stops. The FLOOR stall-seek is Calibration's Find floor<br>
+ · E-STOP halts the column and drops its torque, the same as every CAN module<br>
+ · mode <b data-l="mode"></b> · velocity <b data-l="vel"></b> · effort <b data-l="eff"></b></div>`;
+ $('#view').innerHTML=h;liftBtns(l);
+ const sl=$('[data-l=sl]');sl?.addEventListener('input',()=>{lgoal=+sl.value;if(!lT)lT=setTimeout(()=>{lT=null;api('lift',{module:sel,action:'height',value:lgoal})},100)})}
+function buildLiftCalib(){const m=M(),l=m.lift;
+ let h=`<div class="row"><button class="gbtn primary" id="lcal" ${l.live&&l.torque?'':'disabled'}>◎ Calibrate — floor → ceiling</button>
+  <button class="gbtn" id="lfloor" ${l.live&&l.torque?'':'disabled'} title="stall-seek the floor and take it as the datum — NOT the Home button, which is mid-stroke">⇩ Find floor — datum</button>
+  <button class="gbtn keep" id="lstop">■ Stop</button>
+  <button class="gbtn" id="lrec" ${l.live&&l.calibrated?'':'disabled'} title="write the measured travel to mabel.json ${m.slice}/calib/_travel (done automatically after a calibration)">⇩ Record travel</button>
+  <span class="hint">${l.calibrated?'calibrated · travel '+mm(l.min)+' … '+mm(l.max):l.torque?'uncalibrated — heights are nominal':'enable torque in Control first'}${l.travel?' · recorded '+mm(l.travel.min_pos)+' … '+mm(l.travel.max_pos):''}</span></div>
+ <p class="lede">Calibrate drives the column into BOTH hard stops at high open-loop effort and measures the counts it spans.</p>`;
+ h+=`<div class="jrow"><div class="jname">travel</div><div class="sl"><input type="range" data-l="sl" min="${l.calibrated?l.min:0}" max="${l.calibrated?l.max:1}" step="0.001" value="${l.height}" disabled><i class="tk" data-l="tk"></i></div><div><span class="val cur" data-l="cur"></span></div></div>`;
+ h+=`<div class="note">· the counts→mm scale lives in the Pico's own flash, because the firmware needs it to run standalone; after a calibration the studio mirrors the measured travel into mabel.json ${m.slice}/calib/_travel (min_pos / max_pos / span / homed) — ⇩ Record travel writes it again<br>
+ · Find floor re-takes the bottom datum without re-measuring the scale — use it after a belt slip or a power cycle that lost the count. (Control's Home is mid-stroke, not this.)<br>
+ · keep hands and cabling clear of the column: it drives into the stops and only stalls there<br>
+ · mode <b data-l="mode"></b> · height <b data-l="cur2"></b> · effort <b data-l="eff"></b></div>`;
+ $('#view').innerHTML=h;liftBtns(l)}
+function buildLiftSetup(){const m=M(),l=m.lift;
+ const rows=[['backend',st.sim?'mock — simulated column':'pico'],['port',m.port||'— autodetect: first CDC port with USB VID 2e8a'],
+  ['telemetry',m.detected?m.rate_hz+' Hz':'no frames'],['travel',l.calibrated?mm(l.min)+' … '+mm(l.max):'unknown (uncalibrated)'],
+  ['calibration store',"the Pico's flash · travel mirrored to "+st.calib_file.split('/').pop()+' '+(m.slice||'')+'/calib/_travel'],['slice',m.slice||'—']];
+ $('#view').innerHTML=`<div class="tw"><table><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
+  <div class="note">· there is nothing to map here: one motor, one port, no CAN ids. The port name is not stable across replugs, so it is never hard-coded — MABEL_HW_LIFT_PORT pins it if you ever need to<br>
+  · ${m.note||''}</div>`}
+function paintLift(l){if(lgoal!=null&&Math.abs(l.target-lgoal)<.002)lgoal=null;   // the firmware echoed our target: follow it again
+ for(const el of $$('#view [data-l]')){const f=el.dataset.l;
+  if(f==='sl'){if(document.activeElement!==el&&lgoal==null&&Number.isFinite(l.height))set(el,'value',String(l.torque?l.target:l.height))}
+  else if(f==='tk'){const sp=l.max-l.min;el.style.left=(sp>.01?cl((l.height-l.min)/sp):50)+'%'}
+  else if(f==='des')set(el,'textContent',l.torque?mm(l.target):'—');
+  else if(f==='cur'||f==='cur2')set(el,'textContent',l.live?mm(l.height):'—');
+  else if(f==='mode')set(el,'textContent',l.live?l.mode:'— no telemetry');
+  else if(f==='vel')set(el,'textContent',l.live?(l.velocity*1000).toFixed(1)+' mm/s':'—');
+  else if(f==='eff')set(el,'textContent',l.live?(l.effort*100).toFixed(0)+' %':'—')}}
+// ---- Swerve base (kind "swerve"): status only — the studio latches its e-stop and never drives a wheel ----
+function buildBaseView(){const m=M(),b=m.base;
+ let h=`<p class="lede">The base is status-only here: this studio latches its e-stop at start and never drives a wheel.</p>`;
+ if(!b){h+=`<div class="ph-box"><b>${m.label}</b> — not brought up. ${m.note||''}</div>`;$('#view').innerHTML=h;return}
+ const keys=[...new Set(b.modules.flatMap(r=>Object.keys(r)))].filter(k=>k!=='idx');
+ h+=`<div class="row"><span class="bpill ${b.connected?'ok':'bad'}">${b.connected?'link up':'offline'}</span><span class="bpill ${b.estop?'warn':'ok'}">${b.estop?'e-stop latched':'e-stop clear'}</span><span class="hint">${m.port||''}</span></div>`;
+ if(b.modules.length)h+=`<div class="tw"><table><tr><th>#</th>${keys.map(k=>`<th>${k}</th>`).join('')}</tr>${b.modules.map(r=>`<tr><td>${r.idx}</td>${keys.map(k=>`<td>${r[k]??'—'}</td>`).join('')}</tr>`).join('')}</table></div>`;
+ h+=`<div class="note">· steer offsets and drive senses are host calibration inside the base driver (hardware_bridge/mabel_hw/drivers/swerve.py), not a mabel.json slice — this studio does not edit them<br>· drive the base from the control center, never from here</div>`;
+ $('#view').innerHTML=h}
+// ---- Control tab ----
+const TICK=2*Math.PI/4096;
+function buildControl(){const m=M(),names=jl(),driv=names.filter(n=>J(n).live&&J(n).limits&&(calib(n)||isOrca()));
+ let h=`<div class="row"><button class="gbtn ${m.on?'live':'primary'}" id="tq" ${driv.length||m.on?'':'disabled'}>${m.on?(isOrca()?'⚡ Torque ON — tap to release (free)':'⚡ Torque ON — tap to release (zero torque)'):'⚡ Enable torque'}</button><span class="hint">${!m.connected?'adapter offline':m.on?'sliders command · '+m.rate_hz+' Hz':driv.length?(isOrca()?'free — sliders follow':'zero torque — sliders follow'):isOrca()?'no servo answering':'calibrate first'}</span></div>
+ <p class="lede">${m.on?'Holding. Tap to release.':'Enable holds exactly here — no jump.'}</p>`;
+ for(const n of names){const j=J(n),c=calib(n);h+=`<div class="jrow${j.live?'':' dead'}"><div class="jname" title="${n}"><span class="dot" data-j="${n}" data-f="dot"></span>${disp(n)}<span class="chip" data-j="${n}" data-f="temp"></span></div>`;
+  if(c&&j.limits){const[lo,hi]=limits(c);h+=`<div class="sl"><input type="range" min="${lo}" max="${hi}" step="${(hi-lo)/400}" value="${j.pos!=null?toModel(c,j.on&&!j.relax&&j.goal!=null?j.goal:j.pos):(lo+hi)/2}" data-j="${n}" data-f="sl" title="${deg(lo)} … ${deg(hi)} (calibrated window, URDF frame)"><i class="tk" data-j="${n}" data-f="tk"></i></div>`}
+  else if(isServo()&&j.live)h+=`<div class="sl"><input type="range" min="0" max="4095" step="1" value="${j.tick??2048}" data-j="${n}" data-f="sl" data-raw="1" title="uncalibrated — raw ticks, 2048 = centre; save a range in Calibration for the clamp"><i class="tk" data-j="${n}" data-f="tk"></i></div>`;
+  else h+=`<div class="uncal" title="${!j.live?'not answering':!j.limits?'registers not read yet':'no saved range — Calibration tab'}">${!j.live?'silent · '+idfj(n,j.esc):!j.limits?'limits unknown':'uncalibrated'}</div>`;
+  h+=`<div><span class="val" data-j="${n}" data-f="des"></span><span class="val cur" data-j="${n}" data-f="cur"></span></div></div>`}
+ h+=isOrca()?`<div class="note">torque off = free-drive · drops on E-STOP (Esc / Space) or ${st.hb_max} s without this page · enabling latches each servo's goal to its present position first (no snap) · an uncalibrated servo drives in raw ticks (2048 = centre); a saved window adds the clamp</div>`:`<div class="note">· the openarm firmware runs τ = kp·(p_des − p) + kd·(v_des − v) + τ_ff per joint at 100 Hz; the gains are the HAL's (mabel_hw config / controller/control_param.json — Setup shows them)<br>· no gravity compensation here: a loaded joint sags below its setpoint by τ_g / kp<br>· torque is per module: Enable torque latches a hold at the MEASURED pose (no jump); release = the zero-torque damping hold (kp = τ_ff = 0), which is also the default, the E-STOP state (Esc / Space) and what happens if this page stops polling for ${st.hb_max} s<br>· only calibrated joints take targets, clamped to the saved window minus the end-stop margin · sliders sit at the current position (the commanded goal while holding)<br>· the rig follows the calibrated angle in the URDF frame (uncalibrated joints: dir × raw; a joint that is not on the bus rests at the REST pose)</div>`;
+ $('#view').innerHTML=h;
+ $('#tq')?.addEventListener('click',()=>api('torque',{module:sel,on:!m.on}));
+ $$('input[data-f=sl]').forEach(s=>s.addEventListener('input',()=>{if(J(s.dataset.j).on){goals[s.dataset.j]=s.dataset.raw?+s.value*TICK:+s.value;if(!gT)gT=setTimeout(()=>{gT=null;const g=goals;goals={};api('goal',{module:sel,goals:g})},20)}}))}   // 50 Hz goal stream = the control rate; the link interpolates between goals
+// ---- Calibration tab ----
+function buildCalib(){const m=M(),names=jl(),cal=names.filter(calib).length,cap=m.cap;
+ let h=`<div class="row">`;
+ if(cap){const N=Object.values(cap).filter(c=>c.min!=null&&c.max-c.min>=MIN_SPAN).length;h+=`<button class="gbtn primary" data-cap="save" ${N?'':'disabled'}>✓ Save (${N})</button><button class="gbtn ghost" data-cap="cancel">✕ Cancel</button><span class="hint">recording — move the captured joints to both stops</span>`}
+ else if(m.anchor==='level'){const neckAll=Object.values(st.modules).filter(x=>x.anchor==='level'&&/neck/.test(x.label.toLowerCase())),motors=neckAll.flatMap(x=>Object.entries(x.joints).map(([n,j])=>[n,!!(j.live&&j.pos!=null)])),ready=motors.some(([,ok])=>ok),all=motors.length>=3&&motors.every(([,ok])=>ok);
+  const pl=partsLine(m);
+  h+=`<button class="gbtn primary" id="nlevel" ${ready?'':'disabled'} title="hold the head LEVEL and FACING FORWARD, then press — yaw (DaMiao), pitch and roll (Dynamixel) all take this pose as 0°, their windows come from the URDF range (yaw ±90°, pitch / roll ±45°). One button for the whole head: every neck motor that answers is levelled, a silent one is skipped and reported — press again when it is on the bus.">◎ Level head (yaw · pitch · roll)</button><span class="hint">${motors.map(([n,ok])=>(ok?'✓ ':'✗ ')+n.replace('neck_','')).join(' · ')}${all?'':ready?' — the ✗ ones are skipped (all three hang on the arms Teensy)':' — no neck motor answers'} · ${cal} of ${names.length} calibrated${pl?' · '+pl:''}</span>`}
+ else h+=`<button class="gbtn" id="capall" ${m.connected?'':'disabled'}>Calibrate all</button>${names.some(n=>!st.cfg.joints[n].range)?`<button class="gbtn" id="level" ${cal?'':'disabled'} title="joints without a URDF range: the CURRENT pose becomes model 0 — never moves a motor">◎ Set level (all)</button>`:''}<span class="hint">${cal} of ${names.length} calibrated</span>`;
+ h+=`</div><p class="lede">${m.anchor==='level'?'Hold the head LEVEL and FACING FORWARD, then press Level. That pose becomes model 0 and each joint\'s window is its URDF range around it (saved centre-anchored) — the neck has no hard stops to sweep for. Nothing moves.':isOrca()?(cap?'Recording — move the finger to both ends by hand.':`Servos are free. Fingers: Set mid, then Manual calibrate each joint. Wrist: Set mid, hold it upright, Upright (90 % of the ${genOf()} range, automatic). Same flow on both hands.`):cap?'Recording — move the captured joints to both stops. The group is torque off (kp = τ_ff = 0, light damping): nothing holds the arm up.':'Joints sit at zero torque by default. Manual calibrate records min/max while you move a joint to both stops; Save keeps the window. Support the arm.'}</p>`;
+ const iss=names.map(n=>[n,issue(n)]).filter(x=>x[1]&&calib(x[0]));
+ if(iss.length)h+=`<div class="note warn" style="margin:0 0 10px"><b>${iss.length} joint${iss.length>1?'s':''} need a look</b> — ${iss.map(([n,i])=>n+': '+i.chip).join(' · ')}</div>`;
+ if(cap&&Object.keys(cap).length>1){h+=`<div class="mcap"><span class="h">joint</span><span class="h">travel</span><span class="h">min</span><span class="h">max</span><span class="h">span</span>`;
+  for(const n of Object.keys(cap))h+=`<span class="${J(n).live?'':'off'}">${disp(n)}</span><div class="rbar rec" data-j="${n}" data-f="rbar"></div><span data-j="${n}" data-f="cmin"></span><span data-j="${n}" data-f="cmax"></span><span data-j="${n}" data-f="cspan"></span>`;
+  h+=`</div>`}
+ else for(const n of names){const j=J(n),c=calib(n),i=issue(n),capj=cap&&cap[n],auto=m.auto?.joint===n,ok=j.live&&j.limits,rng=st.cfg.joints[n].range,cover=c&&rng?Math.round((c.raw_max-c.raw_min)/(rng[1]-rng[0])*100):null;
+  h+=`<div class="jcal"><div class="jh" data-open="${n}"><span class="dot" data-j="${n}" data-f="cdot"></span><span title="${n}">${disp(n)}</span><div class="rbar${capj?' rec':''}" data-j="${n}" data-f="rbar"></div><span class="rng" title="calibrated window in the URDF frame">${c?deg(limits(c)[0])+'…'+deg(limits(c)[1]):'uncalibrated'}</span><span>${i&&c?`<span class="badge ${i.sev}">${i.chip}</span>`:cover!=null?`<span class="badge ok" title="${isOrca()?'measured travel as a share of the ORCA '+genOf()+' URDF range — the CAD nominal, not a target':'measured span / URDF span'}">${cover}% of ${isOrca()?genOf()+' URDF':'URDF'}</span>`:''}</span><span class="chev">${open===n?'⌄':'›'}</span></div>`;
+  if(open===n){h+=`<div class="jb">`+(rng?`<div class="hint">${isOrca()?'ORCA '+genOf()+' URDF':'URDF'} range ${deg(rng[0])} … ${deg(rng[1])} (span ${deg(rng[1]-rng[0])})${c?` · measured span ${deg(c.raw_max-c.raw_min)} = ${cover}% · window ${deg(c.raw_min)} … ${deg(c.raw_max)} raw`:''}</div>`:`<div class="hint">no URDF range for ${n} in the joint manifest — model 0 anchors at the window centre</div>`)+(i&&!capj&&!auto?`<div class="note ${i.sev}">${i.fix}</div>`:'');
+   if(capj)h+=`<div class="row"><button class="gbtn primary" data-cap="save">✓ Save range</button><button class="gbtn ghost" data-cap="cancel">Cancel</button><button class="gbtn ghost" data-cap="restart">Restart</button>${st.sim?'<button class="gbtn ghost" data-simsweep="1" title="--sim only: stands in for moving the joint by hand through its URDF range">◇ sim: sweep</button>':''}</div><div class="rbar big rec" data-j="${n}" data-f="rbar"></div><div class="stats"><div><small>min</small><b data-j="${n}" data-f="cmin"></b></div><div><small>live</small><b data-j="${n}" data-f="clive"></b></div><div><small>max</small><b data-j="${n}" data-f="cmax"></b></div><div class="span"><small>span</small><b data-j="${n}" data-f="cspan"></b></div></div><div class="hint" data-j="${n}" data-f="cmsg"></div>`;
+   else h+=m.anchor==='level'?`<div class="row"><button class="gbtn sm" data-act="flip" title="reverse which way + is — slider and rig follow it">① Flip direction (${(st.cfg.joints[n].calib?.dir??1)>0?'+':'−'})</button><button class="gbtn sm" data-act="leveljoint" ${ok?'':'disabled'} title="this joint alone: its current pose becomes 0° and its window is the URDF range. Nothing moves.">② Level this joint</button></div>`:`<div class="row"><button class="gbtn sm" data-act="flip" title="reverse which way + is — slider and rig follow it; the URDF anchor is kept (needs a saved window)">① Flip direction (${(st.cfg.joints[n].calib?.dir??1)>0?'+':'−'})</button>${isOrca()&&n.endsWith('_wrist')?`<button class="gbtn sm" data-act="upright" ${ok?'':'disabled'} title="hold the wrist STRAIGHT (upright) by hand with torque off and press: that pose becomes 0° and the window is 90 % of the ORCA ${genOf()} URDF range either side of it — 10 % of the CAD range held back at each end as a safety margin. No sweep, nothing moves.">◎ Upright (90 % of ${genOf()} range)</button>`:`<button class="gbtn sm" data-act="manual" ${ok?'':'disabled'}>② Manual calibrate</button>`}${rng&&!isOrca()?'':`<button class="gbtn sm" data-act="setzero" ${c&&j.live?'':'disabled'} title="${isOrca()?'hold the joint STRAIGHT (or where you want 0°) and press: that pose becomes 0° in the URDF frame; the measured window is unchanged. Use it when the hand travels less than the ${genOf()} CAD range and the window centre is not the straight pose. Moves nothing.':'no URDF range: the current pose becomes model 0 — moves nothing'}">◎ Set zero here</button>`}${isOrca()?`<button class="gbtn sm" data-act="mzero" ${j.live&&!j.on?'':'disabled'} title="servo offset calibration (EEPROM): the CURRENT pose becomes tick 2048, so the joint's travel sits mid-turn and never crosses the 0/4095 seam — do this at mid-travel BEFORE Manual calibrate; a saved window is shifted to match">⌀ Set mid (2048)</button>`:''}${i?.extend?`<button class="gbtn sm" data-act="extend">⊕ Extend to here</button>`:''}</div>`;
+   h+=`</div>`}
+  h+=`</div>`}
+ h+=m.anchor==='level'?`<div class="note">◎ Level head levels every neck motor that answers · per joint: ① Flip if the rig turns the wrong way · ② Level this joint re-takes one joint's 0° · windows = the URDF ranges (yaw ±90°, pitch / roll ±45°), saved centre-anchored to ${st.calib_file} ${m.slice}</div>`:isOrca()?`<div class="note">fingers, per joint: ⌀ Set mid at mid-travel → ② Manual calibrate, move to both ends, Save → ① Flip if it turns the wrong way → ◎ Set zero with the joint straight · wrist: ⌀ Set mid → hold it upright → ◎ Upright (no sweep: 0° there, window = 90 % of the URDF range, 10 % safety each end) · % = measured travel over the ORCA URDF range (CAD nominal; less on the thumb is normal) · saved to ${st.calib_file} ${m.slice} — the ORCA driver loads it at its next (re)connect</div>`:`<div class="note">· manual: the group is torque off — the zero-torque damping hold (kp = τ_ff = 0) — so Manual calibrate just records: move the joint to BOTH stops by hand, then Save; min/max fill in live · what you still feel is gearbox friction and the light damping<br>· model = model_mid + dir·(raw − raw_mid), model_mid = centre of the joint's URDF range (shared_assets/mabel_joints.json, from the MJCF) and reliability = measured span / URDF span, so a full sweep lands the rig on the URDF pose; Flip direction reverses the sign · a joint without a URDF range anchors model 0 at the window centre, Set zero here moves it<br>· everything is written to ${st.calib_file} (slice ${m.slice}) through mabel_hw's CalibrationStore — the HAL hot-reloads it; the Control tab slider unlocks as soon as a window is saved</div>`;
+ $('#view').innerHTML=h;
+ $('#capall')?.addEventListener('click',()=>api('capture',{module:sel,joints:isOrca()?names.filter(n=>!n.endsWith('_wrist')):names}));   // a hand's wrist is never swept: Upright
+ $('#nlevel')?.addEventListener('click',()=>api('level',{module:sel}));
+ $$('[data-cap]').forEach(b=>b.onclick=()=>b.dataset.cap==='restart'?api('capture',{module:sel,joints:[open]}):api('capture_end',{module:sel,save:b.dataset.cap==='save'}));   // top row AND the open joint's row
+ $$('[data-simsweep]').forEach(b=>b.onclick=()=>simSweep());
+ $('#level')?.addEventListener('click',()=>{const p={};for(const n of names){const c=calib(n),j=J(n);if(c&&j.live&&j.pos!=null&&!st.cfg.joints[n].range)p[n]={model_mid:r5(c.model_mid-toModel(c,j.pos))}}api('calib',{patches:p})});
+ $$('.jh').forEach(el=>el.onclick=()=>{open=open===el.dataset.open?null:el.dataset.open;build()});
+ $$('[data-act]').forEach(b=>b.onclick=()=>act(b.dataset.act,b))}
+function act(a,b){const n=open,j=J(n),c=calib(n);
+ if(a==='flip'){const d=st.cfg.joints[n].calib?.dir??1;api('calib',{joint:n,patch:{dir:-d}})}
+ else if(a==='manual')api('capture',{module:sel,joints:[n]});
+ else if(a==='upright')api('upright',{module:sel,joint:n});
+ else if(a==='leveljoint')api('level_joint',{module:sel,joint:n});
+ else if(a==='setzero')api('calib',{joint:n,patch:{model_mid:r5(c.model_mid-toModel(c,j.pos))}});
+ else if(a==='mzero')armed(b,isOrca()?'CONFIRM — writes servo EEPROM':'CONFIRM — writes motor flash',()=>api('zero',{module:sel,joint:n}));
+ else if(a==='extend'){const p=unwrapRaw(c,j.pos);api('calib',{joint:n,patch:p<c.raw_min?{raw_min:r5(p-.02)}:{raw_max:r5(p+.02)}})}}
+// --sim only: walk each captured joint through its URDF range (the stand-in for moving it by hand)
+async function simSweep(){const m=M(),cap=Object.keys(m.cap||{});const base={},span={};for(const n of cap){base[n]=J(n).pos??0;const r=st.cfg.joints[n].range;span[n]=r?(r[1]-r[0]):1}
+ const path=[...Array(21).keys()].map(k=>-k/20/2).concat([...Array(41).keys()].map(k=>-.5+k/40),[...Array(21).keys()].map(k=>.5-k/20/2));
+ for(const u of path){for(const n of cap)await api('sim_move',{joint:n,raw:base[n]+u*span[n]*.98});await new Promise(r=>setTimeout(r,25))}}
+function armed(b,label,fire){if(st.estop)return;if(b.dataset.armed){clearTimeout(+b.dataset.armed);delete b.dataset.armed;b.classList.remove('armed');b.textContent=b.dataset.lbl;fire();return}
+ b.dataset.lbl=b.textContent;b.textContent=label;b.classList.add('armed');b.dataset.armed=setTimeout(()=>{delete b.dataset.armed;b.classList.remove('armed');b.textContent=b.dataset.lbl},3000)}
+function rbar(el,n){const j=J(n),c=calib(n),cp=M().cap?.[n];let h='';
+ if(cp){const rng=st.cfg.joints[n].range,sp=cp.min==null?0:cp.max-cp.min,W=rng?rng[1]-rng[0]:Math.max(1,sp*1.4),mid=cp.min==null?(j.pos??0):(cp.min+cp.max)/2,X=x=>cl((x-(mid-W/2))/W);
+  if(cp.min!=null)h+=`<div class="fill" style="left:${X(cp.min)}%;width:${X(cp.max)-X(cp.min)}%"></div><i class="cap" style="left:${X(cp.min)}%"></i><i class="cap" style="left:${X(cp.max)}%"></i>`;
+  if(cp.acc!=null)h+=`<i class="mk live" style="left:${X(cp.acc)}%"></i>`;
+  h+=`<span class="lab">${sp>=MIN_SPAN?deg(sp)+(rng?' · '+Math.round(sp/W*100)+'%':''):'sweep to both stops…'}</span>`}
+ else if(c){h+=`<div class="fill" style="left:0;width:100%"></div>`;if(j.pos!=null)h+=`<i class="mk" style="left:${cl((unwrapRaw(c,j.pos)-c.raw_min)/(c.raw_max-c.raw_min))}%"></i>`}
+ else h+=`<span class="lab">no saved range</span>`;
+ if(el.innerHTML!==h)el.innerHTML=h}
+// ---- Setup tab (read-only: the HAL's configuration and the saved calibration) ----
+function buildSetupRO(){const m=M(),names=jl();
+ let h=`<p class="lede">Read-only: what the hardware layer is configured with for this module. Change it in hardware_bridge/mabel_hw/config.py (MABEL_HW_* environment switches) or controller/control_param.json — not here.</p>
+ <div class="stats"><div><small>backend</small><b style="font-size:11px">${m.backend||'—'}</b></div><div><small>link</small><b style="font-size:11px">${m.port||'—'}</b></div><div><small>slice</small><b style="font-size:11px">${m.slice||'—'}</b></div><div><small>${isOrca()?'hand':'end-stop margin'}</small><b style="font-size:11px">${isOrca()?'ORCA '+genOf():m.margin!=null?m.margin+' rad':'—'}</b></div></div>
+ <div class="tw"><table><tr><th>joint</th><th>${isOrca()?'servo id':'urdf joint'}</th><th>kp</th><th>kd</th><th>urdf range</th><th>window (raw rad)</th><th>dir</th><th>model_mid</th><th>reliability</th><th>temp</th><th>status</th></tr>`;
+ for(const n of names){const cf=st.cfg.joints[n]||{},c=cf.calib,r=cf.range;
+  h+=`<tr><td title="${n}">${disp(n)}</td><td>${isOrca()?(cf.esc??'—'):(rigName(m,n)||'—')}</td><td>${cf.kp??'—'}</td><td>${cf.kd??'—'}</td><td>${r?deg(r[0])+' … '+deg(r[1]):'—'}</td><td>${c&&c.raw_min!=null?(+c.raw_min).toFixed(3)+' … '+(+c.raw_max).toFixed(3):'—'}</td><td>${c?.dir??'—'}</td><td>${c?.model_mid!=null?(+c.model_mid).toFixed(4):'—'}</td><td>${c?.reliability??'—'}</td><td data-j="${n}" data-f="stemp"></td><td data-j="${n}" data-f="sstat"></td></tr>`}
+ h+=`</table></div><div class="note">· URDF ranges come from web_gui/shared_assets/mabel_joints.json (generated from the MJCF) — the calibration anchor and the coverage check<br>· calibration: ${st.calib_file} · slice ${m.slice||'—'}${isOrca()?'<br>· the hand adapter is picked by its USB serial: MABEL_HW_HANDS_'+(m.side||'').toUpperCase()+'_SERIAL':''}<br>· one process owns the hardware: this studio refuses to start while the HAL holds its lock</div>`;
+ $('#view').innerHTML=h}
+// ---- paint values in place (every poll) ----
+function paint(){const m=M();if(m.lift)paintLift(m.lift);
+ for(const el of $$('#view [data-j]')){const n=el.dataset.j,j=J(n),c=calib(n),f=el.dataset.f,cp=m.cap?.[n];
+  if(f==='dot')set(el,'className','dot '+(j.err>=8?'bad':j.live?'ok':''));
+  else if(f==='cdot')set(el,'className','dot '+(!j.live?'':j.err>=8?'bad':!c?'bad':issue(n)?issue(n).sev:'ok'));
+  else if(f==='temp'){set(el,'textContent',j.temp==null?'':j.temp+'°');set(el,'className','chip'+(j.temp>=70?' hot':j.temp>=55?' warm':''));el.hidden=j.temp==null}
+  else if(f==='sl'){const x=j.on&&!j.relax?j.goal:j.pos;if(x!=null&&document.activeElement!==el&&goals[n]==null)set(el,'value',String(el.dataset.raw?Math.round(x/TICK):toModel(c,x)))}   // limp: follow the joint · holding: follow the goal · never while dragging
+  else if(f==='tk'){if(j.pos!=null){const x=c?(()=>{const[lo,hi]=limits(c);return Math.max(0,Math.min(1,(toModel(c,j.pos)-lo)/(hi-lo)))})():(j.tick??0)/4095;el.style.left=`calc(${x*100}% - ${x*14-6}px)`}}
+  else if(f==='des')set(el,'textContent',j.on&&!j.relax?(j.goal_model!=null?deg(j.goal_model):c&&j.sp!=null?deg(toModel(c,j.sp)):'hold'):j.relax?'τ=0':'');
+  else if(f==='cur')set(el,'textContent',c&&j.pos!=null?deg(toModel(c,j.pos)):j.tick!=null?'tick '+j.tick:j.pos!=null?j.pos.toFixed(3)+' raw':'—');
+  else if(f==='rbar')rbar(el,n);
+  else if(f==='cmin')set(el,'textContent',cp?.min==null?'—':deg(cp.min)),el.className=cp?.min==null?'':'got';
+  else if(f==='cmax')set(el,'textContent',cp?.max==null?'—':deg(cp.max)),el.className=cp?.max==null?'':'got';
+  else if(f==='clive')set(el,'textContent',cp?.acc==null?'—':deg(cp.acc));
+  else if(f==='cspan')set(el,'textContent',cp?.min==null?'—':deg(cp.max-cp.min)),el.className=cp&&cp.min!=null&&cp.max-cp.min>=MIN_SPAN?'got ok':'';
+  else if(f==='cmsg'){const rng=st.cfg.joints[n].range,sp=cp?.min==null?0:cp.max-cp.min;set(el,'textContent',sp<MIN_SPAN?`Move ${n} to both stops.`:rng?`${Math.round(sp/(rng[1]-rng[0])*100)}% of the URDF range (${deg(rng[1]-rng[0])}) — ${sp/(rng[1]-rng[0])>=.85?'both stops reached ✓':'keep going'}`:`${deg(sp)} swept — no URDF range set (Setup) to measure against`)}
+  else if(f==='slink'){set(el,'textContent',j.link==null?'—':j.link+'%');set(el,'className',j.link==null?'':j.link>=95?'ok':j.link>=80?'warn':'bad')}
+  else if(f==='stemp')set(el,'textContent',(j.temp==null?'—':j.temp+'°')+(j.volt!=null?' · '+j.volt.toFixed(1)+' V':''));
+  else if(f==='svolt')set(el,'textContent',j.volt==null?'—':j.volt.toFixed(1)+' V');
+  else if(f==='sstat'){const h=j.err>=8?`<span class="bad">${j.state}</span>`:!j.live?'<span class="off">silent</span>':j.temp>=70?'<span class="bad">HOT</span>':j.relax?'<span class="ok">zero torque</span>':j.on?'<span class="warn">holding</span>':j.kind==='feetech'?'<span class="ok">free</span>':'<span class="off">off</span>';if(el.innerHTML!==h)el.innerHTML=h}}
+ for(const el of $$('[data-found]')){const f=m.found.find(f=>f.esc===+el.dataset.found);set(el,'textContent',f?.raw!=null?(isOrca()?'tick '+f.raw:'raw '+f.raw):'—')}
+ if(m.cap)for(const sb of $$('[data-cap=save]')){const N=Object.values(m.cap).filter(c=>c.min!=null&&c.max-c.min>=MIN_SPAN).length;set(sb,'disabled',!N);set(sb,'textContent',Object.keys(m.cap).length>1?`✓ Save (${N})`:N?'✓ Save range':'✓ Save range (sweep ≥ 8°)')}}   // the Save count must follow the live capture, not the build
+// ---- rail: status (4 Hz) + events ----
+function status(){const now=Date.now();if(now-(sync.tst||0)<250)return;sync.tst=now;const m=M();set($('#stt'),'textContent','Status — '+m.label);
+ const row=(k,v,c='')=>`<div class="st"><span class="k">${k}</span><span class="v ${c}">${v}</span></div>`;let h;
+ if(m.lift){const l=m.lift;
+  h=row('hardware',m.connected?'Pico connected':'Pico absent',m.connected?'ok':'bad')+row('port',m.port?m.port.replace('/dev/',''):'searching USB VID 2e8a')
+   +row('telemetry',m.detected?'live · '+m.rate_hz+' Hz':'no frames',m.detected?'ok':'warn')+row('mode',l.live?l.mode:'—')
+   +row('torque',l.torque?'ON — H-bridge enabled':'off — free-wheeling',l.torque?'warn':'')
+   +row('calibration',l.calibrated?'measured · '+mm(l.min)+' … '+mm(l.max):'uncalibrated',l.calibrated?'ok':'warn')
+   +row('height',l.live?mm(l.height):'—')+row('target',l.live&&l.torque?mm(l.target):'—')
+   +row('velocity',l.live?(l.velocity*1000).toFixed(1)+' mm/s':'—')+row('effort',l.live?(l.effort*100).toFixed(0)+' %':'—');}
+ else if(m.kind==='swerve')h=row('hardware',m.connected?'base Teensy answering':'offline',m.connected?'ok':'bad')+row('link',m.port||'—')+row('e-stop',m.base?.estop?'latched by this studio':'clear',m.base?.estop?'warn':'')+row('modules',m.base?m.base.modules.length:'—')+(m.note?`<div class="hint" style="margin-top:8px;line-height:1.6">${m.note}</div>`:'');
+ else if(!hasJ())h=row('driver','not brought up','warn')+row('kind',m.kind)+row('hardware','not wired')+(m.note?`<div class="hint" style="margin-top:8px;line-height:1.6">${m.note}</div>`:'');
+ else{const js=jl().map(n=>[n,J(n)]),live=js.filter(x=>x[1].live).length,on=js.filter(x=>x[1].on&&!x[1].relax).length,relaxed=js.filter(x=>x[1].relax).length,fresh=js.some(x=>st.t-x[1].t<2),hot=js.filter(x=>x[1].temp!=null).sort((a,b)=>b[1].temp-a[1].temp)[0],faults=js.filter(x=>x[1].err>=8),cal=jl().filter(calib).length;
+  h=row('hardware',m.connected?(isOrca()?'adapter connected':'link up'):(isOrca()?'adapter absent':'link down'),m.connected?'ok':'bad')+(st.sim?row('mode','SIM — mabel_hw mock plant','warn'):'')+row('bus',m.bus+(m.port?' · '+m.port.replace('/dev/',''):''))+row('detected',m.esc?(m.detected?'yes · '+(isOrca()?'IDs '+m.esc[0]+'–'+m.esc[1]:'ESC '+hex(m.esc[0])+'–'+hex(m.esc[1])):'no '+(isOrca()?'servo at IDs '+m.esc[0]+'–'+m.esc[1]:'motor on ESC '+hex(m.esc[0])+'–'+hex(m.esc[1]))):(m.detected?'yes':'no motor answering'),m.detected?'ok':'warn')+row('stream',!m.connected?'—':fresh?'live · '+m.rate_hz+' Hz':live?'stale':'no frames',fresh?'ok':'warn')+row('joints live',live+'/'+js.length,live===js.length?'ok':live?'warn':'bad')
+  +row('torque',on?'HOLDING ('+on+' on)':relaxed?'ZERO TORQUE ('+relaxed+' limp)':isOrca()?'free (torque off)':'off',on?'warn':relaxed||isOrca()?'ok':'')+row('control',m.cap?'capturing — torque off':st.estop?'E-STOP':'idle',m.cap?'warn':st.estop?'bad':'')
+  +(hot?row('hottest motor',hot[0]+' '+hot[1].temp+'°',hot[1].temp>=70?'bad':hot[1].temp>=55?'warn':''):'')+(faults.length?row('faults',faults.map(x=>x[0]+': '+x[1].state).join(', '),'bad'):'')+row('calibration',cal?cal+' joint(s) saved':'none saved',cal?'':'warn');
+  h+=`<div class="ph" style="margin-top:10px">${isOrca()?'servos · ▮ current · ▮ desired · ω rad/s · τ ≈ N·m (from load ‰)':'motors · ▮ current · ▮ desired · ω rad/s · τ N·m'}</div>`;
+  for(const[n,j]of js){const c=calib(n),t=c&&j.pos!=null?(j.pos-c.raw_min)/(c.raw_max-c.raw_min):null,d=c&&j.on&&!j.relax?(j.sp-c.raw_min)/(c.raw_max-c.raw_min):null;
+   h+=`<div class="sj"><div><span class="${j.live?'':'off'}">${disp(n)}</span><span>${j.link!=null&&j.link<95?`<span class="${j.link>=80?'warn':'bad'}">${j.link}% </span>`:''}${j.temp!=null?j.temp+'° ':''}${j.vel!=null?j.vel.toFixed(1)+'ω ':''}${j.tau!=null?j.tau.toFixed(2)+'τ':''}</span></div><div class="bar${j.live?'':' dead'}">${t!=null?`<i style="left:${cl(t)}%"></i>`:''}${d!=null?`<i class="des" style="left:${cl(d)}%"></i>`:''}</div></div>`}}
+ if(h!==sync.status){sync.status=h;$('#status').innerHTML=h}}
+function events(){const all=[...st.log,...cev].sort((a,b)=>a[0]-b[0]).slice(-40),out=[];for(const e of all){const p=out[out.length-1];if(p&&p[1]===e[1]&&p[2]===e[2]&&p[3]===e[3])p[4]++;else out.push([...e,1])}
+ const h=out.slice(-14).reverse().map(e=>`<div class="ev${e[2]?'':' fail'}"><b>${e[1]}</b>${e[3]}${e[4]>1?` <b>×${e[4]}</b>`:''}</div>`).join('')||'<div class="hint">no events yet</div>';if(h!==sync.ev){sync.ev=h;$('#events').innerHTML=h}}
+// ---- resizable side panels: drag a gutter, remembered per browser, double-click resets ----
+const RS=document.documentElement.style;let cols={};try{cols=JSON.parse(localStorage.getItem('mabel.setup.cols')||'{}')}catch(e){}
+const applyCols=()=>{cols.rail?RS.setProperty('--rail-w',cols.rail+'px'):RS.removeProperty('--rail-w');cols.work?RS.setProperty('--work-w',cols.work+'px'):RS.removeProperty('--work-w')};applyCols();
+for(const g of $$('.gut')){const rail=g.id==='g1';
+ g.onpointerdown=e=>{g.setPointerCapture(e.pointerId);g.classList.add('drag');g.onpointermove=ev=>{if(rail)cols.rail=Math.max(180,Math.min(600,ev.clientX));else cols.work=Math.max(320,Math.min(innerWidth*.7,innerWidth-ev.clientX));applyCols()}};
+ g.onpointerup=()=>{g.onpointermove=null;g.classList.remove('drag');try{localStorage.setItem('mabel.setup.cols',JSON.stringify(cols))}catch(e){}};
+ g.ondblclick=()=>{delete cols[rail?'rail':'work'];applyCols();try{localStorage.setItem('mabel.setup.cols',JSON.stringify(cols))}catch(e){}}}
+// ---- global controls ----
+$('#estop').onclick=()=>api(st?.estop?'reengage':'estop');
+document.addEventListener('keydown',e=>{if((e.key==='Escape'||e.key===' ')&&!/INPUT|SELECT/.test(e.target.tagName)&&st&&!st.estop){e.preventDefault();api('estop')}});
+$('#cam-home').onclick=()=>window.VP?.home();$('#cam-frame').onclick=()=>window.VP?.frame(sel);
+$('#mods').onclick=e=>{const b=e.target.closest('.mod');if(b&&b.dataset.m!==sel){if(M().cap)api('capture_end',{module:sel,save:false});sel=b.dataset.m;open=null;window.VP?.frame(sel);build()}};
+$$('.tab').forEach(t=>t.onclick=()=>{if(tab===t.dataset.tab)return;if(M().cap)api('capture_end',{module:sel,save:false});tab=t.dataset.tab;$$('.tab').forEach(x=>x.classList.toggle('on',x===t));open=null;build()});
+</script></body></html>

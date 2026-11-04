@@ -1,0 +1,57 @@
+<!--
+  MABEL navigation BT : replan @ 1 Hz + AGGRESSIVE unstuck recovery.
+
+  Derived from nav2's stock navigate_to_pose_w_replanning_and_recovery.xml, but
+  tuned so a base that wedges itself in a tight gap (we run a deliberately TIGHT
+  costmap inflation, ~0.28 m, so MPPI threads narrow doorways) can dig ITSELF out
+  instead of aborting the goal:
+
+    * NavigateRecovery retries 12x (stock 6) for many more escape attempts.
+    * Per-leg ComputePathToPose / FollowPath retry 2x (stock 1) with a costmap
+      clear between tries, so one transient blocked cell does not fail the goal.
+    * The recovery RoundRobin cycles through a RICHER set of escape moves:
+        clear both costmaps, back up, spin one way, back up, spin the OTHER way,
+        short wait. Each consecutive stuck event advances to the next move, so
+        the robot wiggles loose rather than repeating one useless action.
+    * Recovery is NOT gated behind "WouldA*RecoveryHelp": if FollowPath/Compute
+      fails for ANY reason (incl. the progress-checker tripping when the base is
+      pinned), we ALWAYS attempt the physical unstick sequence.
+
+  Keep this in sync with config/nav2_params.yaml (behavior_server tunes the
+  Spin/BackUp velocity + collision look-ahead these nodes use). bt_navigator is
+  pointed here by navigation.launch.py (default_nav_to_pose_bt_xml).
+-->
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="12" name="NavigateRecovery">
+      <PipelineSequence name="NavigateWithReplanning">
+        <ControllerSelector selected_controller="{selected_controller}" default_controller="FollowPath" topic_name="controller_selector"/>
+        <PlannerSelector selected_planner="{selected_planner}" default_planner="GridBased" topic_name="planner_selector"/>
+        <RateController hz="1.0">
+          <RecoveryNode number_of_retries="2" name="ComputePathToPose">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="{selected_planner}" error_code_id="{compute_path_error_code}"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </RecoveryNode>
+        </RateController>
+        <RecoveryNode number_of_retries="2" name="FollowPath">
+          <FollowPath path="{path}" controller_id="{selected_controller}" error_code_id="{follow_path_error_code}"/>
+          <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+        </RecoveryNode>
+      </PipelineSequence>
+      <ReactiveFallback name="RecoveryFallback">
+        <GoalUpdated/>
+        <RoundRobin name="RecoveryActions">
+          <Sequence name="ClearingActions">
+            <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Sequence>
+          <BackUp backup_dist="0.25" backup_speed="0.15" error_code_id="{backup_error_code}"/>
+          <Spin spin_dist="1.57" error_code_id="{spin_error_code}"/>
+          <BackUp backup_dist="0.25" backup_speed="0.15" error_code_id="{backup_error_code}"/>
+          <Spin spin_dist="-1.57" error_code_id="{spin_error_code}"/>
+          <Wait wait_duration="2.0"/>
+        </RoundRobin>
+      </ReactiveFallback>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

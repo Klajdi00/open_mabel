@@ -1,0 +1,756 @@
+{
+ "version": 1,
+ "actors": [
+  {
+   "kind": "vehicle",
+   "root": "car_e1_root",
+   "z": 0.045,
+   "path": [
+    [
+     -25.0,
+     4.25
+    ],
+    [
+     25.0,
+     4.25
+    ]
+   ],
+   "closed": false,
+   "speed": 6.5,
+   "accel": 2.2,
+   "s0": 4.0,
+   "teleport": true,
+   "wheels": {
+    "joints": [
+     "car_e1_w0_spin",
+     "car_e1_w1_spin",
+     "car_e1_w2_spin",
+     "car_e1_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 23.5,
+     "period": 28.0,
+     "dur": 18.0,
+     "offset": 10.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car_e2_root",
+   "z": 0.045,
+   "path": [
+    [
+     -25.0,
+     4.25
+    ],
+    [
+     25.0,
+     4.25
+    ]
+   ],
+   "closed": false,
+   "speed": 6.5,
+   "accel": 2.2,
+   "s0": 27.0,
+   "teleport": true,
+   "wheels": {
+    "joints": [
+     "car_e2_w0_spin",
+     "car_e2_w1_spin",
+     "car_e2_w2_spin",
+     "car_e2_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 23.5,
+     "period": 28.0,
+     "dur": 18.0,
+     "offset": 10.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car_w1_root",
+   "z": 0.045,
+   "path": [
+    [
+     25.0,
+     8.75
+    ],
+    [
+     -25.0,
+     8.75
+    ]
+   ],
+   "closed": false,
+   "speed": 6.0,
+   "accel": 2.2,
+   "s0": 14.0,
+   "teleport": true,
+   "wheels": {
+    "joints": [
+     "car_w1_w0_spin",
+     "car_w1_w1_spin",
+     "car_w1_w2_spin",
+     "car_w1_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 11.5,
+     "period": 28.0,
+     "dur": 18.0,
+     "offset": 10.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car_n1_root",
+   "z": 0.045,
+   "path": [
+    [
+     8.75,
+     -25.0
+    ],
+    [
+     8.75,
+     25.0
+    ]
+   ],
+   "closed": false,
+   "speed": 6.2,
+   "accel": 2.2,
+   "s0": 9.0,
+   "teleport": true,
+   "wheels": {
+    "joints": [
+     "car_n1_w0_spin",
+     "car_n1_w1_spin",
+     "car_n1_w2_spin",
+     "car_n1_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 23.5,
+     "period": 28.0,
+     "dur": 18.0,
+     "offset": 24.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car_n2_root",
+   "z": 0.045,
+   "path": [
+    [
+     8.75,
+     -25.0
+    ],
+    [
+     8.75,
+     25.0
+    ]
+   ],
+   "closed": false,
+   "speed": 6.2,
+   "accel": 2.2,
+   "s0": 33.0,
+   "teleport": true,
+   "wheels": {
+    "joints": [
+     "car_n2_w0_spin",
+     "car_n2_w1_spin",
+     "car_n2_w2_spin",
+     "car_n2_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 23.5,
+     "period": 28.0,
+     "dur": 18.0,
+     "offset": 24.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car_s1_root",
+   "z": 0.045,
+   "path": [
+    [
+     4.25,
+     25.0
+    ],
+    [
+     4.25,
+     -25.0
+    ]
+   ],
+   "closed": false,
+   "speed": 5.8,
+   "accel": 2.2,
+   "s0": 20.0,
+   "teleport": true,
+   "wheels": {
+    "joints": [
+     "car_s1_w0_spin",
+     "car_s1_w1_spin",
+     "car_s1_w2_spin",
+     "car_s1_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 11.5,
+     "period": 28.0,
+     "dur": 18.0,
+     "offset": 24.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "xped1_root",
+   "z": 0.94,
+   "path": [
+    [
+     0.9,
+     0.2
+    ],
+    [
+     12.1,
+     0.2
+    ],
+    [
+     13.0,
+     0.9
+    ],
+    [
+     13.0,
+     12.1
+    ],
+    [
+     12.1,
+     13.0
+    ],
+    [
+     0.9,
+     13.0
+    ],
+    [
+     0.2,
+     12.1
+    ],
+    [
+     0.2,
+     0.9
+    ]
+   ],
+   "closed": true,
+   "speed": 1.3,
+   "accel": 1.6,
+   "s0": 1.0,
+   "bob": 0.022,
+   "stride": 0.66,
+   "gait": {
+    "joints": [
+     "xped1_hipL",
+     "xped1_hipR",
+     "xped1_kneeL",
+     "xped1_kneeR",
+     "xped1_shL",
+     "xped1_shR",
+     "xped1_elL",
+     "xped1_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 0.5,
+     "period": 28.0,
+     "dur": 12.0,
+     "offset": 13.0
+    },
+    {
+     "s": 24.0,
+     "period": 28.0,
+     "dur": 12.0,
+     "offset": 27.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.32,
+    0.32
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "xped2_root",
+   "z": 0.848,
+   "path": [
+    [
+     0.9,
+     0.2
+    ],
+    [
+     12.1,
+     0.2
+    ],
+    [
+     13.0,
+     0.9
+    ],
+    [
+     13.0,
+     12.1
+    ],
+    [
+     12.1,
+     13.0
+    ],
+    [
+     0.9,
+     13.0
+    ],
+    [
+     0.2,
+     12.1
+    ],
+    [
+     0.2,
+     0.9
+    ]
+   ],
+   "closed": true,
+   "speed": 1.15,
+   "accel": 1.6,
+   "s0": 14.0,
+   "bob": 0.0233,
+   "stride": 0.562,
+   "gait": {
+    "joints": [
+     "xped2_hipL",
+     "xped2_hipR",
+     "xped2_kneeL",
+     "xped2_kneeR",
+     "xped2_shL",
+     "xped2_shR",
+     "xped2_elL",
+     "xped2_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 12.6,
+     "period": 28.0,
+     "dur": 12.0,
+     "offset": 27.0
+    },
+    {
+     "s": 36.5,
+     "period": 28.0,
+     "dur": 12.0,
+     "offset": 13.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.29,
+    0.29
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "xped3_root",
+   "z": 0.94,
+   "path": [
+    [
+     0.2,
+     0.9
+    ],
+    [
+     0.2,
+     12.1
+    ],
+    [
+     0.9,
+     13.0
+    ],
+    [
+     12.1,
+     13.0
+    ],
+    [
+     13.0,
+     12.1
+    ],
+    [
+     13.0,
+     0.9
+    ],
+    [
+     12.1,
+     0.2
+    ],
+    [
+     0.9,
+     0.2
+    ]
+   ],
+   "closed": true,
+   "speed": 1.4,
+   "accel": 1.6,
+   "s0": 6.0,
+   "bob": 0.022,
+   "stride": 0.66,
+   "gait": {
+    "joints": [
+     "xped3_hipL",
+     "xped3_hipR",
+     "xped3_kneeL",
+     "xped3_kneeR",
+     "xped3_shL",
+     "xped3_shR",
+     "xped3_elL",
+     "xped3_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 3.6,
+     "period": 28.0,
+     "dur": 12.0,
+     "offset": 27.0
+    },
+    {
+     "s": 27.5,
+     "period": 28.0,
+     "dur": 12.0,
+     "offset": 13.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.32,
+    0.32
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "wped1_root",
+   "z": 0.94,
+   "path": [
+    [
+     -24.0,
+     -1.6
+    ],
+    [
+     -1.5,
+     -1.6
+    ],
+    [
+     -1.0,
+     -4.0
+    ],
+    [
+     -24.0,
+     -4.2
+    ]
+   ],
+   "closed": true,
+   "speed": 1.2,
+   "accel": 1.6,
+   "s0": 8.0,
+   "bob": 0.022,
+   "stride": 0.66,
+   "gait": {
+    "joints": [
+     "wped1_hipL",
+     "wped1_hipR",
+     "wped1_kneeL",
+     "wped1_kneeR",
+     "wped1_shL",
+     "wped1_shR",
+     "wped1_elL",
+     "wped1_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.32,
+    0.32
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "wped2_root",
+   "z": 0.884,
+   "path": [
+    [
+     12.3,
+     -24.0
+    ],
+    [
+     12.3,
+     -2.0
+    ],
+    [
+     13.2,
+     -1.5
+    ],
+    [
+     13.2,
+     -24.0
+    ]
+   ],
+   "closed": true,
+   "speed": 1.25,
+   "accel": 1.6,
+   "s0": 16.0,
+   "bob": 0.0233,
+   "stride": 0.585,
+   "gait": {
+    "joints": [
+     "wped2_hipL",
+     "wped2_hipR",
+     "wped2_kneeL",
+     "wped2_kneeR",
+     "wped2_shL",
+     "wped2_shR",
+     "wped2_elL",
+     "wped2_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.3,
+    0.3
+   ]
+  }
+ ],
+ "conveyors": []
+}

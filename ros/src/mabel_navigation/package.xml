@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mabel_navigation</name>
+  <version>0.0.0</version>
+  <description>Nav2-based autonomous navigation for MABEL's holonomic swerve base, fed by the Isaac ROS SLAM stack (cuVSLAM + nvblox). Includes a /cmd_vel -> /mabel_cmd bridge.</description>
+  <maintainer email="maintainers@example.com">MABEL Authors</maintainer>
+  <license>TODO: License declaration</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf2_geometry_msgs</exec_depend>   <!-- goal_relay: transform goals odom->map -->
+  <exec_depend>nav2_msgs</exec_depend>           <!-- NavigateToPose action (explorer + goal_relay) -->
+  <exec_depend>mabel_interfaces</exec_depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <!-- Navigation framework -->
+  <exec_depend>navigation2</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>robot_localization</exec_depend>   <!-- fused EKF localization -->
+
+  <!-- OPTIONAL SLAM backends, composed only when slam:=lidar|visual. Navigation is
+       backend-agnostic (reads /map + /scan + map->odom) and runs with slam:=none
+       against any external SLAM, so this is a convenience, not a hard coupling. -->
+  <exec_depend>mabel_slam</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

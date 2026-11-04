@@ -1,0 +1,45 @@
+# MABEL speaker + mic — a stable ALSA card id on ANY USB port.
+#
+# The JMTek/Solid State System USB sound-card dongle (VID:PID 0c76:1203, drives
+# the 8 Ω / 5 W speaker pair + mic; replaced the MZ-631M bar 2026-07-27) is a
+# single duplex card: hw:X,0 is BOTH the speaker and the mic. Unlike the wrist
+# cams (identical twins that only their hub PORT can tell apart — see
+# 99-mabel-wrist-cams.rules), this dongle has a unique VID:PID, so it is
+# identified by WHAT it is, never by where it is plugged in. This rule pins its
+# ALSA card id accordingly:
+#
+#     any port / any hub / any card index  ->  card id "MabelAudio"
+#
+# WHY BOTHER, given the bridge already resolves the card by VID:PID through
+# sysfs (mabel_hw/drivers/audio.py: card_for_usb_id) and therefore works with or
+# without this rule? Two edges the rule closes:
+#   * ALSA derives the default id from the product string — here the maximally
+#     generic "USB PnP Audio Device", which yields card id "Device". ANY other
+#     generic USB audio widget can collide with that and get one of them
+#     suffixed ("Device_1") — a stable, explicit id removes the collision.
+#   * It makes the card addressable BY NAME from the shell for humans and for
+#     tools that are not the bridge:
+#         aplay   -D plughw:CARD=MabelAudio,DEV=0 tone.wav
+#         arecord -D plughw:CARD=MabelAudio,DEV=0 -f S16_LE -r 16000 -c 1 x.wav
+#         amixer  -c MabelAudio sset Speaker 70% unmute
+#
+# ⚠ The playback control on this card is 'Speaker' (the old bar's was 'PCM', and
+# it BOOTED at 0% — aplay then returned 0 and played SILENCE). The bridge asserts
+# the mixer on connect; if you test by hand, set the volume first or you may
+# "prove" a working speaker is dead. The 'Mic' control also has a playback side
+# (sidetone to the speaker) — leave that OFF or the mic feeds back.
+#
+# ⚠ ATTR{id} must be set on the CARD device (KERNEL=="card*"), not on a PCM or
+# control node — udev silently ignores it elsewhere.
+#
+# After installing, tell the bridge the new name (or leave it: the VID:PID
+# resolver finds the card whatever it is called):
+#     MABEL_HW_AUDIO_CARD=MabelAudio
+#     MABEL_HW_AUDIO_DEVICE_PLAYBACK=plughw:CARD=MabelAudio,DEV=0
+#     MABEL_HW_AUDIO_DEVICE_CAPTURE=plughw:CARD=MabelAudio,DEV=0
+#
+# Install: sudo cp 99-mabel-audio.rules /etc/udev/rules.d/ && sudo udevadm control
+#          --reload-rules && sudo udevadm trigger
+# Verify:  cat /proc/asound/cards      (expect: "MabelAudio" on whatever index)
+#          python3 experiments/exp_audio.py
+SUBSYSTEM=="sound", KERNEL=="card*", ATTRS{idVendor}=="0c76", ATTRS{idProduct}=="1203", ATTR{id}="MabelAudio"

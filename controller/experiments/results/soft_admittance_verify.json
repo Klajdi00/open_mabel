@@ -1,0 +1,59 @@
+{
+ "when": "2026-07-30 00:56:18",
+ "quick": false,
+ "results": {
+  "S1_hold": {
+   "pass": true,
+   "drift_deg": 0.022,
+   "palm_drift_cm": 0.05,
+   "s": 60.0
+  },
+  "S2_drag_back(-x)": {
+   "pass": true,
+   "travel_cm": 53.6,
+   "springback_cm": 13.67
+  },
+  "S2_drag_side(+y)": {
+   "pass": true,
+   "travel_cm": 71.8,
+   "springback_cm": 0.0
+  },
+  "S2_drag_up(+z)": {
+   "pass": true,
+   "travel_cm": 39.6,
+   "springback_cm": 0.1
+  },
+  "S3_floating_gain": {
+   "pass": true,
+   "admittance_cm": 53.6,
+   "rubberband_cm": 16.9,
+   "rubberband_springback_cm": 1.1
+  },
+  "S4_light_touch": {
+   "pass": true,
+   "travel_cm": 0.1,
+   "post_drift_deg": 0.0
+  },
+  "S5_seed2": {
+   "pass": true,
+   "mismatch_rms": 0.86,
+   "drift_deg": 0.76,
+   "travel_cm": 19.6,
+   "springback_cm": 0.02
+  },
+  "S5_seed3": {
+   "pass": true,
+   "mismatch_rms": 0.84,
+   "drift_deg": 0.91,
+   "travel_cm": 22.0,
+   "springback_cm": 0.02
+  },
+  "S5_seed4": {
+   "pass": true,
+   "mismatch_rms": 0.88,
+   "drift_deg": 0.21,
+   "travel_cm": 26.5,
+   "springback_cm": 0.02
+  }
+ }
+}

@@ -1,0 +1,23 @@
+# ORCA hand v2 (left) — NOVA's hand, swappable onto MABEL. WRITTEN by NOVA servos/orca_hands.py export-v2;
+# do not edit by hand (re-run the export after recalibrating the hand on NOVA).
+side: left
+generation: v2
+calib_slice: hand/orca-v2-left
+joints:
+  middle_mcp:  { id:  1, angle_min: -0.436332, angle_max: 1.745329, invert: false }
+  pinky_pip:   { id:  2, angle_min: -0.261799, angle_max: 1.867502, invert: false }
+  pinky_mcp:   { id:  3, angle_min: -0.436332, angle_max: 1.745329, invert: false }
+  pinky_abd:   { id:  4, angle_min: -0.523599, angle_max: 0.523599, invert: false }
+  thumb_abd:   { id:  5, angle_min: -0.314159, angle_max: 0.959931, invert: false }
+  thumb_ip:    { id:  6, angle_min: -0.436332, angle_max: 1.745329, invert: false }
+  thumb_mp:    { id:  7, angle_min: -0.261799, angle_max: 1.867502, invert: false }
+  thumb_cmc:   { id:  8, angle_min: -0.785398, angle_max: 0.575959, invert: false }
+  index_pip:   { id:  9, angle_min: -0.261799, angle_max: 1.867502, invert: false }
+  index_mcp:   { id: 10, angle_min: -0.436332, angle_max: 1.745329, invert: false }
+  index_abd:   { id: 11, angle_min: -0.436332, angle_max: 0.523599, invert: false }
+  middle_abd:  { id: 12, angle_min: -0.471239, angle_max: 0.471239, invert: false }
+  ring_abd:    { id: 13, angle_min: -0.471239, angle_max: 0.471239, invert: false }
+  ring_mcp:    { id: 14, angle_min: -0.436332, angle_max: 1.745329, invert: false }
+  ring_pip:    { id: 15, angle_min: -0.261799, angle_max: 1.867502, invert: false }
+  middle_pip:  { id: 16, angle_min: -0.261799, angle_max: 1.867502, invert: false }
+  wrist:       { id: 17, angle_min: -1.134464, angle_max: 0.610865, invert: false }

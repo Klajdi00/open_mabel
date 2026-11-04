@@ -1,0 +1,770 @@
+{
+ "version": 1,
+ "actors": [
+  {
+   "kind": "vehicle",
+   "root": "taxi1_root",
+   "z": 0.045,
+   "path": [
+    [
+     -26.0,
+     4.3
+    ],
+    [
+     26.0,
+     4.3
+    ],
+    [
+     26.0,
+     20.8
+    ],
+    [
+     -26.0,
+     20.8
+    ]
+   ],
+   "closed": true,
+   "speed": 6.5,
+   "accel": 2.2,
+   "s0": 8.0,
+   "wheels": {
+    "joints": [
+     "taxi1_w0_spin",
+     "taxi1_w1_spin",
+     "taxi1_w2_spin",
+     "taxi1_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 36.0,
+     "period": 24.0,
+     "dur": 7.0,
+     "offset": 5.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car1_root",
+   "z": 0.045,
+   "path": [
+    [
+     -26.0,
+     4.3
+    ],
+    [
+     26.0,
+     4.3
+    ],
+    [
+     26.0,
+     20.8
+    ],
+    [
+     -26.0,
+     20.8
+    ]
+   ],
+   "closed": true,
+   "speed": 6.0,
+   "accel": 2.2,
+   "s0": 55.0,
+   "wheels": {
+    "joints": [
+     "car1_w0_spin",
+     "car1_w1_spin",
+     "car1_w2_spin",
+     "car1_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car2_root",
+   "z": 0.045,
+   "path": [
+    [
+     -26.0,
+     4.3
+    ],
+    [
+     26.0,
+     4.3
+    ],
+    [
+     26.0,
+     20.8
+    ],
+    [
+     -26.0,
+     20.8
+    ]
+   ],
+   "closed": true,
+   "speed": 6.8,
+   "accel": 2.2,
+   "s0": 110.0,
+   "wheels": {
+    "joints": [
+     "car2_w0_spin",
+     "car2_w1_spin",
+     "car2_w2_spin",
+     "car2_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car3_root",
+   "z": 0.045,
+   "path": [
+    [
+     26.0,
+     7.3
+    ],
+    [
+     -26.0,
+     7.3
+    ],
+    [
+     -26.0,
+     24.3
+    ],
+    [
+     26.0,
+     24.3
+    ]
+   ],
+   "closed": true,
+   "speed": 6.2,
+   "accel": 2.2,
+   "s0": 20.0,
+   "wheels": {
+    "joints": [
+     "car3_w0_spin",
+     "car3_w1_spin",
+     "car3_w2_spin",
+     "car3_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "stops": [
+    {
+     "s": 40.0,
+     "period": 27.0,
+     "dur": 6.0,
+     "offset": 13.0
+    }
+   ],
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "vehicle",
+   "root": "car4_root",
+   "z": 0.045,
+   "path": [
+    [
+     26.0,
+     7.3
+    ],
+    [
+     -26.0,
+     7.3
+    ],
+    [
+     -26.0,
+     24.3
+    ],
+    [
+     26.0,
+     24.3
+    ]
+   ],
+   "closed": true,
+   "speed": 7.2,
+   "accel": 2.2,
+   "s0": 90.0,
+   "wheels": {
+    "joints": [
+     "car4_w0_spin",
+     "car4_w1_spin",
+     "car4_w2_spin",
+     "car4_w3_spin"
+    ],
+    "radius": 0.32
+   },
+   "yield_dist": 0.0,
+   "yield_width": 0.0,
+   "body_r": 2.4499999999999997,
+   "avoid_r": 3.55,
+   "hit_box": [
+    2.05,
+    0.86
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped1_root",
+   "z": 0.94,
+   "path": [
+    [
+     -27.0,
+     -1.6
+    ],
+    [
+     27.0,
+     -1.6
+    ]
+   ],
+   "closed": false,
+   "speed": 1.35,
+   "accel": 1.6,
+   "s0": 10.0,
+   "bob": 0.022,
+   "stride": 0.66,
+   "gait": {
+    "joints": [
+     "ped1_hipL",
+     "ped1_hipR",
+     "ped1_kneeL",
+     "ped1_kneeR",
+     "ped1_shL",
+     "ped1_shR",
+     "ped1_elL",
+     "ped1_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.32,
+    0.32
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped2_root",
+   "z": 0.893,
+   "path": [
+    [
+     -27.0,
+     1.3
+    ],
+    [
+     27.0,
+     1.3
+    ]
+   ],
+   "closed": false,
+   "speed": 1.2,
+   "accel": 1.6,
+   "s0": 40.0,
+   "bob": 0.022,
+   "stride": 0.627,
+   "gait": {
+    "joints": [
+     "ped2_hipL",
+     "ped2_hipR",
+     "ped2_kneeL",
+     "ped2_kneeR",
+     "ped2_shL",
+     "ped2_shR",
+     "ped2_elL",
+     "ped2_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.3,
+    0.3
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped3_root",
+   "z": 0.978,
+   "path": [
+    [
+     -27.0,
+     -3.2
+    ],
+    [
+     27.0,
+     -3.2
+    ]
+   ],
+   "closed": false,
+   "speed": 1.5,
+   "accel": 1.6,
+   "s0": 26.0,
+   "bob": 0.022,
+   "stride": 0.686,
+   "gait": {
+    "joints": [
+     "ped3_hipL",
+     "ped3_hipR",
+     "ped3_kneeL",
+     "ped3_kneeR",
+     "ped3_shL",
+     "ped3_shR",
+     "ped3_elL",
+     "ped3_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.33,
+    0.33
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped4_root",
+   "z": 0.94,
+   "path": [
+    [
+     27.0,
+     -0.4
+    ],
+    [
+     -27.0,
+     -0.4
+    ]
+   ],
+   "closed": false,
+   "speed": 1.1,
+   "accel": 1.6,
+   "s0": 18.0,
+   "bob": 0.022,
+   "stride": 0.66,
+   "gait": {
+    "joints": [
+     "ped4_hipL",
+     "ped4_hipR",
+     "ped4_kneeL",
+     "ped4_kneeR",
+     "ped4_shL",
+     "ped4_shR",
+     "ped4_elL",
+     "ped4_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 30.0,
+     "period": 30.0,
+     "dur": 6.0,
+     "offset": 9.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.32,
+    0.32
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped5_root",
+   "z": 0.884,
+   "path": [
+    [
+     -24.0,
+     10.2
+    ],
+    [
+     24.0,
+     10.2
+    ],
+    [
+     24.0,
+     17.8
+    ],
+    [
+     -24.0,
+     17.8
+    ]
+   ],
+   "closed": true,
+   "speed": 1.3,
+   "accel": 1.6,
+   "s0": 20.0,
+   "bob": 0.0233,
+   "stride": 0.585,
+   "gait": {
+    "joints": [
+     "ped5_hipL",
+     "ped5_hipR",
+     "ped5_kneeL",
+     "ped5_kneeR",
+     "ped5_shL",
+     "ped5_shR",
+     "ped5_elL",
+     "ped5_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.3,
+    0.3
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped6_root",
+   "z": 0.865,
+   "path": [
+    [
+     -24.0,
+     10.2
+    ],
+    [
+     24.0,
+     10.2
+    ],
+    [
+     24.0,
+     17.8
+    ],
+    [
+     -24.0,
+     17.8
+    ]
+   ],
+   "closed": true,
+   "speed": 1.25,
+   "accel": 1.6,
+   "s0": 75.0,
+   "bob": 0.018,
+   "stride": 0.74,
+   "gait": {
+    "joints": [
+     "ped6_hipL",
+     "ped6_hipR",
+     "ped6_kneeL",
+     "ped6_kneeR",
+     "ped6_shL",
+     "ped6_shR",
+     "ped6_elL",
+     "ped6_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.29,
+    0.29
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "ped7_root",
+   "z": 0.884,
+   "path": [
+    [
+     10.0,
+     -2.5
+    ],
+    [
+     10.0,
+     9.4
+    ]
+   ],
+   "closed": false,
+   "speed": 1.15,
+   "accel": 1.6,
+   "s0": 0.0,
+   "bob": 0.0233,
+   "stride": 0.585,
+   "gait": {
+    "joints": [
+     "ped7_hipL",
+     "ped7_hipR",
+     "ped7_kneeL",
+     "ped7_kneeR",
+     "ped7_shL",
+     "ped7_shR",
+     "ped7_elL",
+     "ped7_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 1.8,
+     "period": 24.0,
+     "dur": 8.0,
+     "offset": 0.0
+    },
+    {
+     "s": 9.2,
+     "period": 24.0,
+     "dur": 8.0,
+     "offset": 12.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.3,
+    0.3
+   ]
+  }
+ ],
+ "conveyors": []
+}

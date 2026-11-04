@@ -1,0 +1,133 @@
+<mujoco model="mabel_factory_environment">
+  <!-- MABEL on a factory floor: CNC machine + hydraulic press, pallets with box
+       stacks, shelving rack, workbench with real tools, safety-striped robot cell,
+       gantry beam. Textured primitives (textures from scripts/tools/gen_env_textures.py);
+       graspable clutter (hammer, screwdriver, clamp, tape) wired by gen_env_objects.py.
+       Run from repo root:  python scripts/visualize_sensors.py --scene scenes/mabel_factory.xml -->
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <include file="../models/mabel_full.xml"/>
+
+  <visual>
+    <headlight ambient="0.42 0.42 0.44" diffuse="0.25 0.25 0.25" specular="0.1 0.1 0.1"/>
+    <quality shadowsize="4096"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.52 0.58 0.66" rgb2="0.86 0.89 0.93" width="256" height="256"/>
+    <texture type="2d" name="t_concrete" file="../assets/textures/concrete.png"/>
+    <texture type="2d" name="t_brick"    file="../assets/textures/brick.png"/>
+    <texture type="2d" name="t_metal"    file="../assets/textures/metal_brushed.png"/>
+    <texture type="2d" name="t_hazard"   file="../assets/textures/hazard.png"/>
+    <texture type="2d" name="t_wood"     file="../assets/textures/wood_furniture.png"/>
+    <texture type="2d" name="t_cardboard" file="../assets/textures/cardboard.png"/>
+
+    <material name="m_concrete" texture="t_concrete" texuniform="true" texrepeat="0.6 0.6" reflectance="0.08" shininess="0.2"/>
+    <material name="m_brick"    texture="t_brick"    texuniform="false" texrepeat="10 3" reflectance="0.0"/>
+    <material name="m_metal"    texture="t_metal"    texuniform="true" texrepeat="2 2" reflectance="0.35" shininess="0.7" specular="0.5"/>
+    <material name="m_hazard"   texture="t_hazard"   texuniform="true" texrepeat="2 2" reflectance="0.0" shininess="0.1"/>
+    <material name="m_wood"     texture="t_wood"     texuniform="true" texrepeat="2 2" reflectance="0.05" shininess="0.2"/>
+    <material name="m_cardboard" texture="t_cardboard" texrepeat="1 1" reflectance="0.0" shininess="0.0"/>
+    <material name="m_machine"  rgba="0.35 0.48 0.60 1" reflectance="0.25" shininess="0.5"/>
+    <material name="m_dark"     rgba="0.16 0.17 0.19 1" reflectance="0.2" shininess="0.4"/>
+    <material name="m_safety"   rgba="0.92 0.66 0.10 1" reflectance="0.15" shininess="0.4"/>
+    <material name="m_glassd"   rgba="0.25 0.32 0.38 0.85" reflectance="0.5" shininess="0.9"/>
+    <material name="m_steel"    rgba="0.72 0.74 0.77 1" reflectance="0.35" shininess="0.7" specular="0.6"/>
+  </asset>
+
+  <worldbody>
+    <!-- ===== lighting (high-bay) ===== -->
+    <light name="bay1" directional="true" pos=" 2.0  1.0 4.0" dir="-0.3 -0.15 -1" diffuse="0.52 0.52 0.50" specular="0.25 0.25 0.25" castshadow="true"/>
+    <light name="bay2" directional="true" pos="-2.5  0.0 4.0" dir=" 0.35  0.0  -1" diffuse="0.30 0.30 0.32" castshadow="false"/>
+    <light name="bay3" directional="true" pos=" 0.0 -2.5 4.0" dir=" 0.0   0.5  -1" diffuse="0.24 0.24 0.26" castshadow="false"/>
+
+    <!-- ===== hall shell 10 x 8 m, brick walls ===== -->
+    <geom name="floor" type="plane" size="5 4 0.1" material="m_concrete"
+          contype="1" conaffinity="1" friction="1.5 0.05 0.001"/>
+    <geom name="wall_back"  type="box" pos=" 5.05 0    1.6" size="0.05 4.0 1.6" material="m_brick"/>
+    <geom name="wall_front" type="box" pos="-5.05 0    1.6" size="0.05 4.0 1.6" material="m_brick"/>
+    <geom name="wall_left"  type="box" pos=" 0    4.05 1.6" size="5.0 0.05 1.6" material="m_brick"/>
+    <geom name="wall_right" type="box" pos=" 0   -4.05 1.6" size="5.0 0.05 1.6" material="m_brick"/>
+
+    <!-- ===== safety-striped robot cell around the origin (clear 1.35 m inner square) ===== -->
+    <geom name="cell_stripe_n" type="box" pos=" 1.50  0    0.002" size="0.15 1.65 0.002" material="m_hazard"/>
+    <geom name="cell_stripe_s" type="box" pos="-1.50  0    0.002" size="0.15 1.65 0.002" material="m_hazard"/>
+    <geom name="cell_stripe_e" type="box" pos=" 0     1.50 0.002" size="1.35 0.15 0.002" material="m_hazard"/>
+    <geom name="cell_stripe_w" type="box" pos=" 0    -1.50 0.002" size="1.35 0.15 0.002" material="m_hazard"/>
+
+    <!-- ===== CNC machining center (+X wall) ===== -->
+    <geom name="cnc_body"    type="box" pos="4.10  1.60 0.85" size="0.80 0.75 0.85" material="m_machine"/>
+    <geom name="cnc_window"  type="box" pos="3.28  1.60 0.95" size="0.015 0.45 0.35" material="m_glassd"/>
+    <geom name="cnc_panel"   type="box" pos="3.28  0.95 1.30" size="0.015 0.18 0.14" material="m_dark"/>
+    <geom name="cnc_btn_g"   type="box" pos="3.265 0.90 1.26" size="0.006 0.025 0.025" rgba="0.15 0.75 0.25 1"/>
+    <geom name="cnc_btn_r"   type="box" pos="3.265 1.00 1.26" size="0.006 0.025 0.025" rgba="0.85 0.15 0.15 1"/>
+    <geom name="cnc_beacon"  type="cylinder" pos="4.10 1.60 1.83" size="0.045 0.13" rgba="0.90 0.45 0.10 0.9"/>
+    <geom name="cnc_hood"    type="box" pos="4.10 1.60 1.76" size="0.55 0.55 0.06" material="m_metal"/>
+
+    <!-- ===== hydraulic press (+X wall, -Y side) ===== -->
+    <geom name="press_base"  type="box" pos="4.20 -1.90 0.30" size="0.60 0.55 0.30" material="m_metal"/>
+    <geom name="press_col_l" type="box" pos="4.20 -2.35 1.20" size="0.10 0.10 0.90" material="m_safety"/>
+    <geom name="press_col_r" type="box" pos="4.20 -1.45 1.20" size="0.10 0.10 0.90" material="m_safety"/>
+    <geom name="press_head"  type="box" pos="4.20 -1.90 2.05" size="0.55 0.50 0.22" material="m_metal"/>
+    <geom name="press_ram"   type="cylinder" pos="4.20 -1.90 1.45" size="0.14 0.38" material="m_dark"/>
+
+    <!-- ===== workbench (+Y wall) with real tools on top ===== -->
+    <geom name="bench_top"  type="box" pos="-2.50 3.60 0.87" size="0.75 0.35 0.03" material="m_wood"/>
+    <geom name="bench_l1"   type="box" pos="-3.18 3.32 0.42" size="0.04 0.04 0.42" material="m_dark"/>
+    <geom name="bench_l2"   type="box" pos="-1.82 3.32 0.42" size="0.04 0.04 0.42" material="m_dark"/>
+    <geom name="bench_l3"   type="box" pos="-3.18 3.88 0.42" size="0.04 0.04 0.42" material="m_dark"/>
+    <geom name="bench_l4"   type="box" pos="-1.82 3.88 0.42" size="0.04 0.04 0.42" material="m_dark"/>
+    <geom name="bench_shelf" type="box" pos="-2.50 3.60 0.18" size="0.70 0.30 0.015" material="m_dark"/>
+    <geom name="pegboard"   type="box" pos="-2.50 3.98 1.55" size="0.72 0.015 0.42" rgba="0.55 0.42 0.30 1"/>
+
+    <!-- ===== shelving rack (-Y wall) ===== -->
+    <geom name="rack_u1" type="box" pos="-1.20 -3.60 0.90" size="0.045 0.045 0.90" material="m_safety"/>
+    <geom name="rack_u2" type="box" pos=" 1.20 -3.60 0.90" size="0.045 0.045 0.90" material="m_safety"/>
+    <geom name="rack_u3" type="box" pos="-1.20 -3.00 0.90" size="0.045 0.045 0.90" material="m_safety"/>
+    <geom name="rack_u4" type="box" pos=" 1.20 -3.00 0.90" size="0.045 0.045 0.90" material="m_safety"/>
+    <geom name="rack_s1" type="box" pos="0 -3.30 0.42" size="1.28 0.36 0.02" material="m_wood"/>
+    <geom name="rack_s2" type="box" pos="0 -3.30 1.05" size="1.28 0.36 0.02" material="m_wood"/>
+    <geom name="rack_s3" type="box" pos="0 -3.30 1.68" size="1.28 0.36 0.02" material="m_wood"/>
+    <geom name="rack_box1" type="box" pos="-0.70 -3.30 0.62" size="0.28 0.26 0.18" material="m_cardboard"/>
+    <geom name="rack_box2" type="box" pos=" 0.25 -3.30 0.58" size="0.22 0.24 0.14" material="m_cardboard"/>
+    <geom name="rack_box3" type="box" pos=" 0.80 -3.32 1.24" size="0.24 0.22 0.17" material="m_cardboard"/>
+    <geom name="rack_box4" type="box" pos="-0.45 -3.28 1.22" size="0.30 0.24 0.15" material="m_cardboard"/>
+
+    <!-- ===== pallets with stacked boxes (-X side) ===== -->
+    <geom name="pallet1_deck" type="box" pos="-3.60 -1.80 0.12" size="0.55 0.45 0.03" material="m_wood"/>
+    <geom name="pallet1_r1"   type="box" pos="-3.60 -2.16 0.045" size="0.55 0.05 0.045" material="m_wood"/>
+    <geom name="pallet1_r2"   type="box" pos="-3.60 -1.80 0.045" size="0.55 0.05 0.045" material="m_wood"/>
+    <geom name="pallet1_r3"   type="box" pos="-3.60 -1.44 0.045" size="0.55 0.05 0.045" material="m_wood"/>
+    <geom name="pallet1_box1" type="box" pos="-3.72 -1.95 0.43" size="0.30 0.28 0.28" material="m_cardboard"/>
+    <geom name="pallet1_box2" type="box" pos="-3.55 -1.62 0.93" size="0.26 0.24 0.22" material="m_cardboard" euler="0 0 0.15"/>
+    <geom name="pallet2_deck" type="box" pos="-3.70  0.60 0.12" size="0.55 0.45 0.03" material="m_wood"/>
+    <geom name="pallet2_r1"   type="box" pos="-3.70  0.24 0.045" size="0.55 0.05 0.045" material="m_wood"/>
+    <geom name="pallet2_r2"   type="box" pos="-3.70  0.60 0.045" size="0.55 0.05 0.045" material="m_wood"/>
+    <geom name="pallet2_r3"   type="box" pos="-3.70  0.96 0.045" size="0.55 0.05 0.045" material="m_wood"/>
+    <geom name="pallet2_drum" type="cylinder" pos="-3.70 0.60 0.60" size="0.28 0.45" material="m_machine"/>
+
+    <!-- ===== overhead gantry across the hall at x = 0 ===== -->
+    <geom name="gantry_col_l" type="box" pos="0  3.80 1.40" size="0.12 0.12 1.40" material="m_safety"/>
+    <geom name="gantry_col_r" type="box" pos="0 -3.80 1.40" size="0.12 0.12 1.40" material="m_safety"/>
+    <geom name="gantry_beam"  type="box" pos="0  0    2.90" size="0.14 3.92 0.12" material="m_safety"/>
+
+    <!-- ===== teleop mocap targets (kept compatible with the teleop / WBC scripts) ===== -->
+    <body name="target_l" mocap="true" pos="0.45 0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="target_r" mocap="true" pos="0.45 -0.3 1.0">
+      <geom group="3" type="sphere" size="0.03" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="gaze_point" mocap="true" pos="0.85 0 1.0">
+      <geom group="3" type="sphere" size="0.04" rgba="1 0.5 0 0.4" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- graspable clutter (scanned objects): tools on the workbench -->
+  <include file="factory_objects.xml"/>
+
+</mujoco>

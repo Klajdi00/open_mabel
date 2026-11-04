@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MABEL · Control Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/studio.css">
+<link rel="stylesheet" href="css/lab.css">
+<script type="importmap">
+{ "imports": {
+  "three": "/website-assets/three/three.module.js",
+  "three/addons/": "/website-assets/three/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="studio lab">
+
+  <header class="topbar">
+    <div class="brand"><span class="mark">MABEL</span>
+      <span class="sub">Control Lab</span></div>
+
+    <!-- master torque gate (mirrors the app's E-STOP / ENABLE TORQUE) -->
+    <button class="torque-btn off" id="torqueBtn" title="torque follows the app's E-STOP: ON holds the current pose, OFF makes the arms limp">
+      <span class="tdot"></span><span id="torqueLbl">Enable Torque</span></button>
+
+    <!-- the four control axes — dim while torque is off -->
+    <div class="ctlgroup disabled" id="ctlGroup">
+      <div class="seg mini" id="feelSeg" title="Stiff = impedance (springs to the target) · Soft = compliance (gravity-comp float, fully back-drivable; whole-body glides under a push)">
+        <button data-type="impedance">Stiff</button>
+        <button data-type="compliance">Soft</button></div>
+      <div class="stiff-slider" id="stiffWrap" title="impedance stiffness K [Nm/rad]">
+        <input type="range" id="stiffSlider" min="0" max="45" step="1" value="20">
+        <span id="stiffVal">K 20</span></div>
+      <div class="seg mini" id="regionSeg" title="control region — grows the torque law outward">
+        <button data-region="arm">Arm</button>
+        <button data-region="upper_body">Upper</button>
+        <button data-region="whole_body">Whole</button></div>
+      <div class="seg" id="modeSeg" title="control mode (== the app's method)">
+        <button data-method="joint">Joint</button>
+        <button data-method="wrist">Wrist</button>
+        <button data-method="navigation">Drive</button>
+        <button data-method="retarget">Teleop</button></div>
+    </div>
+
+    <div class="spacer"></div>
+    <span class="vp-chip static hidden" id="deviceChip"></span>
+    <div class="seg mini hidden" id="vpSeg" title="operator input for whole-body Teleop — Device = the VP/iPhone app on :9090; Stream = the vision_pro_stream.py ZMQ publisher (tcp://127.0.0.1:5556); Mock = synthetic operator">
+      <button data-vp="off" class="on">Input Off</button>
+      <button data-vp="headset">Device</button>
+      <button data-vp="avp">Stream</button>
+      <button data-vp="mock">Mock</button></div>
+    <button class="gbtn" id="resetBtn">Reset Robot</button>
+    <span class="vp-chip static" id="connChip"><span class="dot" id="connDot"></span>LINK</span>
+  </header>
+
+  <section class="stage" id="stage">
+    <canvas class="gl" id="gl"></canvas>
+
+    <div class="vp-cluster tl">
+      <span class="vp-chip static" id="statusChip">arms limp</span>
+      <span class="vp-chip static" id="rtChip">RT —</span>
+      <span class="vp-chip static hidden" id="calChip">NOT CALIBRATED</span>
+      <span class="vp-chip static hidden" id="softHint" style="color:var(--warn)"><span class="dot warn"></span>SOFT · drag the robot in the MuJoCo viewer (Ctrl+drag)</span>
+    </div>
+
+    <div class="vp-cluster tr">
+      <span class="vp-chip" id="calibBtn" title="load per-operator calibration profile">Load Calibration</span>
+      <span class="vp-chip static hidden" id="streamChip">— Hz</span>
+      <div class="seg mini hidden" id="sideSeg" title="which hand retargets">
+        <button data-side="left">L</button>
+        <button data-side="both" class="on">Both</button>
+        <button data-side="right">R</button></div>
+    </div>
+
+    <div class="vp-cluster bc" id="camChips">
+      <span class="vp-chip on" data-cam="orbit">Orbit</span>
+      <span class="vp-chip" data-cam="front">Front</span>
+      <span class="vp-chip" data-cam="left_arm">L·Arm</span>
+      <span class="vp-chip" data-cam="right_arm">R·Arm</span>
+      <span class="vp-chip" data-cam="hands">Hands</span>
+      <span class="vp-chip" data-cam="upper">Upper</span>
+      <span class="vp-chip" data-cam="whole">Whole</span>
+      <span class="vp-chip" data-cam="base">Base</span>
+      <span class="vp-chip" data-cam="top">Top</span>
+      <span class="vp-chip on" id="trailsChip" title="head / palm / base trajectory trails">Trails</span>
+    </div>
+
+    <div class="limp-cta" id="limpCta">
+      <div class="lt">Arms Limp</div>
+      <div class="ld">press Enable Torque to hold the current pose</div>
+    </div>
+
+    <div class="sticks hidden" id="sticks">
+      <div class="stick" id="stickL"><div class="stick-knob"></div>
+        <div class="lbl">TRANSLATE</div></div>
+      <div class="stick" id="stickR"><div class="stick-knob"></div>
+        <div class="lbl">YAW · LIFT</div></div>
+    </div>
+  </section>
+
+  <aside class="dock plots-dock" id="plotsDock"></aside>
+  <aside class="dock ctl-dock" id="ctlDock"></aside>
+
+  <footer class="foot">
+    <span id="footStatus">—</span>
+    <span class="spacer" style="flex:1"></span>
+    <span id="footTiming">—</span>
+  </footer>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

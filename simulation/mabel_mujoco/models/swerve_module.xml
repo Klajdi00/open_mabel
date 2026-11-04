@@ -1,0 +1,74 @@
+<mujoco model="mabel_swerve_module">
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    <default class="sw_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="sw_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    <default class="sw_steer">
+      <joint type="hinge" axis="0 0 1" limited="false" armature="0.05" damping="0.1" frictionloss="0.05"/>
+    </default>
+    <default class="sw_drive">
+      <joint type="hinge" axis="0 0 1" limited="false" armature="0.01" damping="0.005" frictionloss="0.01"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh file="../assets/meshes/swerve_drive/wheel_to_base.stl"  name="m_housing"/>
+    <mesh file="../assets/meshes/swerve_drive/steering_motor.stl" name="m_steer_motor"/>
+    <mesh file="../assets/meshes/swerve_drive/drive_motor.stl"    name="m_drive_motor"/>
+
+    <material name="housing_mat"     rgba="0.25 0.25 0.28 1"/>
+    <material name="steer_motor_mat" rgba="0.10 0.35 0.75 1"/>
+    <material name="drive_motor_mat" rgba="0.75 0.20 0.20 1"/>
+    <material name="invisible"       rgba="1 1 1 0"/>
+  </asset>
+
+  <worldbody>
+    <body name="swerve_housing" pos="0 0 0.110">
+      <geom class="sw_visual"    mesh="m_housing" material="housing_mat"/>
+      <geom class="sw_collision" mesh="m_housing"/>
+
+      <body name="steer_body" pos="0 0 0">
+        <joint name="steer" class="sw_steer"/>
+        <geom class="sw_visual"    mesh="m_steer_motor" material="steer_motor_mat"/>
+        <geom class="sw_collision" mesh="m_steer_motor"/>
+
+        <body name="wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+          <joint name="drive" class="sw_drive"/>
+          <geom class="sw_visual"    mesh="m_drive_motor" material="drive_motor_mat"/>
+          <!-- Rolling surface: a true CYLINDER coaxial with the drive (spin) axis
+               (local z). The old collision was the motor MESH, which has no round
+               contact, so the wheel could not roll cleanly and slipped ~40-50%
+               (base reached ~60% of commanded speed, wheel odometry over-read).
+               Radius 0.0378 m = the measured axle height above the floor. Higher
+               tangential friction so it grips like a rubber wheel. -->
+          <geom name="wheel_tire" type="cylinder" size="0.0378 0.014"
+                friction="1.5 0.02 0.001" mass="0.8"
+                contype="1" conaffinity="1" group="1" rgba="0.1 0.1 0.1 1"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="swerve_housing" body2="steer_body"/>
+    <exclude body1="swerve_housing" body2="wheel"/>
+    <exclude body1="steer_body"     body2="wheel"/>
+  </contact>
+
+  <actuator>
+    <position name="act_steer" joint="steer" kp="50" kv="4.5" forcerange="-45 45" ctrlrange="-6.283185 6.283185" ctrllimited="true"/>
+    <velocity name="act_drive" joint="drive" kv="2" forcerange="-15 15" ctrlrange="-120 120" ctrllimited="true"/>
+  </actuator>
+
+  <sensor>
+    <jointpos name="steer_pos" joint="steer"/>
+    <jointvel name="steer_vel" joint="steer"/>
+    <jointvel name="drive_vel" joint="drive"/>
+  </sensor>
+
+</mujoco>

@@ -1,0 +1,73 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /RobotModel1
+        - /nvblox Mesh1
+      Splitter Ratio: 0.5
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Color: 160; 160; 164
+      Cell Size: 0.5
+      Plane Cell Count: 20
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Enabled: true
+      Description Topic:
+        Value: /robot_description
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Visual Enabled: true
+      Collision Enabled: false
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+      Marker Scale: 0.3
+      Show Names: true
+    # nvblox 3D reconstruction: the TSDF mesh re-emitted as a coloured PointCloud2 by
+    # mabel_slam/mesh_to_pointcloud (plugin-free, latched -> Transient Local). This is
+    # the visual_slam product -- 3D mesh only, no 2D occupancy grid.
+    - Class: rviz_default_plugins/PointCloud2
+      Name: nvblox Mesh
+      Enabled: true
+      Topic:
+        Value: /nvblox_node/mesh_pointcloud
+        Depth: 5
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+  Global Options:
+    Fixed Frame: odom
+    Background Color: 48; 48; 48
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Distance: 4.0
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0.4
+      Pitch: 0.3
+      Yaw: 0.785
+Window Geometry:
+  Height: 900
+  Width: 1500
+  Hide Left Dock: false
+  Hide Right Dock: false

@@ -1,0 +1,84 @@
+{
+  "host": "127.0.0.1",
+  "camera": "main",
+  "secs": 10.0,
+  "transports": [
+    {
+      "name": "H.264/UDP",
+      "codec": "h264",
+      "recv_fps": 23.2,
+      "decoded_fps": 23.1,
+      "decode_ok": 0.9956896551724138,
+      "mbps": 1.9443352,
+      "kb_per_frame": 10.23041402882543,
+      "res": [
+        960,
+        720
+      ],
+      "lat_med": 0.5225830078125,
+      "lat_p95": 1.0054498687386513
+    },
+    {
+      "name": "H.264/WS",
+      "codec": "h264",
+      "recv_fps": 23.2,
+      "decoded_fps": 23.1,
+      "decode_ok": 0.9956896551724138,
+      "mbps": 1.5609336,
+      "kb_per_frame": 8.213088463092673,
+      "res": [
+        640,
+        480
+      ],
+      "lat_med": null,
+      "lat_p95": null
+    },
+    {
+      "name": "JPEG/UDP",
+      "codec": "jpeg",
+      "recv_fps": 29.5,
+      "decoded_fps": 29.5,
+      "decode_ok": 1.0,
+      "mbps": 12.9982808,
+      "kb_per_frame": 53.786583024364404,
+      "res": [
+        960,
+        720
+      ],
+      "lat_med": 0.6227089762687683,
+      "lat_p95": 1.1157126843929293
+    },
+    {
+      "name": "MJPEG/HTTP",
+      "codec": "jpeg",
+      "recv_fps": 30.4,
+      "decoded_fps": 30.4,
+      "decode_ok": 1.0,
+      "mbps": 13.245110399999998,
+      "kb_per_frame": 53.185354132401315,
+      "res": [
+        960,
+        720
+      ],
+      "lat_med": null,
+      "lat_p95": null
+    }
+  ],
+  "loss_sweep": {
+    "pct": [
+      0.0,
+      5.0,
+      15.0
+    ],
+    "h264_fps": [
+      23.4,
+      0.0,
+      0.0
+    ],
+    "jpeg_fps": [
+      31.9,
+      2.3,
+      0.0
+    ]
+  }
+}

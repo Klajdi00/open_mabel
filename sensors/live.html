@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ZED-M live · left + right</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden;
+                font-family: -apple-system, system-ui, sans-serif; }
+  #wrap { display: flex; width: 100vw; height: 100vh; }
+  .eye { position: relative; flex: 1 1 0; display: flex; align-items: center;
+         justify-content: center; border-right: 2px solid #111; }
+  .eye:last-child { border-right: none; }
+  .eye img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .tag { position: absolute; top: 10px; left: 12px; padding: 3px 9px;
+         background: rgba(0,0,0,.55); color: #4ade80; font-size: 13px;
+         letter-spacing: .04em; border-radius: 6px; }
+  #err { position: fixed; bottom: 12px; left: 0; right: 0; text-align: center;
+         color: #f87171; font-size: 13px; }
+</style>
+</head>
+<body>
+  <div id="wrap">
+    <div class="eye"><span class="tag" id="tagL">LEFT</span><img id="L"></div>
+    <div class="eye"><span class="tag" id="tagR">RIGHT</span><img id="R"></div>
+  </div>
+  <div id="err"></div>
+<script>
+  // host/port come from the URL (?host=192.168.1.42&port=8080); default localhost.
+  const q = new URLSearchParams(location.search);
+  const host = q.get("host") || location.hostname || "127.0.0.1";
+  const port = q.get("port") || "8080";
+  const base = `http://${host}:${port}/camera`;
+  const L = document.getElementById("L"), R = document.getElementById("R");
+  // Cache-bust so a reload always reconnects a fresh MJPEG stream.
+  L.src = `${base}/head_left/stream.mjpg?t=${Date.now()}`;
+  R.src = `${base}/head_right/stream.mjpg?t=${Date.now()}`;
+  document.title = `ZED-M live · ${host}`;
+  const err = document.getElementById("err");
+  function fail(which){ err.textContent =
+    `cannot reach ${which} stream at ${host}:${port} — is the camera server running?`; }
+  L.onerror = () => fail("LEFT");
+  R.onerror = () => fail("RIGHT");
+</script>
+</body>
+</html>

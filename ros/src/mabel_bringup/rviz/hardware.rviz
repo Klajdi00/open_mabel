@@ -1,0 +1,258 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /RobotModel1
+        - /Front Cloud1
+        - /ZED Head Cloud1
+        - /LaserScan1
+      Splitter Ratio: 0.5
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Color: 160; 160; 164
+      Cell Size: 0.5
+      Plane Cell Count: 20
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Enabled: true
+      Description Topic:
+        Value: /robot_description
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Visual Enabled: true
+      Collision Enabled: false
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+      Marker Scale: 0.3
+      Show Names: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Front Cloud
+      Enabled: true
+      Topic:
+        Value: /camera/front/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/PointCloud2
+      Name: ZED Head Cloud
+      Enabled: true
+      Topic:
+        Value: /camera/zed/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Back Cloud
+      Enabled: true
+      Topic:
+        Value: /camera/back/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Wrist Left Cloud (D405)
+      Enabled: true
+      Topic:
+        Value: /camera/wrist_left/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Wrist Right Cloud (D405)
+      Enabled: false
+      Topic:
+        Value: /camera/wrist_right/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/LaserScan
+      Name: LaserScan
+      Enabled: true
+      Topic:
+        Value: /scan
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 4
+      Color Transformer: FlatColor
+      Color: 255; 85; 0
+      Decay Time: 0
+    # ---- SLAM layer (mabel_slam lidar_slam/visual_slam.launch.py) ----------------
+    # The SLAM launches default rviz:=false and render into THIS window. Idle until a
+    # SLAM stack is up: lidar_slam fills the 2D /map; visual_slam fills the nvblox mesh.
+    - Class: rviz_default_plugins/Map
+      Name: SLAM Map (2D)
+      Enabled: true
+      Topic:
+        Value: /map
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Color Scheme: map
+      Alpha: 0.7
+    # The nvblox mesh as shaded SURFACES: mabel_slam/mesh_to_pointcloud re-emits the
+    # mesh as a TRIANGLE_LIST Marker (the apt-only nvblox_rviz_plugin can't load in
+    # this conda RViz, so we render with the stock Marker display). Per-vertex colour
+    # comes from the message, latched -> Transient Local.
+    - Class: rviz_default_plugins/Marker
+      Name: nvblox Mesh (3D)
+      Enabled: true
+      Namespaces: {}
+      Topic:
+        Value: /nvblox_node/mesh_marker
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+    # Same mesh as a coloured vertex cloud -- a lighter fallback view, off by default
+    # so the surfaces above aren't double-drawn. Enable if the Marker is too heavy.
+    - Class: rviz_default_plugins/PointCloud2
+      Name: nvblox Mesh (points)
+      Enabled: false
+      Topic:
+        Value: /nvblox_node/mesh_pointcloud
+        Depth: 5
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    # ---- NAV GOAL + PATH ---------------------------------------------------------
+    # The goal a web/iOS client (or RViz's "2D Goal Pose" tool) places lands on
+    # /goal_pose — show it so the operator SEES where the user aimed. The planner's
+    # route to it is /plan (green). If Nav2 can't reach the goal it produces no plan
+    # (and the bridge tells the client "unreachable").
+    - Class: rviz_default_plugins/Pose
+      Name: Nav Goal (/goal_pose)
+      Enabled: true
+      Topic:
+        Value: /goal_pose
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Shape: Arrow
+      Color: 255; 25; 0
+      Alpha: 1
+    # A goal the user has PLACED but not yet committed to drive (web "Follow path"
+    # not pressed). Mirrored here on tap so the operator can confirm the goal made
+    # it to the server (orange) before Nav2 actually drives to the red /goal_pose.
+    - Class: rviz_default_plugins/Pose
+      Name: Nav Goal Preview (/goal_pose_preview)
+      Enabled: true
+      Topic:
+        Value: /goal_pose_preview
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Shape: Arrow
+      Color: 255; 170; 0
+      Alpha: 0.9
+    # GREEN BALL at the goal the web/app placed — keeps the operator's RViz in sync
+    # with the browser teleop goal ring (published on every goal tap + on commit).
+    - Class: rviz_default_plugins/Marker
+      Name: Goal Ball (web teleop)
+      Enabled: true
+      Namespaces: {}
+      Topic:
+        Value: /mabel/goal_marker
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Path
+      Name: Nav Plan (/plan)
+      Enabled: true
+      Topic:
+        Value: /plan
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Color: 25; 255; 100
+      Line Style: Lines
+    # RGB image panels: ONLY the four operator views -- front base, both wrists,
+    # and the head (ZED). Back/body/ZED-right/IR panels were removed per request.
+    - Class: rviz_default_plugins/Image
+      Name: Front Base
+      Enabled: true
+      Topic:
+        Value: /camera/front/color/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Left Wrist
+      Enabled: true
+      Topic:
+        Value: /camera/wrist_left/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Right Wrist
+      Enabled: true
+      Topic:
+        Value: /camera/wrist_right/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Head Cam
+      Enabled: true
+      Topic:
+        Value: /camera/zed/left/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+  Global Options:
+    Fixed Frame: base_link
+    Background Color: 48; 48; 48
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Distance: 4.0
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0.4
+      Pitch: 0.3
+      Yaw: 0.785
+Window Geometry:
+  Height: 900
+  Width: 1500
+  Hide Left Dock: false
+  Hide Right Dock: false

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mabel"
+version = "0.1.0"
+description = "MABEL whole-body teleoperation library: frontend-agnostic retargeting, whole-body control, tip-safe base motion model, swerve IK, self-collision avoidance, and a tracking-loss fail-safe. Reusable across Vision Pro / iOS / web / other VR frontends."
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "scipy",
+    "mujoco>=3.0",
+    "pyzmq",
+]
+
+[project.optional-dependencies]
+# Faster / exact QP backends for the self-collision avoidance (falls back gracefully).
+qp = ["quadprog", "osqp"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mabel*"]
+
+[tool.setuptools.package-data]
+# The built front-workspace posture tables (~85 kB/side). They are a DERIVED
+# artefact of the MJCF — rebuild with
+#   python3 controller/experiments/exp_front_workspace.py --phase W3 --build
+# after any change to the arm's geometry, inertia or joint limits, the same way
+# the motion model's CoM constants are re-derived. Shipped with the package
+# because the live retargeter loads them at construction and falls back to the
+# pure local solve (i.e. the palm-flip defect) when they are absent.
+"mabel.teleop_engine" = ["tables/*.npz"]

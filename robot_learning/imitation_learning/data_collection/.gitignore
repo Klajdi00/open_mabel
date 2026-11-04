@@ -1,0 +1,4 @@
+datasets/
+docs/figures/*.pdf
+__pycache__/
+*.pyc

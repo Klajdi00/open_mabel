@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MABEL · Retarget Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/rtl.css">
+<script type="importmap">
+{ "imports": {
+  "three": "/website-assets/three/three.module.js",
+  "three/addons/": "/website-assets/three/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="studio">
+
+  <header class="topbar">
+    <div class="brand"><span class="mark">MABEL</span><span class="sub">Retarget Lab</span></div>
+
+    <div class="seg" id="srcSeg" title="what drives the retargeters">
+      <button data-src="live">Live · Vision Pro</button>
+      <button data-src="replay">Replay</button>
+    </div>
+
+    <div class="vp-card" id="vpCard" title="the Vision Pro gateway — the headset finds this Mac over Bonjour on the local Wi-Fi">
+      <span class="dot" id="vpDot"></span>
+      <div class="vp-txt">
+        <div class="vp-l1" id="vpL1">Waiting for Vision Pro…</div>
+        <div class="vp-l2" id="vpL2">ws://—:9090/teleop</div>
+      </div>
+      <div class="trk" id="trk">
+        <span data-k="head">HEAD</span><span data-k="left">L</span><span data-k="right">R</span>
+      </div>
+    </div>
+
+    <div class="rec-group">
+      <input class="rec-name" id="recName" placeholder="episode name" spellcheck="false">
+      <button class="rec-btn" id="recBtn" title="record the raw Vision Pro stream (also: the headset's own record button)">
+        <span class="rdot"></span><span id="recLbl">Record</span></button>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="gbtn" id="homeBtn" title="reset every retargeter to the home pose (base at the origin, arms, torso, neck, lift home), then re-anchor">Home</button>
+    <button class="gbtn" id="anchorBtn" title="re-anchor every retargeter at the operator's current pose">Re-anchor</button>
+    <span class="conn" id="conn"><span class="dot"></span>LINK</span>
+  </header>
+
+  <aside class="side">
+    <div class="panel-h">Retargeters <span class="hint">toggle · ◉ = headset mirror</span> <button class="mini-btn" id="vRefresh" title="re-read variants.py: show new retargeters, restart edited ones">↻</button></div>
+    <div class="vlist" id="vlist"></div>
+    <div class="panel-h">Episodes <button class="mini-btn" id="epRefresh" title="refresh">↻</button></div>
+    <div class="eplist" id="eplist"></div>
+  </aside>
+
+  <section class="stage">
+    <canvas id="view"></canvas>
+    <div class="labels" id="labels"></div>
+    <div class="split-tag top hidden" id="tagKin">KINEMATIC · the retargeter's command</div>
+    <div class="split-tag bot hidden" id="tagPhys">PHYSICS · NOVA whole-body controller (MuJoCo) <span id="physLag"></span></div>
+    <div class="split-line hidden" id="splitLine"></div>
+    <div class="phys-loading hidden" id="physLoading"><span class="spin"></span><span id="physLoadingTxt">Starting NOVA's simulator…</span></div>
+    <div class="stage-tools">
+      <div class="seg mini" id="layoutSeg">
+        <button data-layout="lineup" class="on">Lineup</button>
+        <button data-layout="overlay">Overlay</button></div>
+      <div class="seg mini" id="scopeSeg" title="Whole body: the base walks and turns with you. Upper body: arms, torso, lift and neck follow; the base holds. The headset's own Whole body / Upper body switch sets this too.">
+        <button data-scope="global">Whole body</button>
+        <button data-scope="local">Upper body</button></div>
+      <div class="seg mini" id="robotSeg" title="whose physical limits: joint slews, lift speed, swerve base">
+        <button data-robot="mabel">MABEL</button>
+        <button data-robot="nova">NOVA</button></div>
+      <div class="seg mini" id="eeSeg" title="End effector, for every retargeter. ORCA v1: MABEL's ORCA hand (finger IK). Gripper: the original OpenArm v1 parallel gripper on J7 — the arm tracks the wrist centre (where J5, J6, J7 meet; the gripper's bottom is 89.6 mm out from it) and your hand closure sets the opening (thumb tip to the nearer of index / middle tip, 1:1, 0-88 mm).">
+        <button data-ee="orca">ORCA v1</button>
+        <button data-ee="gripper">Gripper</button></div>
+      <button class="chip phys" id="physBtn" title="Physics: the retargeter's output is sent to NOVA's whole-body controller in MuJoCo (NOVA's sim gateway — the same chain as the robot). The view splits: top kinematic, bottom physics, so the controller's lag is visible.">Physics</button>
+      <button class="chip on" id="tgtChip" title="wrist target (ring) vs achieved (dot)">Targets</button>
+      <button class="chip on" id="humChip" title="the operator's tracked skeleton, metric, unscaled">Operator</button>
+      <button class="chip on" id="followChip" title="the camera walks with the robot and the operator">Follow</button>
+      <button class="chip" id="camFront">Front</button>
+      <button class="chip" id="camSide">Side</button>
+      <button class="chip" id="camTop">Top</button>
+      <div class="tools-break"></div>
+      <div class="seg mini chan" data-ch="torso" title="Torso, for ablations. Free: the retargeter drives it. Fixed: parked upright (0 rad) after the solve; the arms reach without it.">
+        <span class="seg-lbl">Torso</span><button data-v="free">Free</button><button data-v="fixed">Fixed</button></div>
+      <div class="seg mini chan" data-ch="neck" title="Neck, for ablations. Free: the retargeter's neck (body-frame datum + torso gaze compensation). Fixed: level, straight ahead.">
+        <span class="seg-lbl">Neck</span><button data-v="free">Free</button><button data-v="fixed">Fixed</button></div>
+      <div class="seg mini chan" data-ch="lift" title="Lift, for ablations. Free: whole body follows the operator's head height, upper body holds it. Fixed: parked at the home height (0.3175 m) after the solve.">
+        <span class="seg-lbl">Lift</span><button data-v="free">Free</button><button data-v="fixed">Fixed</button></div>
+    </div>
+    <div class="banner hidden" id="banner"></div>
+    <div class="transport hidden" id="transport">
+      <button class="tbtn play" id="playBtn">▶</button>
+      <span class="tc" id="tc">0.0 / 0.0 s</span>
+      <input type="range" id="scrub" min="0" max="1000" value="0">
+      <button class="speed" id="speedBtn">1×</button>
+      <button class="chip on" id="loopBtn">Loop</button>
+      <span class="tname" id="tname"></span>
+    </div>
+  </section>
+
+  <aside class="dock">
+    <div class="dock-tabs">
+      <button class="dock-tab on" data-tab="live">Live</button>
+      <button class="dock-tab" data-tab="eval">Evaluation</button>
+      <button class="dock-tab" data-tab="guide">Metrics</button>
+    </div>
+    <div class="dock-body">
+      <div class="dock-pane on" data-pane="live">
+        <div class="row-ctl">
+          <div class="seg mini" id="sideSeg">
+            <button data-side="both" class="on">Both</button>
+            <button data-side="l">Left</button>
+            <button data-side="r">Right</button></div>
+          <div class="seg mini" id="winSeg">
+            <button data-win="5">5 s</button>
+            <button data-win="15" class="on">15 s</button>
+            <button data-win="60">60 s</button></div>
+        </div>
+        <div class="note">Rolling mean over the window, anchored frames only. <b>Bold</b> = best,
+          if it beats the runner-up by more than the noise (2 s.e.).</div>
+        <table class="mtable" id="liveTable"></table>
+      </div>
+      <div class="dock-pane" data-pane="eval">
+        <div class="note">Offline evaluation steps <b>every</b> frame of an episode through every
+          active retargeter on the episode's own clock — deterministic and fair (the live view drops
+          frames when a worker is busy). Run one from an episode's <b>Evaluate</b> button.</div>
+        <div class="evstatus" id="evStatus"></div>
+        <select id="evSel" class="sel"></select>
+        <div id="evBody"></div>
+      </div>
+      <div class="dock-pane" data-pane="guide" id="guide"></div>
+    </div>
+  </aside>
+
+  <section class="plots">
+    <div class="plots-h">
+      <span class="panel-h inline">Live plots</span>
+      <div class="mchips" id="mchips"></div>
+    </div>
+    <div class="pgrid" id="pgrid"></div>
+  </section>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

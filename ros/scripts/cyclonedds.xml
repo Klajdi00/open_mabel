@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Shared CycloneDDS tuning for EVERY MABEL ROS process (conda mabel_env.sh AND
+     apt slam_env.sh export CYCLONEDDS_URI to this file; rmw_cyclonedds merges it
+     with the ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST config it generates).
+
+     WHY: heavy point-cloud subscribers (map streamer, nvblox, RViz) overflowed the
+     default ~1 MB UDP receive buffer — measured 50k-100k drops per socket, and the
+     RELIABLE ~0.5 MB nvblox mesh samples livelocked in retransmission (first mesh
+     delivery 12 min after launch). Ask for up to 64 MB sockets (min stays "default" so node creation NEVER
+     fails on an unraised kernel cap); the kernel caps the grant
+     at net.core.rmem_max, so ALSO raise that once (persisted via /etc/sysctl.d):
+
+       sudo sysctl -w net.core.rmem_max=67108864
+       echo 'net.core.rmem_max=67108864' | sudo tee /etc/sysctl.d/60-mabel-dds.conf
+-->
+<CycloneDDS xmlns="https://cdds.io/config">
+  <Domain Id="any">
+    <!-- NOTE (2026-07-13): do NOT pin <General><Interfaces> to `lo` here. It looks
+         tempting — a DOWN Teensy lane (mgbe*_0, e.g. base 192.168.124.2) leaves stale
+         locators behind, so peers spin on "ddsi_udp_conn_write to udp/192.168.124.2
+         failed with retcode -1" and the ros2 CLI goes flaky — but loopback multicast
+         does NOT carry discovery in this setup: pinning it made `ros2 topic list` hang
+         and stopped /scan reaching the gateway (measured, then reverted). The write
+         errors are NOISE, not the cause of a dead topic: when a subsystem's data
+         stops, look for a dead PUBLISHER first (e.g. a hand that lost power stops
+         publishing joint_states, freezing the gateway's mirror at its last value). -->
+    <Discovery>
+      <!-- Cyclone's default MaxAutoParticipantIndex allows only a few dozen
+           unicast-discovery participants per host per domain. thor EXHAUSTS it
+           (bridge + SLAM container + launches + rosbridge + tools), after which
+           EVERY new node dies at creation with "Failed to find a free
+           participant index for domain 0" — the classic 'ros2 CLI is flaky on
+           thor' symptom. Widen the range; the only cost is a larger discovery
+           port span. -->
+      <ParticipantIndex>auto</ParticipantIndex>
+      <MaxAutoParticipantIndex>120</MaxAutoParticipantIndex>
+    </Discovery>
+    <Internal>
+      <SocketReceiveBufferSize min="default" max="64MB"/>
+    </Internal>
+  </Domain>
+</CycloneDDS>

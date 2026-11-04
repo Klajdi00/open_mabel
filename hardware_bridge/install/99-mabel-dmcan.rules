@@ -1,0 +1,9 @@
+# MABEL — DaMiao DM-USB2FDCAN dongle (neck-yaw DM-J4310 bus).
+# Its factory firmware is driven over libusb VENDOR interfaces (mabel_hw/drivers/dmcan
+# + damiao_fdcan.py), so the raw USB device node must be user-accessible — without this
+# rule libusb enumerates zero devices and the driver reports "no DM-USB2FDCAN found"
+# even though lsusb shows it.
+#
+#   sudo cp 99-mabel-dmcan.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules
+#   (then replug the dongle)
+SUBSYSTEM=="usb", ATTR{idVendor}=="34b7", ATTR{idProduct}=="6877", MODE="0666"

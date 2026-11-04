@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swerve-drive-tools"
+version = "0.1.0"
+description = "CAN teleop and verification tools for REV SPARK swerve drive motors"
+requires-python = ">=3.10"
+dependencies = []
+
+# sparkcan_py must be built and installed separately from ./sparkcan_py/
+# See README for instructions.

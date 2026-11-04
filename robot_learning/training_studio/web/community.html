@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MABEL — community queue review</title>
+<style>
+  :root { --bg:#141210; --panel:#1c1a17; --line:rgba(242,238,230,.12); --ink:#f2eee6;
+          --ash:#a09a91; --rust:#C25B2A; --ok:#6FCF97; --warn:#E7C24B; --bad:#C77; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Geist',-apple-system,Segoe UI,sans-serif; }
+  .mono { font-family:'Geist Mono','SF Mono',Menlo,monospace; }
+  header { padding:22px 28px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  h1 { font-size:20px; margin:0; font-weight:600; }
+  .sub { color:var(--ash); font-size:12px; font-family:'Geist Mono',monospace; }
+  .wrap { max-width:1000px; margin:0 auto; padding:28px; }
+  .bar { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  button { font-family:'Geist Mono',monospace; font-size:12px; border-radius:9px; padding:8px 14px; cursor:pointer;
+           border:1px solid var(--line); background:transparent; color:var(--ink); }
+  button:hover { border-color:var(--rust); }
+  button.approve { background:var(--rust); border-color:var(--rust); color:#fff; }
+  button.reject { color:var(--bad); }
+  button:disabled { opacity:.5; cursor:default; }
+  .job { border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:12px; background:var(--panel); }
+  .job-top { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .arch { font-family:'Geist Mono',monospace; font-weight:600; color:var(--rust); }
+  .who { font-weight:600; } .ds { color:var(--ash); }
+  .note { color:var(--ash); font-style:italic; margin:6px 0 0; }
+  .hp { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .hp span { font-family:'Geist Mono',monospace; font-size:11px; color:var(--ash); background:rgba(242,238,230,.05);
+             border:1px solid var(--line); border-radius:999px; padding:3px 9px; }
+  .actions { margin-top:14px; display:flex; gap:10px; }
+  .empty, .msg { color:var(--ash); font-family:'Geist Mono',monospace; font-size:13px; padding:8px 0; }
+  .msg.err { color:var(--bad); } .msg.ok { color:var(--ok); }
+  .spacer { flex:1; }
+</style>
+</head>
+<body>
+<header>
+  <h1>MABEL · community queue</h1>
+  <span class="sub">approve a job → it trains here → status reports back to the public queue</span>
+</header>
+<div class="wrap">
+  <div class="bar">
+    <button id="refresh">↻ refresh</button>
+    <span class="spacer"></span>
+    <span class="msg" id="msg"></span>
+  </div>
+  <div id="list"></div>
+</div>
+<script type="module">
+import { postAuthed } from './js/auth.js';
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const setMsg = (t,k='') => { const m=$('#msg'); m.textContent=t; m.className='msg '+k; };
+
+async function load() {
+  setMsg('loading…');
+  try {
+    const r = await fetch('/api/community/pending');
+    const d = await r.json();
+    if (!d.enabled) { $('#list').innerHTML = '<div class="empty">community queue disabled — set MABEL_COMMUNITY_TOKEN and restart the studio.</div>'; setMsg(''); return; }
+    render(d.jobs || []);
+    setMsg(`${(d.jobs||[]).length} pending`);
+  } catch (e) { setMsg('could not reach the queue: '+e.message, 'err'); }
+}
+
+function render(jobs) {
+  const list = $('#list');
+  if (!jobs.length) { list.innerHTML = '<div class="empty">no pending jobs. 🎉</div>'; return; }
+  list.innerHTML = '';
+  for (const j of jobs) {
+    const el = document.createElement('div'); el.className = 'job';
+    const hp = Object.entries(j.hp||{}).map(([k,v])=>`<span>${esc(k)} = ${esc(v)}</span>`).join('');
+    el.innerHTML = `
+      <div class="job-top">
+        <span class="arch">${esc(j.arch)}</span>
+        <span class="who">${esc(j.submitter||'anon')}</span>
+        <span class="ds">→ ${esc(j.dataset)}</span>
+        <span class="spacer"></span>
+        <span class="sub">#${j.id}</span>
+      </div>
+      ${j.note?`<p class="note">“${esc(j.note)}”</p>`:''}
+      <div class="hp">${hp}</div>
+      <div class="actions">
+        <button class="approve" data-id="${j.id}" data-act="approve">Approve &amp; train →</button>
+        <button class="reject" data-id="${j.id}" data-act="reject">Reject</button>
+      </div>`;
+    list.appendChild(el);
+  }
+  list.querySelectorAll('button[data-act]').forEach(b => b.onclick = () => act(b));
+}
+
+async function act(btn) {
+  const id = btn.dataset.id, kind = btn.dataset.act;
+  if (kind === 'reject' && !confirm('Reject job #'+id+'?')) return;
+  btn.closest('.job').querySelectorAll('button').forEach(b => b.disabled = true);
+  setMsg(kind === 'approve' ? 'launching…' : 'rejecting…');
+  try {
+    const d = await postAuthed(`/api/community/${id}/${kind}`, {},
+      kind === 'approve' ? 'approve & train this community job' : 'reject this community job');
+    setMsg(kind === 'approve' ? `approved · training as ${d.run_id}` : `rejected #${id}`, 'ok');
+    load();
+  } catch (e) {
+    setMsg('failed: '+e.message, 'err');
+    btn.closest('.job').querySelectorAll('button').forEach(b => b.disabled = false);
+  }
+}
+
+$('#refresh').onclick = load;
+load();
+</script>
+</body>
+</html>

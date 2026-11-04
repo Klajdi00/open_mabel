@@ -1,0 +1,18 @@
+# raw calibration logs (re-collectable; bulky) — plots & params.json ARE tracked
+**/results/**/logs/*.csv
+**/results/**/*.meta.json
+arm_calibration/results/*.gif
+
+# LaTeX build artifacts (the .pdf IS tracked)
+**/docs/*.aux
+**/docs/*.log
+**/docs/*.out
+**/docs/*.toc
+**/docs/*.fls
+**/docs/*.fdb_latexmk
+**/docs/*.synctex.gz
+
+# python
+__pycache__/
+*.pyc
+.DS_Store

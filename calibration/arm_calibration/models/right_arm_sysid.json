@@ -1,0 +1,26 @@
+{
+  "source": "simulation/mabel_mujoco/models/mabel_full.xml",
+  "calibration_config": {
+    "torso_rad": 0.0,
+    "lift_m": 0.0,
+    "hand_attached": true
+  },
+  "mount_pos_world": [
+    -0.09599999780282094,
+    0.04099995424871452,
+    0.8939999993464027
+  ],
+  "mount_quat_world": [
+    2.0526085091333636e-08,
+    1.7223423406097592e-08,
+    0.6427874558665395,
+    0.7660445721892564
+  ],
+  "gravity_in_mount_frame": [
+    3.245856723658081e-23,
+    -9.66096337293568,
+    -1.7034925027117884
+  ],
+  "hand_mass_kg": 1.1167299999999998,
+  "WARNING": "The real robot MUST be parked at this torso angle and lift height during collection. The torso is a hinge: changing it rotates the arm's base frame and therefore the gravity direction every identified parameter is referenced to."
+}

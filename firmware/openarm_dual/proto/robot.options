@@ -1,0 +1,17 @@
+# nanopb field options for robot.proto (auto-discovered by basename).
+# Repeated actuator fields are DYNAMIC (max_count capacity + a runtime _count): the
+# robot's actuator count comes from /robot.json, so one firmware adapts to any count
+# up to MAX_ACTUATORS (32, see RobotConfig.h). Strings are fixed-capacity char arrays
+# (no heap). Keep these caps in sync with RobotConfig.h.
+robot.Command.pos        max_count:32
+robot.Command.vel        max_count:32
+robot.Command.kp         max_count:32
+robot.Command.kd         max_count:32
+robot.Command.t_ff       max_count:32
+robot.State.actuators    max_count:32
+robot.Health.actuators   max_count:32
+
+robot.ActuatorInfo.name   max_size:24
+robot.ActuatorInfo.model  max_size:24
+robot.RobotInfo.name      max_size:32
+robot.RobotInfo.actuators max_count:32

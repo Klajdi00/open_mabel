@@ -1,0 +1,107 @@
+{
+  "_comment": "Frozen external contract of the hardware bridge. Every entry is something an OUTSIDE consumer (server/, ros/, gui/, iOS/VP apps, systemd) binds to. test_contract_snapshot.py asserts each value/needle still holds; changing anything here is a breaking change and needs a deliberate decision + client migration.",
+  "topics": {
+    "base_cmd_vel": "/mabel/hw/base/cmd_vel",
+    "base_estop": "/mabel/hw/base/estop",
+    "base_joint_states": "/mabel/hw/base/joint_states",
+    "arms_command": "/arms/command",
+    "arms_joint_states": "/arms/joint_states",
+    "arms_torque": "/arms/torque_enable",
+    "arms_torque_state": "/arms/torque_state",
+    "body_command": "/body/command",
+    "body_joint_states": "/body/joint_states",
+    "body_torque": "/body/torque_enable",
+    "body_torque_state": "/body/torque_state",
+    "lift_command": "/lift/command",
+    "lift_joint_states": "/lift/joint_states",
+    "lift_calibrate": "/lift/calibrate",
+    "lift_limits": "/lift/limits",
+    "lidar_scan": "/scan",
+    "audio_speaker": "/audio/speaker",
+    "audio_mic": "/audio/mic",
+    "audio_enable": "/audio/enable",
+    "audio_state": "/audio/state",
+    "audio_health": "/audio/device_health",
+    "arms_gains": "/arms/gains"
+  },
+  "ports": {
+    "base_teensy_udp": 5800,
+    "camera_mjpeg_http": 8080,
+    "camera_udp_jpeg": 9091,
+    "camera_udp_h264": 9092,
+    "camera_dedicated_head_sbs": 9620,
+    "camera_dedicated_wrist_left": 9621,
+    "camera_dedicated_wrist_right": 9622,
+    "camera_dedicated_front": 9623,
+    "hand_rpc_tcp": 8779
+  },
+  "env": {
+    "subsystem_prefix": "MABEL_HW_",
+    "http_port": "MABEL_HTTP_PORT",
+    "hand_bridge_port": "MABEL_HAND_BRIDGE_PORT",
+    "lock_override": "MABEL_HW_LOCK"
+  },
+  "lock_path": "/tmp/mabel_hardware_bridge.lock",
+  "source_needles": [
+    {
+      "file": "mabel_hw/singleton.py",
+      "contains": "/tmp/mabel_hardware_bridge.lock",
+      "why": "flock singleton path; server/real_run.sh + tools/singleton_test.sh rely on it"
+    },
+    {
+      "file": "mabel_hw/singleton.py",
+      "contains": "MABEL_HW_LOCK",
+      "why": "selftest isolates itself via this env override"
+    },
+    {
+      "file": "hardware_bridge.py",
+      "contains": "_acquire_singleton",
+      "why": "launcher must keep re-exporting the singleton surface"
+    },
+    {
+      "file": "mabel_hw/cameras/manager.py",
+      "contains": "mabel_hw.cameras.camera_worker",
+      "why": "per-camera worker subprocess spawn string (python3 -m ...)"
+    },
+    {
+      "file": "mabel_hw/cameras/manager.py",
+      "contains": "mabel_hw.cameras.video_relay",
+      "why": "video relay subprocess spawn string"
+    },
+    {
+      "file": "mabel_hw/cameras/camera_worker.py",
+      "contains": "main()",
+      "why": "the -m mabel_hw.cameras.camera_worker entry must stay runnable"
+    },
+    {
+      "file": "mabel_hw/cameras/video_relay.py",
+      "contains": "main()",
+      "why": "the -m mabel_hw.cameras.video_relay entry must stay runnable"
+    },
+    {
+      "file": "mabel_hw/rpc/hand_server.py",
+      "contains": "\"mabel_hw.rpc.hand_server\"",
+      "why": "ensure_daemon self-spawn string (python3 -m mabel_hw.rpc.hand_server)"
+    },
+    {
+      "file": "mabel_hw/ros/hands_node.py",
+      "contains": "_hand\"",
+      "why": "per-side hand namespace /<side>_hand/* is built here"
+    },
+    {
+      "file": "run_bridge.sh",
+      "contains": "hardware_bridge.py",
+      "why": "systemd entry: run_bridge.sh execs this exact filename with cwd=bridge dir"
+    },
+    {
+      "file": "mabel_hw/drivers/audio.py",
+      "contains": "card_for_usb_id",
+      "why": "port-independent card resolution (VID:PID -> ALSA card id); real_run.sh and exp_audio.py rely on the bar being found on ANY USB port"
+    },
+    {
+      "file": "mabel_hw/config.py",
+      "contains": "plughw:CARD=Device,DEV=0",
+      "why": "the wire is 16 kHz MONO and the card is 2ch \u2014 the plug layer's channel (and, on the old 48kHz-only bar, rate) conversion is load-bearing; a bare hw: device string must never come back"
+    }
+  ]
+}

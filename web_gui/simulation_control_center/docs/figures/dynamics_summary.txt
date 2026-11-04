@@ -1,0 +1,18 @@
+scene            actors  conv   mj_step  +dynamics  write(us)
+--------------------------------------------------------------
+assembly_line      1     1      0.37       0.39       2.6
+restaurant         1     0      0.36       0.36       2.4
+fine_dining        1     0      0.35       0.36       2.4
+supermarket        2     0      0.38       0.38       3.3
+airport            5     0      0.38       0.39       6.1
+plaza              8     0      0.39       0.41       8.9
+boulevard         10     0      0.39       0.41      10.6
+intersection      11     0      0.39       0.41      11.8
+city_sidewalk        12     0      0.39       0.44      12.6
+
+per-actor keyframe cost   : 1.09 us/actor (SceneDynamics.step, 50 Hz decimated)
+worst-case substep        : 0.44 ms (city_sidewalk) vs 2.00 ms RT budget
+real-time headroom (worst): 4.54x
+car brakes to             : 0.00 m/s at the red (accel-limited stop)
+gait/speed coupling       : r=0.97 (hip-swing envelope vs walk speed)
+belt carry efficiency     : 91.9% of belt speed (friction transport)

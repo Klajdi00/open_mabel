@@ -1,0 +1,114 @@
+{
+ "version": 1,
+ "actors": [
+  {
+   "kind": "walker",
+   "root": "worker_root",
+   "z": 0.884,
+   "path": [
+    [
+     -3.0,
+     2.52
+    ],
+    [
+     3.0,
+     2.52
+    ]
+   ],
+   "closed": false,
+   "speed": 0.85,
+   "accel": 1.6,
+   "s0": 1.5,
+   "bob": 0.0233,
+   "stride": 0.585,
+   "gait": {
+    "joints": [
+     "worker_hipL",
+     "worker_hipR",
+     "worker_kneeL",
+     "worker_kneeR",
+     "worker_shL",
+     "worker_shR",
+     "worker_elL",
+     "worker_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 0.15,
+     "period": 36.0,
+     "dur": 7.0,
+     "offset": 4.0
+    },
+    {
+     "s": 3.0,
+     "period": 36.0,
+     "dur": 7.0,
+     "offset": 16.0
+    },
+    {
+     "s": 5.85,
+     "period": 36.0,
+     "dur": 7.0,
+     "offset": 28.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.3,
+    0.3
+   ]
+  }
+ ],
+ "conveyors": [
+  {
+   "kind": "belt",
+   "joint": "conv_belt_slide",
+   "speed": 0.22,
+   "wrap": 0.7,
+   "recycle": {
+    "joints": [
+     "as_tape1_joint",
+     "as_screwdr_joint",
+     "as_spk_joint",
+     "as_tape2_joint"
+    ],
+    "axis": 0,
+    "max": 4.35,
+    "respawn": -4.35
+   }
+  }
+ ]
+}

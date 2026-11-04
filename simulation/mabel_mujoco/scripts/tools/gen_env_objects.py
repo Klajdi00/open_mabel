@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""
+gen_env_objects.py -- wire third-party scanned-object meshes into per-scene MuJoCo
+includes for the extended scene library (companion to gen_home_objects.py, which
+does the same for mabel_home.xml from assets/objects/).
+
+Objects come from third_party/mujoco_scanned_objects/<NAME>/ (MIT conversion of
+Google Scanned Objects, CC-BY 4.0 -- see the ATTRIBUTION.md there). Each provides
+a textured visual mesh (model.obj + texture.png). Per object we emit a namespaced
+<asset> block and a free-floating <body> (freejoint) resting on a scene surface,
+with a convex-hull collision geom (MuJoCo convexifies mesh collisions).
+Paths are relative to scenes/, so the includes are valid from any scene file there.
+
+Re-run from the repo root after changing placements:
+    python3 scripts/tools/gen_env_objects.py
+"""
+import os
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
+OBJ_DIR = os.path.join(ROOT, "third_party", "mujoco_scanned_objects")
+
+# scene -> [(object dir, prefix, x, y, z, yaw-deg, mass-kg)]
+# z is the resting base height (surface top + ~5 mm settle clearance).
+SCENES = {
+    # coffee-table top = 0.42, TV-stand top = 0.45
+    "living_room_objects.xml": [
+        ("Room_Essentials_Mug_White_Yellow",              "lr_mug",     -1.60,  0.22, 0.425,  20, 0.30),
+        ("JBL_Charge_Speaker_portable_wireless_wired_Green", "lr_spk",    2.95,  0.85, 0.455,  90, 0.60),
+    ],
+    # nightstand tops = 0.55
+    "bedroom_objects.xml": [
+        ("Crosley_Alarm_Clock_Vintage_Metal",             "br_clock",    2.60,  1.42, 0.555, 180, 0.40),
+    ],
+    # desk tops = 0.74
+    "office_objects.xml": [
+        ("Travel_Mate_P_series_Notebook",                 "of_laptop",  -2.05, -1.25, 0.745, -90, 2.00),
+        ("Kanex_MultiSync_Wireless_Keyboard",             "of_kbd",      2.05,  1.20, 0.745,  90, 0.50),
+        ("Razer_Abyssus_Ambidextrous_Gaming_Mouse",       "of_mouse",    2.02,  0.85, 0.745,  90, 0.09),
+        ("Room_Essentials_Mug_White_Yellow",              "of_mug",     -2.10, -1.75, 0.745,   0, 0.30),
+    ],
+    # workbench top = 0.90
+    "factory_objects.xml": [
+        ("Cole_Hardware_Hammer_Black",                    "fa_hammer",  -2.55,  3.45, 0.905,  15, 0.60),
+        ("Craftsman_Grip_Screwdriver_Phillips_Cushion",   "fa_screwdr", -2.30,  3.65, 0.905, -70, 0.15),
+        ("Pony_C_Clamp_1440",                             "fa_clamp",   -2.80,  3.70, 0.905,  40, 0.50),
+        ("3M_Vinyl_Tape_Green_1_x_36_yd",                 "fa_tape",    -2.10,  3.42, 0.905,   0, 0.25),
+    ],
+    # conveyor belt top = 0.85
+    "assembly_objects.xml": [
+        ("3M_Vinyl_Tape_Green_1_x_36_yd",                 "as_tape1",   -2.60,  1.80, 0.855,   0, 0.25),
+        ("Craftsman_Grip_Screwdriver_Phillips_Cushion",   "as_screwdr", -0.90,  1.78, 0.855,  80, 0.15),
+        ("JBL_Charge_Speaker_portable_wireless_wired_Green", "as_spk",   0.85,  1.82, 0.855,   0, 0.60),
+        ("3M_Vinyl_Tape_Green_1_x_36_yd",                 "as_tape2",    2.40,  1.80, 0.855,   0, 0.25),
+    ],
+    # rack level-1 deck top = 0.80, floor pallet top = 0.155
+    "warehouse_objects.xml": [
+        ("Curver_Storage_Bin_Black_Small",                "wh_bin",      1.90, -2.60, 0.815,   0, 0.50),
+        ("Cole_Hardware_Hammer_Black",                    "wh_hammer",   2.60, -2.75, 0.815,  75, 0.60),
+    ],
+}
+
+
+def emit(fname, placements):
+    asset, body = [], []
+    for d, pfx, x, y, z, yaw, mass in placements:
+        odir = os.path.join(OBJ_DIR, d)
+        if not (os.path.exists(os.path.join(odir, "model.obj"))
+                and os.path.exists(os.path.join(odir, "texture.png"))):
+            print("  skip (missing files):", d)
+            continue
+        rel = f"../third_party/mujoco_scanned_objects/{d}"
+        asset.append(
+            f'    <texture type="2d" name="{pfx}_tex" file="{rel}/texture.png"/>\n'
+            f'    <material name="{pfx}_mat" texture="{pfx}_tex" specular="0.3" shininess="0.4"/>\n'
+            # explicit scale: mabel_full.xml sets a GLOBAL <mesh scale="0.001"> default
+            # (its own STLs are in mm); these OBJs are in meters already.
+            f'    <mesh name="{pfx}_mesh" file="{rel}/model.obj" scale="1 1 1"/>')
+        body.append(
+            f'    <body name="{pfx}" pos="{x} {y} {z}" euler="0 0 {yaw*3.14159265/180:.4f}">\n'
+            f'      <freejoint name="{pfx}_joint"/>\n'
+            f'      <geom type="mesh" mesh="{pfx}_mesh" material="{pfx}_mat" '
+            f'contype="0" conaffinity="0" group="2" mass="0"/>\n'
+            f'      <geom type="mesh" mesh="{pfx}_mesh" group="3" rgba="0.6 0.6 0.6 0" '
+            f'contype="3" conaffinity="3" condim="4" friction="1 0.05 0.001" mass="{mass}" '
+            f'priority="1" solref="0.004 1" solimp="0.99 0.999 0.001"/>\n'
+            f'    </body>')
+    name = os.path.splitext(fname)[0]
+    xml = (f'<mujoco model="{name}">\n'
+           '  <!-- AUTO-GENERATED by scripts/tools/gen_env_objects.py -- do not edit by hand.\n'
+           '       Scanned-object meshes from third_party/mujoco_scanned_objects\n'
+           '       (MIT conversion over CC-BY 4.0 Google Scanned Objects). -->\n'
+           '  <asset>\n' + "\n".join(asset) + "\n  </asset>\n\n"
+           '  <worldbody>\n' + "\n".join(body) + "\n  </worldbody>\n</mujoco>\n")
+    out = os.path.join(ROOT, "scenes", fname)
+    with open(out, "w") as f:
+        f.write(xml)
+    print(f"wrote {out}  ({len(body)} objects)")
+
+
+if __name__ == "__main__":
+    for fname, placements in SCENES.items():
+        emit(fname, placements)

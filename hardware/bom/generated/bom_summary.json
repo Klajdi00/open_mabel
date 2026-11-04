@@ -1,0 +1,1882 @@
+{
+  "generated_by": "BOM/tools/build_bom.py",
+  "price_date": "31 July 2026",
+  "cny_to_usd": 0.1434224,
+  "usd_to_cny": 6.9724,
+  "jetson_rise": {
+    "date": "22 July 2026",
+    "thor_before": 3499.0,
+    "thor_after": 5499.0,
+    "nano_before": 249.0,
+    "nano_after": 399.0,
+    "thor_as_quoted": 3500.0
+  },
+  "as_quoted_total": 12969.37,
+  "as_quoted_today": 14968.37,
+  "functional_dof": 56,
+  "motor_count": 59,
+  "core_total": 7650.05,
+  "core_line_count": 49,
+  "core_sections": [
+    {
+      "name": "Mobile base",
+      "usd": 1912.11,
+      "share": 24.99
+    },
+    {
+      "name": "Body / torso",
+      "usd": 889.06,
+      "share": 11.62
+    },
+    {
+      "name": "Arms - both",
+      "usd": 2622.24,
+      "share": 34.28
+    },
+    {
+      "name": "Hands - both",
+      "usd": 1194.61,
+      "share": 15.62
+    },
+    {
+      "name": "Neck / head",
+      "usd": 235.3,
+      "share": 3.08
+    },
+    {
+      "name": "Structural hardware",
+      "usd": 184.21,
+      "share": 2.41
+    },
+    {
+      "name": "Electronics, power & cabling",
+      "usd": 491.84,
+      "share": 6.43
+    },
+    {
+      "name": "3D printed material",
+      "usd": 120.68,
+      "share": 1.58
+    }
+  ],
+  "core": [
+    {
+      "ref": "1.01",
+      "section": "Mobile base",
+      "item": "REV 3in MAXSwerve Module",
+      "spec": "REV-21-3005, module only",
+      "qty": 3,
+      "unit_usd": 275.0,
+      "ext_usd": 825.0,
+      "currency": "USD",
+      "unit_native": 275.0,
+      "vendor": "revrobotics.com",
+      "link": "https://www.revrobotics.com/rev-21-3005/",
+      "fgroup": "actuation",
+      "status": "corrected",
+      "note": "REV catalogue price. The sheet carried a $675 as-paid lump per module; itemised at catalogue it is $275 + the $280 motor and controller bundle below."
+    },
+    {
+      "ref": "1.01b",
+      "section": "Mobile base",
+      "item": "REV MAXSwerve Motor & Controller Bundle",
+      "spec": "REV-15-2992: NEO + NEO 550 + 2x SPARK MAX, one module",
+      "qty": 3,
+      "unit_usd": 280.0,
+      "ext_usd": 840.0,
+      "currency": "USD",
+      "unit_native": 280.0,
+      "vendor": "revrobotics.com",
+      "link": "https://www.revrobotics.com/rev-15-2992/",
+      "fgroup": "actuation",
+      "status": "corrected",
+      "note": "One bundle per module: the drive NEO, the steering NEO 550 and their two SPARK MAX controllers."
+    },
+    {
+      "ref": "1.02",
+      "section": "Mobile base",
+      "item": "Base sheet metal, lower",
+      "spec": "Custom laser-cut",
+      "qty": 1,
+      "unit_usd": 51.75,
+      "ext_usd": 51.75,
+      "currency": "USD",
+      "unit_native": 51.75,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "Laser cutting only, no secondary operations."
+    },
+    {
+      "ref": "1.03",
+      "section": "Mobile base",
+      "item": "Base sheet metal, upper",
+      "spec": "Custom laser-cut",
+      "qty": 1,
+      "unit_usd": 195.36,
+      "ext_usd": 195.36,
+      "currency": "USD",
+      "unit_native": 195.36,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "4 bends, dimple forming, hardware insertion, tapping."
+    },
+    {
+      "ref": "2.01",
+      "section": "Body / torso",
+      "item": "FlexiSpot E7 Pro lift column",
+      "spec": "CBR4830MD-E7WS",
+      "qty": 1,
+      "unit_usd": 399.0,
+      "ext_usd": 399.0,
+      "currency": "USD",
+      "unit_native": 399.0,
+      "vendor": "flexispot.com",
+      "link": "https://www.flexispot.com/flexispot-pro-standing-desk-e7",
+      "fgroup": "actuation",
+      "status": "sheet",
+      "note": "A complete standing desk is bought; only the column and frame are used. 0-0.635 m stroke."
+    },
+    {
+      "ref": "2.02",
+      "section": "Body / torso",
+      "item": "Lift-to-torso adapter",
+      "spec": "Custom machined",
+      "qty": 1,
+      "unit_usd": 59.26,
+      "ext_usd": 59.26,
+      "currency": "USD",
+      "unit_native": 59.26,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "2 bends, dimple forming, hardware insertion, tapping."
+    },
+    {
+      "ref": "2.03",
+      "section": "Body / torso",
+      "item": "Torso output plate",
+      "spec": "Custom machined",
+      "qty": 1,
+      "unit_usd": 55.16,
+      "ext_usd": 55.16,
+      "currency": "USD",
+      "unit_native": 55.16,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "1 bend, hardware insertion, tapping."
+    },
+    {
+      "ref": "2.04",
+      "section": "Body / torso",
+      "item": "Body bottom plate",
+      "spec": "Custom machined",
+      "qty": 1,
+      "unit_usd": 33.55,
+      "ext_usd": 33.55,
+      "currency": "USD",
+      "unit_native": 33.55,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "2 bends, hardware insertion, tapping."
+    },
+    {
+      "ref": "2.05",
+      "section": "Body / torso",
+      "item": "Arm mounting plate",
+      "spec": "Custom machined",
+      "qty": 2,
+      "unit_usd": 13.17,
+      "ext_usd": 26.34,
+      "currency": "USD",
+      "unit_native": 13.17,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "Hardware insertion, tapping. One per arm."
+    },
+    {
+      "ref": "2.06",
+      "section": "Body / torso",
+      "item": "Neck mounting plate",
+      "spec": "Custom machined",
+      "qty": 1,
+      "unit_usd": 29.05,
+      "ext_usd": 29.05,
+      "currency": "USD",
+      "unit_native": 29.05,
+      "vendor": "Custom fabrication",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "2 bends only."
+    },
+    {
+      "ref": "2.07",
+      "section": "Body / torso",
+      "item": "DAMIAO DM10422P torso actuator",
+      "spec": "Hollow-shaft planetary, dual inductive encoder",
+      "qty": 1,
+      "unit_usd": 286.7,
+      "ext_usd": 286.7,
+      "currency": "CNY",
+      "unit_native": 1999.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "sheet",
+      "note": "400 N.m torso-pitch joint."
+    },
+    {
+      "ref": "3.01",
+      "section": "Arms - both",
+      "item": "DAMIAO FOCGM43 joint module",
+      "spec": "MIT-mode BLDC, dual encoder, geared",
+      "qty": 6,
+      "unit_usd": 85.91,
+      "ext_usd": 515.46,
+      "currency": "CNY",
+      "unit_native": 599.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "corrected",
+      "note": "The parts list calls this 'DMJ4301'. The verified Taobao listing is a DAMIAO FOCGM43 module; the repo's own build table calls the arm-wrist actuator DM-J4310. Search the model string, not the sheet's label."
+    },
+    {
+      "ref": "3.02",
+      "section": "Arms - both",
+      "item": "DAMIAO DM4340 joint motor",
+      "spec": "Geared, dual encoder, 9 N.m rated",
+      "qty": 4,
+      "unit_usd": 126.55,
+      "ext_usd": 506.18,
+      "currency": "CNY",
+      "unit_native": 882.33,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "corrected",
+      "note": "Parts list says 'DMJ4343'; the listing and the repo build table both say DM4340. Shoulder roll + elbow."
+    },
+    {
+      "ref": "3.03",
+      "section": "Arms - both",
+      "item": "DAMIAO DM8009P joint module",
+      "spec": "MIT-mode BLDC module, V4, 40 N.m",
+      "qty": 4,
+      "unit_usd": 272.36,
+      "ext_usd": 1089.44,
+      "currency": "CNY",
+      "unit_native": 1899.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "corrected",
+      "note": "Parts list says 'DMJ4341'; the listing and the repo build table both say DM8009P. Shoulder pitch + yaw. Bought at 25% below the CNY 2529 list."
+    },
+    {
+      "ref": "3.04",
+      "section": "Arms - both",
+      "item": "OpenArm structural set",
+      "spec": "CNC 7075 aluminium + sheet steel",
+      "qty": 1,
+      "unit_usd": 387.1,
+      "ext_usd": 387.1,
+      "currency": "CNY",
+      "unit_native": 2699.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": "Dual-arm structural set."
+    },
+    {
+      "ref": "3.05",
+      "section": "Arms - both",
+      "item": "Arm harness set",
+      "spec": "Harness + hub + e-stop + power adapter board + PSU",
+      "qty": 1,
+      "unit_usd": 124.06,
+      "ext_usd": 124.06,
+      "currency": "CNY",
+      "unit_native": 865.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "power",
+      "status": "corrected",
+      "note": "The original sheet gave '865' with no currency. Read as CNY on the basis of its Taobao link. If it is USD every total rises by $740.93."
+    },
+    {
+      "ref": "4.01",
+      "section": "Hands - both",
+      "item": "Feetech HL3915M servo",
+      "spec": "HL-3915-C001, 12 V, 14 kg-cm, dual-shaft, steel gear, TTL",
+      "qty": 32,
+      "unit_usd": 33.7,
+      "ext_usd": 1078.54,
+      "currency": "CNY",
+      "unit_native": 235.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "sheet",
+      "note": "16 per ORCA hand."
+    },
+    {
+      "ref": "4.02",
+      "section": "Hands - both",
+      "item": "Feetech HL3930M servo",
+      "spec": "HL-3930-C001, 12 V, 35 kg-cm, metal case, dual-shaft, TTL",
+      "qty": 2,
+      "unit_usd": 51.49,
+      "ext_usd": 102.98,
+      "currency": "CNY",
+      "unit_native": 359.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "sheet",
+      "note": "1 per hand."
+    },
+    {
+      "ref": "4.03",
+      "section": "Hands - both",
+      "item": "ST/SC bus servo driver board",
+      "spec": "USB-UART TTL debug board",
+      "qty": 2,
+      "unit_usd": 3.97,
+      "ext_usd": 7.93,
+      "currency": "CNY",
+      "unit_native": 27.65,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": "One per hand on the 1 Mbit TTL bus."
+    },
+    {
+      "ref": "4.04",
+      "section": "Hands - both",
+      "item": "Bus servo power distribution board",
+      "spec": "5264 terminal splitter",
+      "qty": 2,
+      "unit_usd": 2.58,
+      "ext_usd": 5.16,
+      "currency": "CNY",
+      "unit_native": 18.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": "One per hand."
+    },
+    {
+      "ref": "5.01",
+      "section": "Neck / head",
+      "item": "Robotis Dynamixel 2XL430-W250-T",
+      "spec": "Dual-axis smart servo",
+      "qty": 1,
+      "unit_usd": 149.39,
+      "ext_usd": 149.39,
+      "currency": "USD",
+      "unit_native": 149.39,
+      "vendor": "robotshop.com",
+      "link": "https://www.robotshop.com/products/robotis-dynamixel-2xl430-w250-t-smart-servo-actuator",
+      "fgroup": "actuation",
+      "status": "disputed",
+      "note": "The HAL disagrees: mabel_hw/drivers/dynamixel.py records that MABEL's neck reports model 1090 = XC330-T181 and config.py:665 says there are two of them. 2x XC330-T181-T would be $206.78. Unresolved - see open items."
+    },
+    {
+      "ref": "5.02",
+      "section": "Neck / head",
+      "item": "DAMIAO FOCGM43 neck actuator",
+      "spec": "MIT-mode BLDC, dual encoder",
+      "qty": 1,
+      "unit_usd": 85.91,
+      "ext_usd": 85.91,
+      "currency": "CNY",
+      "unit_native": 599.0,
+      "vendor": "Taobao",
+      "link": "",
+      "fgroup": "actuation",
+      "status": "sheet",
+      "note": "Neck yaw. Same module as line 3.01."
+    },
+    {
+      "ref": "6.01",
+      "section": "Structural hardware",
+      "item": "Aluminium extrusion, cut lengths",
+      "spec": "2x2 in: 15x2, 17x2, 4.75x3, 8x2; 2x4 in: 10x1, 12.5x2",
+      "qty": 1,
+      "unit_usd": 101.46,
+      "ext_usd": 101.46,
+      "currency": "USD",
+      "unit_native": 101.46,
+      "vendor": "mcmaster.com",
+      "link": "https://www.mcmaster.com/",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "6.02",
+      "section": "Structural hardware",
+      "item": "Extrusion 90 degree corner brackets",
+      "spec": "1010-series, T-slot",
+      "qty": 1,
+      "unit_usd": 26.9,
+      "ext_usd": 26.9,
+      "currency": "USD",
+      "unit_native": 26.9,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "6.03",
+      "section": "Structural hardware",
+      "item": "Extrusion angled plates",
+      "spec": "BLCCLOY 20-set, 1010-series",
+      "qty": 1,
+      "unit_usd": 20.88,
+      "ext_usd": 20.88,
+      "currency": "USD",
+      "unit_native": 20.88,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "6.04",
+      "section": "Structural hardware",
+      "item": "Metric screw assortment",
+      "spec": "Mixed M3-M6",
+      "qty": 1,
+      "unit_usd": 13.99,
+      "ext_usd": 13.99,
+      "currency": "USD",
+      "unit_native": 13.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "6.05",
+      "section": "Structural hardware",
+      "item": "Imperial screw assortment",
+      "spec": "For lift column and extrusion",
+      "qty": 1,
+      "unit_usd": 8.99,
+      "ext_usd": 8.99,
+      "currency": "USD",
+      "unit_native": 8.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "6.06",
+      "section": "Structural hardware",
+      "item": "Neodymium magnets",
+      "spec": "Panel retention",
+      "qty": 1,
+      "unit_usd": 11.99,
+      "ext_usd": 11.99,
+      "currency": "USD",
+      "unit_native": 11.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "structure",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.01",
+      "section": "Electronics, power & cabling",
+      "item": "SODOLA 6-port 2.5 GbE switch",
+      "spec": "4x 2.5G-BaseT, 2x 10G SFP+, managed",
+      "qty": 1,
+      "unit_usd": 49.99,
+      "ext_usd": 49.99,
+      "currency": "USD",
+      "unit_native": 49.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "data",
+      "status": "sheet",
+      "note": "Onboard network spine."
+    },
+    {
+      "ref": "7.02",
+      "section": "Electronics, power & cabling",
+      "item": "USB expansion board",
+      "spec": "Powered multi-port hub",
+      "qty": 1,
+      "unit_usd": 74.99,
+      "ext_usd": 74.99,
+      "currency": "USD",
+      "unit_native": 74.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "data",
+      "status": "sheet",
+      "note": "Feeds the camera USB3 tree; contention here is a known video-latency source."
+    },
+    {
+      "ref": "7.03",
+      "section": "Electronics, power & cabling",
+      "item": "Battery",
+      "spec": "Main pack",
+      "qty": 2,
+      "unit_usd": 46.81,
+      "ext_usd": 93.62,
+      "currency": "USD",
+      "unit_native": 46.81,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "power",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.04",
+      "section": "Electronics, power & cabling",
+      "item": "Ethernet twinax cable",
+      "spec": "SFP+ direct-attach",
+      "qty": 1,
+      "unit_usd": 45.99,
+      "ext_usd": 45.99,
+      "currency": "USD",
+      "unit_native": 45.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "data",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.05",
+      "section": "Electronics, power & cabling",
+      "item": "Wi-Fi antenna cable",
+      "spec": "Pigtail extension",
+      "qty": 2,
+      "unit_usd": 17.99,
+      "ext_usd": 35.98,
+      "currency": "USD",
+      "unit_native": 17.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "data",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.06",
+      "section": "Electronics, power & cabling",
+      "item": "Power cable, 6XT",
+      "spec": "Main DC run",
+      "qty": 1,
+      "unit_usd": 24.99,
+      "ext_usd": 24.99,
+      "currency": "USD",
+      "unit_native": 24.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "power",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.07",
+      "section": "Electronics, power & cabling",
+      "item": "Buck converter 24 V to 12 V",
+      "spec": "Step-down regulator",
+      "qty": 1,
+      "unit_usd": 18.99,
+      "ext_usd": 18.99,
+      "currency": "USD",
+      "unit_native": 18.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "power",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.08",
+      "section": "Electronics, power & cabling",
+      "item": "Speaker + USB sound card",
+      "spec": "8 ohm 5 W, Jetson/Pi",
+      "qty": 1,
+      "unit_usd": 19.5,
+      "ext_usd": 19.5,
+      "currency": "USD",
+      "unit_native": 19.5,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.09",
+      "section": "Electronics, power & cabling",
+      "item": "Power cord extension",
+      "spec": "AC mains",
+      "qty": 1,
+      "unit_usd": 16.95,
+      "ext_usd": 16.95,
+      "currency": "USD",
+      "unit_native": 16.95,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "power",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.10",
+      "section": "Electronics, power & cabling",
+      "item": "Fuse box",
+      "spec": "Blade-fuse distribution",
+      "qty": 1,
+      "unit_usd": 15.99,
+      "ext_usd": 15.99,
+      "currency": "USD",
+      "unit_native": 15.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "power",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.11",
+      "section": "Electronics, power & cabling",
+      "item": "Raspberry Pi Pico",
+      "spec": "Auxiliary MCU (lift)",
+      "qty": 1,
+      "unit_usd": 15.95,
+      "ext_usd": 15.95,
+      "currency": "USD",
+      "unit_native": 15.95,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": "Runs the lift leadscrew loop."
+    },
+    {
+      "ref": "7.12",
+      "section": "Electronics, power & cabling",
+      "item": "Motor driver",
+      "spec": "BTS7960 auxiliary DC drive (lift)",
+      "qty": 1,
+      "unit_usd": 9.99,
+      "ext_usd": 9.99,
+      "currency": "USD",
+      "unit_native": 9.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.13",
+      "section": "Electronics, power & cabling",
+      "item": "USB-C to USB-A cable",
+      "spec": "Head cam, hands x2, base cam",
+      "qty": 4,
+      "unit_usd": 6.99,
+      "ext_usd": 27.96,
+      "currency": "USD",
+      "unit_native": 6.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "data",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.14",
+      "section": "Electronics, power & cabling",
+      "item": "Ethernet patch cable",
+      "spec": "Upper body + mobile base",
+      "qty": 2,
+      "unit_usd": 6.99,
+      "ext_usd": 13.98,
+      "currency": "USD",
+      "unit_native": 6.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "data",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.15",
+      "section": "Electronics, power & cabling",
+      "item": "Protective sleeving, 1/2 in",
+      "spec": "Harness loom",
+      "qty": 2,
+      "unit_usd": 8.99,
+      "ext_usd": 17.98,
+      "currency": "USD",
+      "unit_native": 8.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.16",
+      "section": "Electronics, power & cabling",
+      "item": "Protective sleeving, 1/4 in",
+      "spec": "Harness loom",
+      "qty": 1,
+      "unit_usd": 8.99,
+      "ext_usd": 8.99,
+      "currency": "USD",
+      "unit_native": 8.99,
+      "vendor": "amazon.com",
+      "link": "",
+      "fgroup": "misc",
+      "status": "sheet",
+      "note": ""
+    },
+    {
+      "ref": "7.18",
+      "section": "Electronics, power & cabling",
+      "item": "Custom PCBs",
+      "spec": "Two-layer distribution boards - not yet priced",
+      "qty": 1,
+      "unit_usd": 0.0,
+      "ext_usd": 0.0,
+      "currency": "USD",
+      "unit_native": 0.0,
+      "vendor": "JLCPCB",
+      "link": "https://jlcpcb.com/",
+      "fgroup": "misc",
+      "status": "tbd",
+      "note": "Budget $100-300 at JLCPCB for boards plus components. No gerbers are released under hardware/ yet, so this cannot be verified from the repo."
+    },
+    {
+      "ref": "7.19",
+      "section": "Electronics, power & cabling",
+      "item": "Custom PCB components",
+      "spec": "Connectors, regulators, CAN transceivers - not yet priced",
+      "qty": 1,
+      "unit_usd": 0.0,
+      "ext_usd": 0.0,
+      "currency": "USD",
+      "unit_native": 0.0,
+      "vendor": "-",
+      "link": "",
+      "fgroup": "misc",
+      "status": "tbd",
+      "note": "Carried at zero in every total on this page."
+    },
+    {
+      "ref": "8.01",
+      "section": "3D printed material",
+      "item": "Bambu Lab PLA Basic, Jade White",
+      "spec": "1.75 mm, 1 kg with spool - covers, sensor mounts, trim",
+      "qty": 4,
+      "unit_usd": 17.24,
+      "ext_usd": 68.96,
+      "currency": "USD",
+      "unit_native": 17.24,
+      "vendor": "bambulab.com",
+      "link": "https://us.store.bambulab.com/collections/pla",
+      "fgroup": "structure",
+      "status": "corrected",
+      "note": "Bambu Lab's standing bulk price: 25% off four rolls or more, and the build takes seven, so every roll is $17.24 rather than the $22.99 list. Covers, sensor mounts and trim."
+    },
+    {
+      "ref": "8.02",
+      "section": "3D printed material",
+      "item": "Bambu Lab PLA Basic, Black",
+      "spec": "1.75 mm, 1 kg with spool - ORCA hand structure",
+      "qty": 2,
+      "unit_usd": 17.24,
+      "ext_usd": 34.48,
+      "currency": "USD",
+      "unit_native": 17.24,
+      "vendor": "bambulab.com",
+      "link": "https://us.store.bambulab.com/collections/pla",
+      "fgroup": "structure",
+      "status": "corrected",
+      "note": "Bambu Lab's standing bulk price: 25% off four rolls or more, and the build takes seven, so every roll is $17.24 rather than the $22.99 list. The tendon-driven hand frames; the highest-wear printed parts on the robot."
+    },
+    {
+      "ref": "8.03",
+      "section": "3D printed material",
+      "item": "Bambu Lab PLA Basic, Light Gray",
+      "spec": "1.75 mm, 1 kg with spool - accent parts",
+      "qty": 1,
+      "unit_usd": 17.24,
+      "ext_usd": 17.24,
+      "currency": "USD",
+      "unit_native": 17.24,
+      "vendor": "bambulab.com",
+      "link": "https://us.store.bambulab.com/collections/pla",
+      "fgroup": "structure",
+      "status": "corrected",
+      "note": "Bambu Lab's standing bulk price: 25% off four rolls or more, and the build takes seven, so every roll is $17.24 rather than the $22.99 list."
+    }
+  ],
+  "choices": [
+    {
+      "id": "9.1",
+      "name": "Onboard compute",
+      "qty": 1,
+      "lo": 120.0,
+      "hi": 5499.0,
+      "options": [
+        {
+          "option": "Raspberry Pi 5 16 GB",
+          "spec": "16 GB, quad Cortex-A76; teleoperation, recording and the studios, policies run off-board",
+          "unit_usd": 120.0,
+          "ext_usd": 120.0,
+          "tiers": [
+            "essential"
+          ],
+          "vendor": "raspberrypi.com",
+          "link": "https://www.raspberrypi.com/products/raspberry-pi-5/",
+          "fgroup": "compute",
+          "note": "The standard robot's compute. Add an NVMe HAT and SSD (about $45) to keep datasets on the robot; a Jetson is the upgrade for on-board policy inference."
+        },
+        {
+          "option": "NVIDIA Jetson Orin Nano Super Dev Kit",
+          "spec": "8 GB, 67 TOPS, carrier also accepts Orin NX modules",
+          "unit_usd": 399.0,
+          "ext_usd": 399.0,
+          "tiers": [],
+          "vendor": "amazon.com",
+          "link": "https://developer.nvidia.com/embedded/buy-jetson",
+          "fgroup": "compute",
+          "note": "Was $249 before the 22 July 2026 NVIDIA price rise. The carrier accepts Orin NX modules, so this is also a route to 16 GB later."
+        },
+        {
+          "option": "NVIDIA Jetson Orin NX 8 GB + carrier",
+          "spec": "8 GB, 117 TOPS, module $649 + ~$250 carrier (est.)",
+          "unit_usd": 899.0,
+          "ext_usd": 899.0,
+          "tiers": [],
+          "vendor": "nvidia.com",
+          "link": "https://developer.nvidia.com/embedded/buy-jetson",
+          "fgroup": "compute",
+          "note": ""
+        },
+        {
+          "option": "NVIDIA Jetson Orin NX 16 GB + carrier",
+          "spec": "16 GB, 157 TOPS, module $999 + ~$250 carrier (est.)",
+          "unit_usd": 1249.0,
+          "ext_usd": 1249.0,
+          "tiers": [
+            "recommended"
+          ],
+          "vendor": "nvidia.com",
+          "link": "https://developer.nvidia.com/embedded/buy-jetson",
+          "fgroup": "compute",
+          "note": "Memory, not TOPS, is the binding constraint - the policy, cuVSLAM, Nav2 and every camera stream must be resident at once, and the module is soldered."
+        },
+        {
+          "option": "NVIDIA Jetson AGX Orin 64 GB Dev Kit",
+          "spec": "64 GB, 275 TOPS, emulates every Orin module, 60 W",
+          "unit_usd": 3499.0,
+          "ext_usd": 3499.0,
+          "tiers": [],
+          "vendor": "amazon.com",
+          "link": "https://developer.nvidia.com/embedded/buy-jetson",
+          "fgroup": "compute",
+          "note": "60 W would force a battery redesign that this guide does not cover."
+        },
+        {
+          "option": "NVIDIA Jetson AGX Thor Developer Kit",
+          "spec": "128 GB, 2070 TFLOPS",
+          "unit_usd": 5499.0,
+          "ext_usd": 5499.0,
+          "tiers": [
+            "maximum"
+          ],
+          "vendor": "nvidia.com",
+          "link": "https://developer.nvidia.com/embedded/buy-jetson",
+          "fgroup": "compute",
+          "note": "Was $3,499 before 22 July 2026. This single line is the difference between a $8.5k and a $15k robot."
+        }
+      ]
+    },
+    {
+      "id": "9.2",
+      "name": "Wrist cameras",
+      "qty": 2,
+      "lo": 97.98,
+      "hi": 576.0,
+      "options": [
+        {
+          "option": "MMlove AR0144 GS-720P-60fps",
+          "spec": "1280x720 @ 60, global shutter, 170 deg fisheye, no depth",
+          "unit_usd": 48.99,
+          "ext_usd": 97.98,
+          "tiers": [
+            "essential"
+          ],
+          "vendor": "amazon.com",
+          "link": "https://www.amazon.com/MMlove-Shutter-1280x720-Embedded-Applications/dp/B0BZYW6DJT",
+          "fgroup": "perception",
+          "note": "The standard wrist camera, one per arm. Amazon.com listing B0BZYW6DJT."
+        },
+        {
+          "option": "MMlove AR0144 GS-1200P-90fps",
+          "spec": "1600x1200 @ 90, global shutter, same board, higher rate",
+          "unit_usd": 82.99,
+          "ext_usd": 165.98,
+          "tiers": [
+            "recommended"
+          ],
+          "vendor": "amazon.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": "The $68 step from 720P to 1200P across the pair is the highest-value spend in this guide - wrist views carry the fine detail a manipulation policy learns from."
+        },
+        {
+          "option": "Intel RealSense D405",
+          "spec": "1280x720 @ 90, global shutter, metric depth 7-50 cm",
+          "unit_usd": 288.0,
+          "ext_usd": 576.0,
+          "tiers": [
+            "maximum"
+          ],
+          "vendor": "digikey.com",
+          "link": "https://www.digikey.com/en/product-highlight/i/intel-realsense/d405-depth-camera",
+          "fgroup": "perception",
+          "note": "Dropping the D405s loses metric depth at the wrist, which most RGB-conditioned policies in the UMI lineage never use."
+        }
+      ]
+    },
+    {
+      "id": "9.3",
+      "name": "Head camera",
+      "qty": 1,
+      "lo": 119.0,
+      "hi": 399.0,
+      "options": [
+        {
+          "option": "IEights OG02B10 stereo, 1200P 60 fps, 100 deg HFOV",
+          "spec": "3200x1200 @ 60 (1200P per eye), global shutter, synchronised pair, 60 mm baseline, host-side matching",
+          "unit_usd": 119.0,
+          "ext_usd": 119.0,
+          "tiers": [
+            "essential",
+            "recommended"
+          ],
+          "vendor": "amazon.com",
+          "link": "https://www.amazon.com/Shutter-Synchronization-Computer-Binocular-100%C2%B0Industrial/dp/B0DHYDWSGT",
+          "fgroup": "perception",
+          "note": "The standard head camera (est.): the US price is converted from the CA$159.14 Amazon.ca listing B0DHYDWSGT until verified at the link."
+        },
+        {
+          "option": "Intel RealSense D435i",
+          "spec": "1280x720 @ 90, rolling shutter, depth + IMU",
+          "unit_usd": 319.72,
+          "ext_usd": 319.72,
+          "tiers": [],
+          "vendor": "pcnation.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": ""
+        },
+        {
+          "option": "Stereolabs ZED Mini",
+          "spec": "1280x720 @ 60, rolling shutter, on-board depth engine + VIO",
+          "unit_usd": 399.0,
+          "ext_usd": 399.0,
+          "tiers": [
+            "maximum"
+          ],
+          "vendor": "stereolabs.com",
+          "link": "https://www.stereolabs.com/store/products/zed-mini",
+          "fgroup": "perception",
+          "note": "On-board depth and visual-inertial odometry."
+        }
+      ]
+    },
+    {
+      "id": "9.4",
+      "name": "Base depth camera",
+      "qty": 1,
+      "lo": 0.0,
+      "hi": 319.72,
+      "options": [
+        {
+          "option": "Omit - rely on the 2D lidar",
+          "spec": "Nav2 maps and plans from the lidar scan alone",
+          "unit_usd": 0.0,
+          "ext_usd": 0.0,
+          "tiers": [
+            "essential",
+            "recommended"
+          ],
+          "vendor": "-",
+          "link": "",
+          "fgroup": "perception",
+          "note": "A 2D lidar sees one horizontal plane. If MABEL only ever drives across open floor this line is $0."
+        },
+        {
+          "option": "Intel RealSense D435i",
+          "spec": "Adds 3D obstacle detection at the base: overhangs, table edges, low clutter",
+          "unit_usd": 319.72,
+          "ext_usd": 319.72,
+          "tiers": [
+            "maximum"
+          ],
+          "vendor": "pcnation.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": "Without it, expect to hand-annotate keep-out zones in the costmap. On an 8 GB Orin Nano its point cloud competes for exactly the memory the policy needs."
+        }
+      ]
+    },
+    {
+      "id": "9.5",
+      "name": "2D lidar",
+      "qty": 1,
+      "lo": 69.0,
+      "hi": 228.63,
+      "options": [
+        {
+          "option": "youyeetoo FHL-LD19",
+          "spec": "DTOF, 12 m, 10 Hz, 4.5 kHz, 30 klux, 50 g, ROS 2 SDK (est.)",
+          "unit_usd": 69.0,
+          "ext_usd": 69.0,
+          "tiers": [
+            "essential"
+          ],
+          "vendor": "amazon.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": "A third of the price of the A2M12 and, being direct time-of-flight rather than triangulation, holds accuracy at range better."
+        },
+        {
+          "option": "Slamtec RPLIDAR C1",
+          "spec": "DTOF, 12 m, 8-12 Hz, 5 kHz, 40 klux, 110 g (est.)",
+          "unit_usd": 99.0,
+          "ext_usd": 99.0,
+          "tiers": [
+            "recommended"
+          ],
+          "vendor": "amazon.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": ""
+        },
+        {
+          "option": "youyeetoo FHL-LD19 Plus",
+          "spec": "DTOF, 25 m, 60 klux, IP5X, drop-in LD19 replacement (est.)",
+          "unit_usd": 99.0,
+          "ext_usd": 99.0,
+          "tiers": [],
+          "vendor": "amazon.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": ""
+        },
+        {
+          "option": "Slamtec RPLIDAR A2M12",
+          "spec": "Triangulation, 12 m, 5-15 Hz, 16 kHz, 190 g - the original spec",
+          "unit_usd": 228.63,
+          "ext_usd": 228.63,
+          "tiers": [
+            "maximum"
+          ],
+          "vendor": "amazon.com",
+          "link": "",
+          "fgroup": "perception",
+          "note": "Wins on sample rate (16 kHz against 4.5 kHz), which matters for fast rotation, not for a robot that drives at walking pace."
+        }
+      ]
+    },
+    {
+      "id": "9.6",
+      "name": "Camera-specific cabling",
+      "qty": 1,
+      "lo": 0.0,
+      "hi": 48.66,
+      "options": [
+        {
+          "option": "None needed",
+          "spec": "The MMlove wrist boards and the IEights head board use the USB-A cables already in the core",
+          "unit_usd": 0.0,
+          "ext_usd": 0.0,
+          "tiers": [
+            "essential",
+            "recommended"
+          ],
+          "vendor": "-",
+          "link": "",
+          "fgroup": "data",
+          "note": "Choosing the MMlove wrists and the IEights head removes $48.66 of camera-specific cabling."
+        },
+        {
+          "option": "Micro-B pair + ZED USB-C run",
+          "spec": "2x Micro-B to USB-A ($13.99) + 1x 10 ft USB-C ($20.68)",
+          "unit_usd": 48.66,
+          "ext_usd": 48.66,
+          "tiers": [
+            "maximum"
+          ],
+          "vendor": "amazon.com",
+          "link": "",
+          "fgroup": "data",
+          "note": "Required by the D405 wrist pair and the ZED Mini."
+        }
+      ]
+    }
+  ],
+  "choices_range": {
+    "lo": 405.98,
+    "hi": 7022.35,
+    "ratio": 17.3
+  },
+  "builds": [
+    {
+      "id": "essential",
+      "name": "Essential",
+      "blurb": "Raspberry Pi 5, no base depth camera, LD19 lidar. A genuine working robot rather than a stripped one - the mechanism is identical and every difference upgrades later without touching the structure.",
+      "core_usd": 7650.05,
+      "choices_usd": 405.98,
+      "total": 8056.03,
+      "picks": [
+        {
+          "choice_id": "9.1",
+          "choice": "Onboard compute",
+          "option": "Raspberry Pi 5 16 GB",
+          "usd": 120.0
+        },
+        {
+          "choice_id": "9.2",
+          "choice": "Wrist cameras",
+          "option": "MMlove AR0144 GS-720P-60fps",
+          "usd": 97.98
+        },
+        {
+          "choice_id": "9.3",
+          "choice": "Head camera",
+          "option": "IEights OG02B10 stereo, 1200P 60 fps, 100 deg HFOV",
+          "usd": 119.0
+        },
+        {
+          "choice_id": "9.4",
+          "choice": "Base depth camera",
+          "option": "Omit - rely on the 2D lidar",
+          "usd": 0.0
+        },
+        {
+          "choice_id": "9.5",
+          "choice": "2D lidar",
+          "option": "youyeetoo FHL-LD19",
+          "usd": 69.0
+        },
+        {
+          "choice_id": "9.6",
+          "choice": "Camera-specific cabling",
+          "option": "None needed",
+          "usd": 0.0
+        }
+      ]
+    },
+    {
+      "id": "recommended",
+      "name": "Recommended",
+      "blurb": "16 GB of memory, 1200P global-shutter wrists, RPLIDAR C1. Keeps what decides which policies run onboard and spends nothing on sensing you are unlikely to use.",
+      "core_usd": 7650.05,
+      "choices_usd": 1632.98,
+      "total": 9283.03,
+      "picks": [
+        {
+          "choice_id": "9.1",
+          "choice": "Onboard compute",
+          "option": "NVIDIA Jetson Orin NX 16 GB + carrier",
+          "usd": 1249.0
+        },
+        {
+          "choice_id": "9.2",
+          "choice": "Wrist cameras",
+          "option": "MMlove AR0144 GS-1200P-90fps",
+          "usd": 165.98
+        },
+        {
+          "choice_id": "9.3",
+          "choice": "Head camera",
+          "option": "IEights OG02B10 stereo, 1200P 60 fps, 100 deg HFOV",
+          "usd": 119.0
+        },
+        {
+          "choice_id": "9.4",
+          "choice": "Base depth camera",
+          "option": "Omit - rely on the 2D lidar",
+          "usd": 0.0
+        },
+        {
+          "choice_id": "9.5",
+          "choice": "2D lidar",
+          "option": "Slamtec RPLIDAR C1",
+          "usd": 99.0
+        },
+        {
+          "choice_id": "9.6",
+          "choice": "Camera-specific cabling",
+          "option": "None needed",
+          "usd": 0.0
+        }
+      ]
+    },
+    {
+      "id": "maximum",
+      "name": "Maximum",
+      "blurb": "Jetson Thor, RealSense D405 wrists, ZED Mini head, base depth camera. Everything the original bill of materials specified.",
+      "core_usd": 7650.05,
+      "choices_usd": 7071.01,
+      "total": 14721.06,
+      "picks": [
+        {
+          "choice_id": "9.1",
+          "choice": "Onboard compute",
+          "option": "NVIDIA Jetson AGX Thor Developer Kit",
+          "usd": 5499.0
+        },
+        {
+          "choice_id": "9.2",
+          "choice": "Wrist cameras",
+          "option": "Intel RealSense D405",
+          "usd": 576.0
+        },
+        {
+          "choice_id": "9.3",
+          "choice": "Head camera",
+          "option": "Stereolabs ZED Mini",
+          "usd": 399.0
+        },
+        {
+          "choice_id": "9.4",
+          "choice": "Base depth camera",
+          "option": "Intel RealSense D435i",
+          "usd": 319.72
+        },
+        {
+          "choice_id": "9.5",
+          "choice": "2D lidar",
+          "option": "Slamtec RPLIDAR A2M12",
+          "usd": 228.63
+        },
+        {
+          "choice_id": "9.6",
+          "choice": "Camera-specific cabling",
+          "option": "Micro-B pair + ZED USB-C run",
+          "usd": 48.66
+        }
+      ]
+    }
+  ],
+  "functional": [
+    {
+      "key": "actuation",
+      "name": "Actuation",
+      "usd": 5878.6,
+      "share": 63.33
+    },
+    {
+      "key": "compute",
+      "name": "Compute",
+      "usd": 1249.0,
+      "share": 13.45
+    },
+    {
+      "key": "structure",
+      "name": "Structure",
+      "usd": 1142.46,
+      "share": 12.31
+    },
+    {
+      "key": "perception",
+      "name": "Perception",
+      "usd": 383.98,
+      "share": 4.14
+    },
+    {
+      "key": "power",
+      "name": "Power & wiring",
+      "usd": 294.6,
+      "share": 3.17
+    },
+    {
+      "key": "data",
+      "name": "Data & connectivity",
+      "usd": 248.89,
+      "share": 2.68
+    },
+    {
+      "key": "misc",
+      "name": "Control & misc",
+      "usd": 85.5,
+      "share": 0.92
+    }
+  ],
+  "functional_of": "recommended",
+  "top_ten": [
+    {
+      "item": "NVIDIA Jetson AGX Thor Developer Kit",
+      "qty": 1,
+      "ext_usd": 5499.0,
+      "share": 37.4
+    },
+    {
+      "item": "DAMIAO DM8009P joint module",
+      "qty": 4,
+      "ext_usd": 1089.44,
+      "share": 7.4
+    },
+    {
+      "item": "Feetech HL3915M servo",
+      "qty": 32,
+      "ext_usd": 1078.54,
+      "share": 7.3
+    },
+    {
+      "item": "REV MAXSwerve Motor & Controller Bundle",
+      "qty": 3,
+      "ext_usd": 840.0,
+      "share": 5.7
+    },
+    {
+      "item": "REV 3in MAXSwerve Module",
+      "qty": 3,
+      "ext_usd": 825.0,
+      "share": 5.6
+    },
+    {
+      "item": "Intel RealSense D405",
+      "qty": 2,
+      "ext_usd": 576.0,
+      "share": 3.9
+    },
+    {
+      "item": "DAMIAO FOCGM43 joint module",
+      "qty": 6,
+      "ext_usd": 515.46,
+      "share": 3.5
+    },
+    {
+      "item": "DAMIAO DM4340 joint motor",
+      "qty": 4,
+      "ext_usd": 506.18,
+      "share": 3.4
+    },
+    {
+      "item": "FlexiSpot E7 Pro lift column",
+      "qty": 1,
+      "ext_usd": 399.0,
+      "share": 2.7
+    },
+    {
+      "item": "Stereolabs ZED Mini",
+      "qty": 1,
+      "ext_usd": 399.0,
+      "share": 2.7
+    }
+  ],
+  "top_ten_sum": 11727.62,
+  "top_ten_share": 79.7,
+  "top_ten_rest": 2993.44,
+  "top_ten_rest_count": 45,
+  "machined": [
+    {
+      "ref": "1.02",
+      "part": "Base sheet metal, lower",
+      "operations": "Laser cutting only - no secondary operations",
+      "qty": 1,
+      "tiers": {
+        "p1": 51.75,
+        "p2": 38.05,
+        "p10": 27.59,
+        "p50": 26.39,
+        "p100": 25.98,
+        "p1000": 24.54
+      }
+    },
+    {
+      "ref": "1.03",
+      "part": "Base sheet metal, upper",
+      "operations": "4 bends + dimple forming + hardware insertion + tapping",
+      "qty": 1,
+      "tiers": {
+        "p1": 195.36,
+        "p2": 156.42,
+        "p10": 112.94,
+        "p50": 97.49,
+        "p100": 88.3,
+        "p1000": 85.82
+      }
+    },
+    {
+      "ref": "2.02",
+      "part": "Lift-to-torso adapter",
+      "operations": "2 bends + dimple forming + hardware insertion + tapping",
+      "qty": 1,
+      "tiers": {
+        "p1": 59.26,
+        "p2": 40.69,
+        "p10": 28.93,
+        "p50": 25.15,
+        "p100": 22.42,
+        "p1000": 17.99
+      }
+    },
+    {
+      "ref": "2.03",
+      "part": "Torso output plate",
+      "operations": "1 bend + hardware insertion + tapping",
+      "qty": 1,
+      "tiers": {
+        "p1": 55.16,
+        "p2": 36.62,
+        "p10": 25.7,
+        "p50": 22.77,
+        "p100": 21.87,
+        "p1000": 19.29
+      }
+    },
+    {
+      "ref": "2.04",
+      "part": "Body bottom plate",
+      "operations": "2 bends + hardware insertion + tapping",
+      "qty": 1,
+      "tiers": {
+        "p1": 33.55,
+        "p2": 22.29,
+        "p10": 15.73,
+        "p50": 12.81,
+        "p100": 11.44,
+        "p1000": 8.97
+      }
+    },
+    {
+      "ref": "2.06",
+      "part": "Neck mounting plate",
+      "operations": "2 bends only",
+      "qty": 1,
+      "tiers": {
+        "p1": 29.05,
+        "p2": 19.21,
+        "p10": 13.86,
+        "p50": 10.93,
+        "p100": 9.74,
+        "p1000": 7.6
+      }
+    },
+    {
+      "ref": "2.05",
+      "part": "Arm mounting plate",
+      "operations": "Hardware insertion + tapping",
+      "qty": 2,
+      "tiers": {
+        "p1": 13.17,
+        "p2": 13.17,
+        "p10": 9.42,
+        "p50": 7.56,
+        "p100": 6.64,
+        "p1000": 5.26
+      }
+    }
+  ],
+  "machined_set": {
+    "p1": 450.47,
+    "p2": 339.62,
+    "p10": 243.59,
+    "p50": 210.66,
+    "p100": 193.03,
+    "p1000": 174.73
+  },
+  "taobao": [
+    {
+      "model": "DAMIAO FOCGM43 joint module",
+      "search": "MIT\u9a71\u52a8\u65e0\u5237\u4f3a\u670d\u673a\u68b0\u81c2\u673a\u5668\u4eba\u8fbe\u5999\u79d1\u6280\u5173\u8282\u6a21\u7ec4\u7535\u673aFOCGM43\u51cf\u901f\u53cc\u7f16",
+      "spec": "Motor with integrated driver \u00b7 v1.1 (V3)",
+      "list_cny": 650.0,
+      "paid_cny": 599.0,
+      "usd": 85.91,
+      "refs": "3.01, 5.02"
+    },
+    {
+      "model": "DAMIAO DM4340 joint motor",
+      "search": "MIT\u9a71\u52a8\u65e0\u5237\u4f3a\u670d\u673a\u68b0\u81c2\u673a\u5668\u4eba\u8fbe\u5999\u79d1\u6280\u5173\u8282\u7535\u673aDM4340\u51cf\u901f\u53cc\u7f16\u7801\u5668",
+      "spec": "Motor with integrated driver \u00b7 9 N\u00b7m rated",
+      "list_cny": 899.0,
+      "paid_cny": 882.33,
+      "usd": 126.55,
+      "refs": "3.02"
+    },
+    {
+      "model": "DAMIAO DM8009P joint module",
+      "search": "DM8009P \u65e0\u5237MIT\u9a71\u52a8\u4f3a\u670d\u673a\u68b0\u81c2\u673a\u5668\u4eba\u8fbe\u5999\u79d1\u6280\u5173\u8282\u6a21\u7ec4\u7535\u673a\u53cc\u7f16",
+      "spec": "Motor with integrated driver \u00b7 V4",
+      "list_cny": 2529.0,
+      "paid_cny": 1899.0,
+      "usd": 272.36,
+      "refs": "3.03"
+    },
+    {
+      "model": "DAMIAO DM10422P torso actuator",
+      "search": "DM10422P \u53cc\u7535\u611f\u7f16\u7801\u5668\u9ad8\u7cbe\u5ea6\u4e2d\u7a7a\u884c\u661f\u51cf\u901f\u5173\u8282\u7535\u673a\u6a21\u7ec4",
+      "spec": "Motor with built-in dual inductive encoder",
+      "list_cny": null,
+      "paid_cny": 1999.0,
+      "usd": 286.7,
+      "refs": "2.07"
+    },
+    {
+      "model": "OpenArm structural set",
+      "search": "\u73b0\u8d27openarm\u673a\u68b0\u81c2\u7ed3\u6784\u4ef6 \u5b9a\u505acnc\u96f6\u4ef6\u94a3\u91d1\u4e0d\u9508\u94a2 7075\u94dd\u5408\u91d1\u52a0\u5de5",
+      "spec": "Dual-arm structural set \u00b7 CNC 7075 + stainless",
+      "list_cny": null,
+      "paid_cny": 2699.0,
+      "usd": 387.1,
+      "refs": "3.04"
+    },
+    {
+      "model": "OpenArm harness set",
+      "search": "openarm\u7ebf\u675f\u3001openarm \u7ed3\u6784\u4ef6\u53ef\u5f00\u7968 \u7ebf\u675f\u4f18\u5316",
+      "spec": "Harness + hub + e-stop + power adapter board + PSU",
+      "list_cny": null,
+      "paid_cny": 865.0,
+      "usd": 124.06,
+      "refs": "3.05"
+    },
+    {
+      "model": "Feetech HL3915M servo",
+      "search": "\u98de\u7279HL3915M\u529b\u63a7\u5168\u91d1\u5c5e\u94a2\u9f7f14KG\u53cc\u8f74\u7075\u5de7\u624b\u673a\u68b0\u81c2TTL\u603b\u7ebf\u4e32\u53e3\u8235\u673a",
+      "spec": "HL-3915-C001 \u00b7 12 V \u00b7 14 kg-cm \u00b7 dual-shaft",
+      "list_cny": null,
+      "paid_cny": 235.0,
+      "usd": 33.7,
+      "refs": "4.01"
+    },
+    {
+      "model": "Feetech HL3930M servo",
+      "search": "\u98de\u7279HL3930M\u6052\u529b\u91d1\u5c5e\u5916\u58f335KG\u5927\u626d\u77e9\u53cc\u8f74\u673a\u68b0\u81c2\u673a\u5668\u4ebaTTL\u4e32\u53e3\u8235\u673a",
+      "spec": "HL-3930-C001 \u00b7 12 V \u00b7 35 kg-cm \u00b7 dual-shaft",
+      "list_cny": null,
+      "paid_cny": 359.0,
+      "usd": 51.49,
+      "refs": "4.02"
+    },
+    {
+      "model": "ST/SC bus servo TTL driver board",
+      "search": "\u7075\u5f71ST/SC\u7cfb\u5217\u98de\u7279\u603b\u7ebf\u8235\u673aTTL\u9a71\u52a8\u677fUSB\u8c03\u8bd5UART\u63a5\u53e3\u63a7\u5236\u8c03\u8bd5\u677f",
+      "spec": "Bundle 1: TTL Adopter (A)",
+      "list_cny": 28.0,
+      "paid_cny": 27.65,
+      "usd": 3.97,
+      "refs": "4.03"
+    },
+    {
+      "model": "ST/SC 5264 splitter board",
+      "search": "\u7075\u5f71ST/SC\u7cfb\u52175264\u7aef\u5b50\u5206\u7ebf\u5668\u5206\u7ec4\u4f9b\u7535\u98de\u7279\u603b\u7ebf\u8235\u673aTTL\u5206\u7ebf\u677f",
+      "spec": "TTL-5264 8P Hub (A)",
+      "list_cny": null,
+      "paid_cny": 18.0,
+      "usd": 2.58,
+      "refs": "4.04"
+    }
+  ],
+  "build_or_buy": [
+    {
+      "category": "Arms",
+      "option": "MABEL, built from source motors",
+      "spec": "7 DOF/arm, 6.0 kg peak, DAMIAO 8009P + 4340 + 4310",
+      "both_usd": 2622.24,
+      "per_unit_usd": 1311.12,
+      "is_mabel": true,
+      "source": "This BOM"
+    },
+    {
+      "category": "Arms",
+      "option": "OpenArm 2.0 assembled, delivered US",
+      "spec": "Same arm, same motors: $6,000 kit + $480 air freight",
+      "both_usd": 6480.0,
+      "per_unit_usd": 3240.0,
+      "is_mabel": false,
+      "source": "Licensed manufacturer product page, July 2026"
+    },
+    {
+      "category": "Arms",
+      "option": "OpenArm 2.0 online + ZED top camera",
+      "spec": "Card checkout price, camera package included",
+      "both_usd": 7300.0,
+      "per_unit_usd": 3650.0,
+      "is_mabel": false,
+      "source": "Licensed manufacturer product page, July 2026"
+    },
+    {
+      "category": "Arms",
+      "option": "AgileX PiPER x2",
+      "spec": "6 DOF/arm, 1.5 kg payload, $2,499 each",
+      "both_usd": 4998.0,
+      "per_unit_usd": 2499.0,
+      "is_mabel": false,
+      "source": "AgileX press coverage"
+    },
+    {
+      "category": "Hands",
+      "option": "MABEL, Feetech bus servos",
+      "spec": "34 servos + driver boards; actuators and electronics only",
+      "both_usd": 1194.61,
+      "per_unit_usd": 597.3,
+      "is_mabel": true,
+      "source": "This BOM"
+    },
+    {
+      "category": "Hands",
+      "option": "ORCA hand, self-built to the ETH BOM",
+      "spec": "17 DOF/hand, full material cost, under CHF 2,000 each",
+      "both_usd": 4915.0,
+      "per_unit_usd": 2457.5,
+      "is_mabel": false,
+      "source": "ORCA, IROS 2025 (arXiv 2504.04259)"
+    },
+    {
+      "category": "Hands",
+      "option": "orcahand, ORCA Dexterity",
+      "spec": "17 DOF/hand, assembled, $3,500 each",
+      "both_usd": 7000.0,
+      "per_unit_usd": 3500.0,
+      "is_mabel": false,
+      "source": "ORCA Dexterity, March 2026 launch"
+    },
+    {
+      "category": "Hands",
+      "option": "orcahand touch, ORCA Dexterity",
+      "spec": "17 DOF/hand, tactile on all five digits, from $6,100 each",
+      "both_usd": 12200.0,
+      "per_unit_usd": 6100.0,
+      "is_mabel": false,
+      "source": "ORCA Dexterity, March 2026 launch"
+    },
+    {
+      "category": "Hands",
+      "option": "Allegro Hand",
+      "spec": "16 DOF/hand, direct-drive, about CHF 15,000 each",
+      "both_usd": 36861.0,
+      "per_unit_usd": 18430.5,
+      "is_mabel": false,
+      "source": "ORCA paper related-work discussion"
+    }
+  ],
+  "open_items": [
+    {
+      "kind": "correction",
+      "item": "Neck servo identity",
+      "qty": 1,
+      "low_usd": 0.0,
+      "high_usd": 0.0,
+      "impact": "+57.39",
+      "note": "The BOM carries 1x Dynamixel 2XL430-W250-T at $149.39. mabel_hw/drivers/dynamixel.py records that MABEL's neck reports model 1090 = XC330-T181, and config.py:665 says there are two of them, pitch and roll. 2x XC330-T181-T is $206.78. Ten minutes with the bus scanner settles it."
+    },
+    {
+      "kind": "gap",
+      "item": "Teensy 4.1 microcontrollers",
+      "qty": 2,
+      "low_usd": 31.5,
+      "high_usd": 31.5,
+      "impact": "+63.00",
+      "note": "the firmware notes names two: one runs the swerve base over UDP to the REV SPARK CAN bus, the other runs the arms, torso and neck at 500 Hz across three DAMIAO CAN buses. Neither is on the parts list, and without them the robot has no low-level control."
+    },
+    {
+      "kind": "gap",
+      "item": "ORCA hand structural kit",
+      "qty": 2,
+      "low_usd": 150.0,
+      "high_usd": 300.0,
+      "impact": "estimate",
+      "note": "The list buys 34 servos but no frame, tendon, bearings, tensioners or fingertip pads. The guide's own build-or-buy page estimates $800-1,000 per complete hand against $597.30 of actuators."
+    },
+    {
+      "kind": "gap",
+      "item": "Custom distribution PCBs",
+      "qty": 2,
+      "low_usd": 50.0,
+      "high_usd": 150.0,
+      "impact": "tbd",
+      "note": "Lines 7.18 and 7.19 are marked TBD; the guide budgets $100-300 at JLCPCB for boards plus components. No gerbers are released under hardware/ yet."
+    },
+    {
+      "kind": "gap",
+      "item": "USB-CAN adapter (bench)",
+      "qty": 1,
+      "low_usd": 25.0,
+      "high_usd": 45.0,
+      "impact": "estimate",
+      "note": "firmware/can_up.sh auto-detects a gs_usb or slcan dongle. Optional in the finished robot, required for bench bring-up."
+    },
+    {
+      "kind": "gap",
+      "item": "Hardware E-stop switch + contactor",
+      "qty": 1,
+      "low_usd": 30.0,
+      "high_usd": 80.0,
+      "impact": "estimate",
+      "note": "The safety docs describe a hardware E-stop that de-energises actuators independently of the host. The OpenArm harness set (3.05) includes an e-stop, so this may already be covered."
+    },
+    {
+      "kind": "gap",
+      "item": "Head microphone",
+      "qty": 1,
+      "low_usd": 10.0,
+      "high_usd": 30.0,
+      "impact": "estimate",
+      "note": "A speaker is costed; the design calls for head microphones for telepresence."
+    }
+  ],
+  "uncosted_gap_usd": {
+    "low": 528.0,
+    "high": 1118.0
+  },
+  "hand_actuator_usd": 1181.52,
+  "hand_share_recommended": 12.7,
+  "hand_share_maximum": 8.0,
+  "bulk_offer": {
+    "vendor": "Bambu Lab",
+    "discount": 0.25,
+    "min_qty": 4,
+    "applies_to": "3D printed material",
+    "filament_list": 160.91,
+    "filament_bulk": 120.68,
+    "core_at_bulk": 7690.28
+  },
+  "sensing_savings": [
+    {
+      "id": "9.2",
+      "name": "Wrist cameras",
+      "saving": 478.02
+    },
+    {
+      "id": "9.3",
+      "name": "Head camera",
+      "saving": 280.0
+    },
+    {
+      "id": "9.4",
+      "name": "Base depth camera",
+      "saving": 319.72
+    },
+    {
+      "id": "9.5",
+      "name": "2D lidar",
+      "saving": 159.63
+    }
+  ],
+  "perception_cut": {
+    "recommended": 75,
+    "essential": 81
+  },
+  "perception_by_build": {
+    "essential": 285.98,
+    "recommended": 383.98,
+    "maximum": 1523.35
+  },
+  "peers": [
+    {
+      "platform": "Mobile ALOHA",
+      "cost_kusd": 32.0,
+      "open": true,
+      "source": "Fu et al. 2024 (mobilealoha2024)"
+    },
+    {
+      "platform": "YOR",
+      "cost_kusd": 9.3,
+      "open": true,
+      "source": "YOR release (yor)"
+    },
+    {
+      "platform": "Trossen Mobile AI",
+      "cost_kusd": 34.0,
+      "open": true,
+      "source": "Trossen Robotics listing (trossenmobile)"
+    },
+    {
+      "platform": "Reachy 2",
+      "cost_kusd": 70.0,
+      "open": true,
+      "source": "Pollen Robotics listing (reachy2)"
+    },
+    {
+      "platform": "Rainbow RB-Y1",
+      "cost_kusd": 80.0,
+      "open": false,
+      "source": "Rainbow Robotics (rainbowrobotics)"
+    },
+    {
+      "platform": "Galaxea R1",
+      "cost_kusd": 27.0,
+      "open": false,
+      "source": "Retail-listed base model; R1 Pro ~$70k (galaxea)"
+    },
+    {
+      "platform": "AgiBot Genie G1",
+      "cost_kusd": 22.0,
+      "open": false,
+      "source": "Third-party retail price (agibot)"
+    },
+    {
+      "platform": "Galbot G1",
+      "cost_kusd": 88.0,
+      "open": false,
+      "source": "Third-party retail price (galbot)"
+    },
+    {
+      "platform": "DexMate Vega",
+      "cost_kusd": 90.0,
+      "open": false,
+      "source": "DexMate listing (dexmate)"
+    },
+    {
+      "platform": "Astribot S1",
+      "cost_kusd": 100.0,
+      "open": false,
+      "source": "Third-party retail price (astribot)"
+    },
+    {
+      "platform": "Weave Isaac 1",
+      "cost_kusd": 8.0,
+      "open": false,
+      "source": "Weave Robotics (weaverobotics)"
+    },
+    {
+      "platform": "Sunday Memo",
+      "cost_kusd": 10.0,
+      "open": false,
+      "source": "Target at scale; beta ~$20k (sundayrobotics)"
+    }
+  ]
+}

@@ -1,0 +1,1199 @@
+<mujoco model="mabel_full_system">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast" cone="elliptic" noslip_iterations="3"/>
+
+  <!-- offscreen framebuffer must be >= the largest camera resolution.
+       ZED Mini native max = 2208x1242 (2.2K); cameras here render at 1280x720,
+       so 1920x1080 leaves headroom for higher-res ZED capture. -->
+  <!-- Pin the model extent to the robot's own size (~1.5 m). Otherwise a furnished
+       scene (e.g. mabel_home.xml with walls) inflates the auto-extent to ~12 m, which
+       in turn pushes the near clip plane out (znear below is a FRACTION of extent) and
+       re-clips the wrist cameras. Pinning it keeps the clip planes scene-independent. -->
+  <statistic extent="1.5" center="0 0 0.6"/>
+
+  <visual>
+    <global offwidth="1920" offheight="1080"/>
+    <!-- znear/zfar are FRACTIONS of stat.extent (1.5 m). The default znear (0.01)
+         puts the near clip plane at ~1.5 cm, so the wrist cameras (mounted ~3.5 cm
+         from the palm) clip the palm/grasped objects the moment they get close.
+         0.002 -> ~3 mm near plane: the wrist cams keep the palm in view up close.
+         zfar 14 -> ~21 m far plane (indoor room ~6 m) recovers depth precision. -->
+    <map znear="0.002" zfar="14"/>
+  </visual>
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+
+    <default class="sw_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="sw_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    <!-- ===================== SWERVE MOTOR LIBRARY ======================
+         3in REV MAXSwerve (REV-21-3005). Joint classes set the mechanical /
+         rotor properties; actuator force & speed limits are in <actuator>.
+         armature ~ motor rotor inertia * gear_ratio^2 (reflected to the joint):
+           NEO 550 azimuth: I_rotor ~1.5e-5 kg.m^2, ratio 46.42 -> ~0.032 -> 0.05
+           NEO drive:       I_rotor ~1.1e-4 kg.m^2, ratio 4.71  -> ~0.0024 -> 0.01
+         Both joints are continuous (limited="false"). -->
+    <default class="motor_NEO550">   <!-- steering / azimuth -->
+      <joint type="hinge" axis="0 0 1" limited="false" armature="0.05" damping="0.1" frictionloss="0.05"/>
+    </default>
+    <default class="motor_NEO">      <!-- drive -->
+      <joint type="hinge" axis="0 0 1" limited="false" armature="0.01" damping="0.005" frictionloss="0.01"/>
+    </default>
+
+    <default class="l_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="l_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    <default class="l_slide">
+      <joint type="slide" axis="0 0 1" range="0 0.3175" damping="10" armature="1"/>
+    </default>
+
+    <default class="b_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="b_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    <default class="b_hinge">
+      <joint type="hinge" axis="0 0 1" limited="true" range="-1.0472 0.2618" damping="5" armature="1"/>
+    </default>
+
+    <default class="la_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="la_collision">
+      <geom type="mesh" contype="1" conaffinity="0" group="1" rgba="1 1 1 0"/>
+    </default>
+
+    <default class="ra_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="ra_collision">
+      <geom type="mesh" contype="1" conaffinity="0" group="1" rgba="1 1 1 0"/>
+    </default>
+
+    <default class="h_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="h_collision">
+      <geom type="mesh" contype="1" conaffinity="0" group="1" rgba="1 1 1 0"/>
+    </default>
+
+    <default class="hand_base">
+      <joint armature="0.001" damping="0.1" frictionloss="0.001" limited="true" margin="0.01" type="hinge"/>
+      <position ctrllimited="true" forcelimited="true" forcerange="-1 1" kp="2.0"/>
+    </default>
+    <default class="hand_visual">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh"/>
+    </default>
+    <default class="hand_bone">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh" material="hand_black"/>
+    </default>
+    <default class="hand_skin">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh" material="hand_white"/>
+    </default>
+    <default class="hand_collision">
+      <geom conaffinity="1" condim="3" contype="1" group="1" material="invisible" type="mesh"/>
+    </default>
+
+    <!-- ====================== DM MOTOR LIBRARY =========================
+         DAMIAO quasi-direct-drive actuators (MIT/position/velocity/torque mode,
+         CAN @ 5 Mbps). Peak torque / max speed feed the <actuator> limits:
+           DM-J8009-2EC  : ~40 Nm peak  (shoulder / proximal arm)
+           DM-J4340-2EC  : ~28 Nm peak  (mid arm)
+           DM-J4310-2EC  : ~10 Nm peak  (distal arm / wrist)
+           DM-J10422P-2EC: 100 Nm rated / 400 Nm peak, 120 rpm (12.6 rad/s),
+                           1:22 reduction, 2.7 kg  (TORSO pitch) -->
+    <default class="motor_DM8009">
+      <joint frictionloss="0.5" damping="0.5" armature="0.10" limited="true" type="hinge" />
+    </default>
+    <default class="motor_DM4340">
+      <joint frictionloss="0.5" damping="0.5" armature="0.08" limited="true" type="hinge" />
+    </default>
+    <default class="motor_DM4310">
+      <joint frictionloss="0.5" damping="0.5" armature="0.05" limited="true" type="hinge" />
+    </default>
+    <default class="motor_DM_J10422P">  <!-- torso: big 1:22 QDD, high reflected inertia -->
+      <joint type="hinge" axis="0 0 1" limited="true" range="-1.0472 0.2618"
+             frictionloss="0.8" damping="2.0" armature="1.0"/>
+    </default>
+    <default class="motor_dynamixel">
+      <joint frictionloss="0.2" damping="0.5" armature="0.02" limited="true" type="hinge" />
+    </default>
+  </default>
+
+  <asset>
+    <texture type="2d" name="tex_grid" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.1 0.15 0.2" width="512" height="512" mark="edge" markrgb="0.8 0.8 0.8"/>
+    <material name="mat_grid" texture="tex_grid" texuniform="true" texrepeat="5 5" reflectance="0.1"/>
+
+    <material name="hand_white" rgba="1.00 1.00 1.00 1" shininess="0.5" specular="0.1"/>
+    <material name="hand_black" rgba="0.25 0.25 0.25 1" shininess="0.2" specular="0.05"/>
+    <material name="invisible"  rgba="1 1 1 0" shininess="0" specular="0"/>
+
+    <mesh file="../assets/meshes/base/mobile_base.stl"            name="m_chassis"/>
+    <mesh file="../assets/meshes/swerve_drive/wheel_to_base.stl"  name="m_housing"/>
+    <mesh file="../assets/meshes/swerve_drive/steering_motor.stl" name="m_steer_motor"/>
+    <mesh file="../assets/meshes/swerve_drive/drive_motor.stl"    name="m_drive_motor"/>
+    <mesh file="../assets/meshes/lift/lift_base_link.stl"         name="m_lift_base"/>
+    <mesh file="../assets/meshes/lift/lift_mid_link.stl"          name="m_lift_mid"/>
+    <mesh file="../assets/meshes/lift/lift_top_link.stl"          name="m_lift_top"/>
+    <mesh file="../assets/meshes/body/lift_to_body.stl"           name="m_lift_to_body"/>
+    <mesh file="../assets/meshes/body/body_link.stl"              name="m_body_link"/>
+
+    <material name="chassis_mat"     rgba="0.8 0.8 0.8 1"/>
+    <material name="housing_mat"     rgba="0.25 0.25 0.28 1"/>
+    <material name="steer_motor_mat" rgba="0.10 0.35 0.75 1"/>
+    <material name="drive_motor_mat" rgba="0.75 0.20 0.20 1"/>
+    <material name="mat_base"        rgba="0.2 0.2 0.2 1"/>
+    <material name="mat_mid"         rgba="0.4 0.4 0.4 1"/>
+    <material name="mat_top"         rgba="0.6 0.6 0.6 1"/>
+    <material name="mat_mount"       rgba="0.3 0.3 0.35 1"/>
+    <material name="mat_torso"       rgba="0.7 0.7 0.7 1"/>
+
+    <mesh file="../assets/meshes/arms/left/1_body_to_shoulder.stl"       name="m_l_1_mount"/>
+    <mesh file="../assets/meshes/arms/left/2_shoulder.stl"          name="m_l_2_shoulder"/>
+    <mesh file="../assets/meshes/arms/left/3_shoulder_to_elbow.stl" name="m_l_3_s_link"/>
+    <mesh file="../assets/meshes/arms/left/4_upper_arm.stl"         name="m_l_4_s_link"/>
+    <mesh file="../assets/meshes/arms/left/5_elbow.stl"             name="m_l_5_elbow"/>
+    <mesh file="../assets/meshes/arms/left/6_forearm.stl"           name="m_l_6_forearm"/>
+    <mesh file="../assets/meshes/arms/left/7_wrist.stl"             name="m_l_7_wrist"/>
+    <mesh file="../assets/meshes/arms/left/8_arm_to_hand.stl"       name="m_l_8_hand_mount"/>
+    <material name="mat_la_dark"  rgba="0.24 0.24 0.24 1"/>
+    <material name="mat_la_light" rgba="0.80 0.80 0.80 1"/>
+    <material name="mat_la_acc"   rgba="0.80 0.30 0.10 1"/>
+
+    <mesh file="../assets/meshes/arms/right/1_body_to_shoulder.stl"       name="m_r_1_mount"/>
+    <mesh file="../assets/meshes/arms/right/2_shoulder.stl"          name="m_r_2_shoulder"/>
+    <mesh file="../assets/meshes/arms/right/3_shoulder_to_elbow.stl" name="m_r_3_s_link"/>
+    <mesh file="../assets/meshes/arms/right/4_upper_arm.stl"         name="m_r_4_s_link"/>
+    <mesh file="../assets/meshes/arms/right/5_elbow.stl"             name="m_r_5_elbow"/>
+    <mesh file="../assets/meshes/arms/right/6_forearm.stl"           name="m_r_6_forearm"/>
+    <mesh file="../assets/meshes/arms/right/7_wrist.stl"             name="m_r_7_wrist"/>
+    <mesh file="../assets/meshes/arms/right/8_arm_to_hand.stl"       name="m_r_8_hand_mount"/>
+    <material name="mat_ra_dark"  rgba="0.24 0.24 0.24 1"/>
+    <material name="mat_ra_light" rgba="0.80 0.80 0.80 1"/>
+    <material name="mat_ra_acc"   rgba="0.80 0.30 0.10 1"/>
+
+    <mesh file="../assets/meshes/head/1_body_to_head.stl" name="m_h_1_mount"/>
+    <mesh file="../assets/meshes/head/2_neck_1.stl"       name="m_h_2_neck1"/>
+    <mesh file="../assets/meshes/head/3_neck_2.stl"       name="m_h_3_neck2"/>
+    <mesh file="../assets/meshes/head/4_head.stl"         name="m_h_4_head"/>
+    <material name="mat_h_dark"  rgba="0.24 0.24 0.24 1"/>
+    <material name="mat_h_light" rgba="0.80 0.80 0.80 1"/>
+    <material name="mat_h_acc"   rgba="0.80 0.30 0.10 1"/>
+
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_tower_main.stl"     name="r_v_tower_main"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_tower_hull.stl"     name="r_v_tower_hull"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_tower_text.stl"     name="r_v_tower_text"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_palm.stl"           name="r_v_palm"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_palm_skin.stl"      name="r_v_palm_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_thumb_mp.stl"       name="r_v_thumb_mp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_thumb_pp.stl"       name="r_v_thumb_pp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_thumb_ip.stl"       name="r_v_thumb_ip"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_thumb_ip_skin.stl"  name="r_v_thumb_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_thumb_dp.stl"       name="r_v_thumb_dp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_thumb_dp_skin.stl"  name="r_v_thumb_dp_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_index_mp.stl"       name="r_v_index_mp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_index_pp.stl"       name="r_v_index_pp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_index_pp_skin.stl"  name="r_v_index_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_index_ip.stl"       name="r_v_index_ip"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_index_ip_skin.stl"  name="r_v_index_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_middle_mp.stl"      name="r_v_middle_mp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_middle_pp.stl"      name="r_v_middle_pp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_middle_pp_skin.stl" name="r_v_middle_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_middle_ip.stl"      name="r_v_middle_ip"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_middle_ip_skin.stl" name="r_v_middle_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_ring_mp.stl"        name="r_v_ring_mp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_ring_pp.stl"        name="r_v_ring_pp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_ring_pp_skin.stl"   name="r_v_ring_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_ring_ip.stl"        name="r_v_ring_ip"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_ring_ip_skin.stl"   name="r_v_ring_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_pinky_mp.stl"       name="r_v_pinky_mp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_pinky_pp.stl"       name="r_v_pinky_pp"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_pinky_pp_skin.stl"  name="r_v_pinky_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_pinky_ip.stl"       name="r_v_pinky_ip"/>
+    <mesh file="../assets/meshes/hands/right/visual/right_visual_pinky_ip_skin.stl"  name="r_v_pinky_ip_skin"/>
+
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_tower_main.stl"     name="r_c_tower_main"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_tower_hull.stl"     name="r_c_tower_hull"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_tower_text.stl"     name="r_c_tower_text"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_palm.stl"           name="r_c_palm"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_palm_skin.stl"      name="r_c_palm_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_thumb_mp.stl"       name="r_c_thumb_mp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_thumb_pp.stl"       name="r_c_thumb_pp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_thumb_ip.stl"       name="r_c_thumb_ip"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_thumb_ip_skin.stl"  name="r_c_thumb_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_thumb_dp.stl"       name="r_c_thumb_dp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_thumb_dp_skin.stl"  name="r_c_thumb_dp_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_index_mp.stl"       name="r_c_index_mp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_index_pp.stl"       name="r_c_index_pp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_index_pp_skin.stl"  name="r_c_index_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_index_ip.stl"       name="r_c_index_ip"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_index_ip_skin.stl"  name="r_c_index_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_middle_mp.stl"      name="r_c_middle_mp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_middle_pp.stl"      name="r_c_middle_pp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_middle_pp_skin.stl" name="r_c_middle_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_middle_ip.stl"      name="r_c_middle_ip"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_middle_ip_skin.stl" name="r_c_middle_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_ring_mp.stl"        name="r_c_ring_mp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_ring_pp.stl"        name="r_c_ring_pp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_ring_pp_skin.stl"   name="r_c_ring_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_ring_ip.stl"        name="r_c_ring_ip"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_ring_ip_skin.stl"   name="r_c_ring_ip_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_pinky_mp.stl"       name="r_c_pinky_mp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_pinky_pp.stl"       name="r_c_pinky_pp"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_pinky_pp_skin.stl"  name="r_c_pinky_pp_skin"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_pinky_ip.stl"       name="r_c_pinky_ip"/>
+    <mesh file="../assets/meshes/hands/right/collision/right_collision_pinky_ip_skin.stl"  name="r_c_pinky_ip_skin"/>
+
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_tower_main.stl"     name="l_v_tower_main"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_tower_hull.stl"     name="l_v_tower_hull"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_tower_text.stl"     name="l_v_tower_text"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_palm.stl"           name="l_v_palm"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_palm_skin.stl"      name="l_v_palm_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_mp.stl"       name="l_v_thumb_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_pp.stl"       name="l_v_thumb_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_ip.stl"       name="l_v_thumb_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_ip_skin.stl"  name="l_v_thumb_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_dp.stl"       name="l_v_thumb_dp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_dp_skin.stl"  name="l_v_thumb_dp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_mp.stl"       name="l_v_index_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_pp.stl"       name="l_v_index_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_pp_skin.stl"  name="l_v_index_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_ip.stl"       name="l_v_index_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_ip_skin.stl"  name="l_v_index_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_mp.stl"      name="l_v_middle_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_pp.stl"      name="l_v_middle_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_pp_skin.stl" name="l_v_middle_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_ip.stl"      name="l_v_middle_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" name="l_v_middle_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_mp.stl"        name="l_v_ring_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_pp.stl"        name="l_v_ring_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_pp_skin.stl"   name="l_v_ring_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_ip.stl"        name="l_v_ring_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_ip_skin.stl"   name="l_v_ring_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_mp.stl"       name="l_v_pinky_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_pp.stl"       name="l_v_pinky_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_pp_skin.stl"  name="l_v_pinky_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_ip.stl"       name="l_v_pinky_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_ip_skin.stl"  name="l_v_pinky_ip_skin"/>
+
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_tower_main.stl"     name="l_c_tower_main"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_tower_hull.stl"     name="l_c_tower_hull"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_tower_text.stl"     name="l_c_tower_text"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_palm.stl"           name="l_c_palm"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_palm_skin.stl"      name="l_c_palm_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_mp.stl"       name="l_c_thumb_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_pp.stl"       name="l_c_thumb_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_ip.stl"       name="l_c_thumb_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_ip_skin.stl"  name="l_c_thumb_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_dp.stl"       name="l_c_thumb_dp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_dp_skin.stl"  name="l_c_thumb_dp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_mp.stl"       name="l_c_index_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_pp.stl"       name="l_c_index_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_pp_skin.stl"  name="l_c_index_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_ip.stl"       name="l_c_index_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_ip_skin.stl"  name="l_c_index_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_mp.stl"      name="l_c_middle_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_pp.stl"      name="l_c_middle_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_pp_skin.stl" name="l_c_middle_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_ip.stl"      name="l_c_middle_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_ip_skin.stl" name="l_c_middle_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_mp.stl"        name="l_c_ring_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_pp.stl"        name="l_c_ring_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_pp_skin.stl"   name="l_c_ring_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_ip.stl"        name="l_c_ring_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_ip_skin.stl"   name="l_c_ring_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_mp.stl"       name="l_c_pinky_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_pp.stl"       name="l_c_pinky_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_pp_skin.stl"  name="l_c_pinky_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_ip.stl"       name="l_c_pinky_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_ip_skin.stl"  name="l_c_pinky_ip_skin"/>
+  </asset>
+
+  <!-- NOTE: lights + ground plane live in the SCENE files (scenes/*.xml), not here,
+       so each scene can set its own environment (lab grid, kitchen, etc.). This model
+       is the robot only. mat_grid below is kept for scenes that want the lab floor. -->
+  <worldbody>
+
+    <!-- Spawn height = measured wheel-contact equilibrium (settled base z with the
+         three wheels on a z=0 floor, sub-mm contact penetration included). The old
+         0.170 left the wheels 9.2 cm in the air, so every launch began with a
+         free-fall drop. Keep in sync with the wheel geometry: re-measure by
+         settling the model and reading base_root qpos z. -->
+    <body name="mabel_chassis" pos="0 0 0.07775">
+      <inertial pos="0.0053945323 2.4928114e-06 0.094137249" quat="-0.0059429153 0.7104083 0.0059692826 0.70373936" mass="22.686" diaginertia="0.86513364 0.52064343 0.51664167"/>
+      <freejoint name="base_root"/>
+      <geom class="sw_visual"    mesh="m_chassis" material="chassis_mat"/>
+      <geom class="sw_collision" mesh="m_chassis" mass="15.0"/>
+      <!-- Primitive collision proxy for the base, used ONLY to let scene actors
+           (cars, pedestrians) physically hit the robot. The mobile_base mesh has
+           a 34k-vertex convex hull, and MuJoCo's mask-based broadphase silently
+           drops the actor-vs-robot pairs in the large dynamic scenes anyway, so
+           auto-collision never fires. Instead each dynamic scene XML declares an
+           explicit <contact><pair> between every actor collision geom and this
+           box (explicit pairs bypass broadphase + masks and always run narrow-
+           phase). That is why this geom is contype=0/conaffinity=0: it collides
+           with NOTHING via masks (no floor, no self-collision) and participates
+           only through those explicit pairs. mass=0 + the body's explicit
+           <inertial> above mean it changes NO dynamics/CoM. Invisible (group 3).
+           Sized to span the base up through low body height so cars and the
+           lower torso of pedestrians make contact. -->
+      <geom name="chassis_bumper" type="box" pos="0.025 0 0.140" size="0.190 0.280 0.290"
+            mass="0" contype="0" conaffinity="0" group="3" rgba="0 0 0 0"/>
+
+      <!-- ================= Mobile-base perception ================= -->
+      <!-- Robot front = -X, back = +X. Body cameras = MMlove USB module
+           (B0BZYW6DJT): 1 MP, 1280x720 @60fps, 170 deg wide-angle FISHEYE,
+           RGB only. MuJoCo uses a pinhole model, so the 170 deg fisheye is
+           approximated by a wide rectilinear fovy (~100); enable a fisheye
+           distortion post-process downstream if exact optics are needed. -->
+      <camera name="body_front_cam" pos="-0.25 0 0.13" xyaxes="0 1 0 0 0 1" fovy="100" resolution="1280 720"/>
+      <camera name="body_back_cam"  pos="0.25 0 0.13"  xyaxes="0 -1 0 0 0 1" fovy="100" resolution="1280 720"/>
+      <!-- Front D435i IR stereo pair: synthesises the RealSense left/right (infra1/infra2)
+           imagers so cuVSLAM gets a true 50 mm stereo baseline. The pair shares
+           body_front_cam's orientation (looks down robot -X) and is offset +-0.025 m
+           along the camera's local +x axis (= world +Y here). body_front_cam itself
+           stays the colour/depth optical centre. Render res is driven by the ROS node;
+           848x480 matches the D435 native infra profile. -->
+      <camera name="front_ir_left"  pos="-0.25 -0.025 0.13" xyaxes="0 1 0 0 0 1" fovy="100" resolution="848 480"/>
+      <camera name="front_ir_right" pos="-0.25  0.025 0.13" xyaxes="0 1 0 0 0 1" fovy="100" resolution="848 480"/>
+      <!-- D435i on-board IMU (Bosch BMI055). Co-located with the front depth module
+           and aligned to the colour/IR OPTICAL convention (x=right, y=down,
+           z=forward = robot -X) so it chains cleanly off the camera optical frames.
+           mujoco_node reads the accelerometer/gyro/framequat sensors below off this
+           site and publishes sensor_msgs/Imu (with simulated noise) on
+           /camera/front/imu. group=3 -> debug-only, never seen by the cameras. -->
+      <site name="front_imu" pos="-0.25 0 0.13" xyaxes="0 1 0 0 0 -1" size="0.005" group="3"/>
+      <!-- Visual-only camera markers (group 3, off by default so the cameras never
+           see them; visualize_sensors.py turns group 3 ON in the 3D viewer).
+           Each camera = a cyan body box + an ORANGE lens cylinder that sticks out
+           the FRONT along the optical axis (-Z), so the pointing direction is
+           unambiguous: the orange snout shows exactly where the camera looks. -->
+      <geom name="body_front_cam_marker" type="box"      pos="-0.25 0 0.13" xyaxes="0 1 0 0 0 1" size="0.012 0.012 0.008" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+      <geom name="body_front_cam_lens"   type="cylinder" fromto="-0.25 0 0.13  -0.31 0 0.13"     size="0.005"             rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+      <geom name="body_back_cam_marker"  type="box"      pos="0.25 0 0.13"  xyaxes="0 -1 0 0 0 1" size="0.012 0.012 0.008" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+      <geom name="body_back_cam_lens"    type="cylinder" fromto="0.25 0 0.13  0.31 0 0.13"        size="0.005"             rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+
+      <!-- 360 deg planar LiDAR: Slamtec RPLIDAR A3. Range 0.2-25 m, 16 kHz
+           sample rate, 10-20 Hz scan (typ 15 Hz), angular resolution 0.225 deg
+           (-> 1600 pts/scan at 15 Hz), 785 nm Class-1 laser. Modeled here at
+           1 deg (360 rays) for sim performance; raise count for full A3 density.
+           The single <rangefinder> below is auto-replicated into one sensor per
+           ray (lidar_range0 .. lidar_range359). -->
+      <body name="lidar" pos="0.122 0 0.25">
+        <!-- <geom name="lidar_housing" type="cylinder" size="0.04 0.03" material="housing_mat" contype="0" conaffinity="0" group="2"/> -->
+        <replicate count="360" euler="0 0 0.01745329">
+          <site name="lidar_ray" pos="0.045 0 0" zaxis="1 0 0" size="0.002" group="3"/>
+        </replicate>
+      </body>
+      <!-- ========================================================= -->
+
+      <body name="fl_swerve_housing" pos="-0.17 -0.17 0.0" euler="0 0 1.570795">
+      <inertial pos="0.0085907853 -0.0093218629 0.034598464" quat="0.30152951 0.57382587 -0.23031683 0.72578095" mass="0.488554" diaginertia="0.00062316563 0.00060922993 0.00053167302"/>
+        <geom class="sw_visual" mesh="m_housing" material="housing_mat"/>
+        <geom class="sw_collision" mesh="m_housing"/>
+        <body name="fl_steer_body" pos="0 0 0">
+      <inertial pos="3.4431261e-05 7.2473145e-07 -0.012039447" quat="0.00010441411 0.70103285 -7.7349006e-05 0.71312897" mass="0.0743539" diaginertia="4.595945e-05 3.2657432e-05 2.4766277e-05"/>
+          <joint name="FL Steer" class="motor_NEO550"/>
+          <geom class="sw_visual" mesh="m_steer_motor" material="steer_motor_mat"/>
+          <geom class="sw_collision" mesh="m_steer_motor"/>
+          <body name="fl_wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+      <inertial pos="-8.6550403e-07 -1.5526468e-06 -0.00045443722" quat="0.48998918 0.50981381 -0.48997729 0.50982619" mass="0.208434" diaginertia="0.00011329833 6.5071521e-05 6.5022891e-05"/>
+            <joint name="FL Drive" class="motor_NEO"/>
+            <geom class="sw_visual" mesh="m_drive_motor" material="drive_motor_mat"/>
+            <geom class="sw_collision" mesh="m_drive_motor" friction="2.5 0.02 0.005" mass="0.8"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="fr_swerve_housing" pos="-0.17 0.17 0.0" euler="0 0 0">
+      <inertial pos="0.0085907853 -0.0093218629 0.034598464" quat="0.30152951 0.57382587 -0.23031683 0.72578095" mass="0.488554" diaginertia="0.00062316563 0.00060922993 0.00053167302"/>
+        <geom class="sw_visual" mesh="m_housing" material="housing_mat"/>
+        <geom class="sw_collision" mesh="m_housing"/>
+        <body name="fr_steer_body" pos="0 0 0">
+      <inertial pos="3.4431261e-05 7.2473145e-07 -0.012039447" quat="0.00010441411 0.70103285 -7.7349006e-05 0.71312897" mass="0.0743539" diaginertia="4.595945e-05 3.2657432e-05 2.4766277e-05"/>
+          <joint name="FR Steer" class="motor_NEO550"/>
+          <geom class="sw_visual" mesh="m_steer_motor" material="steer_motor_mat"/>
+          <geom class="sw_collision" mesh="m_steer_motor"/>
+          <body name="fr_wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+      <inertial pos="-8.6550403e-07 -1.5526468e-06 -0.00045443722" quat="0.48998918 0.50981381 -0.48997729 0.50982619" mass="0.208434" diaginertia="0.00011329833 6.5071521e-05 6.5022891e-05"/>
+            <joint name="FR Drive" class="motor_NEO"/>
+            <geom class="sw_visual" mesh="m_drive_motor" material="drive_motor_mat"/>
+            <geom class="sw_collision" mesh="m_drive_motor" friction="2.5 0.02 0.005" mass="0.8"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="b_swerve_housing" pos="0.15 0 0.0" euler="0 0 3.9269926">
+      <inertial pos="0.0085907853 -0.0093218629 0.034598464" quat="0.30152951 0.57382587 -0.23031683 0.72578095" mass="0.488554" diaginertia="0.00062316563 0.00060922993 0.00053167302"/>
+        <geom class="sw_visual" mesh="m_housing" material="housing_mat"/>
+        <geom class="sw_collision" mesh="m_housing"/>
+        <body name="b_steer_body" pos="0 0 0">
+      <inertial pos="3.4431261e-05 7.2473145e-07 -0.012039447" quat="0.00010441411 0.70103285 -7.7349006e-05 0.71312897" mass="0.0743539" diaginertia="4.595945e-05 3.2657432e-05 2.4766277e-05"/>
+          <joint name="B Steer" class="motor_NEO550"/>
+          <geom class="sw_visual" mesh="m_steer_motor" material="steer_motor_mat"/>
+          <geom class="sw_collision" mesh="m_steer_motor"/>
+          <body name="b_wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+      <inertial pos="-8.6550403e-07 -1.5526468e-06 -0.00045443722" quat="0.48998918 0.50981381 -0.48997729 0.50982619" mass="0.208434" diaginertia="0.00011329833 6.5071521e-05 6.5022891e-05"/>
+            <joint name="B Drive" class="motor_NEO"/>
+            <geom class="sw_visual" mesh="m_drive_motor" material="drive_motor_mat"/>
+            <geom class="sw_collision" mesh="m_drive_motor" friction="2.5 0.02 0.005" mass="0.8"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- LIFT DEFAULT = HALF EXTENDED. The two stages are ASSEMBLED at mid-travel
+           (each body raised by 0.15875 m = half of its 0.3175 m stroke) and each joint
+           carries ref="0.15875", so qpos0 == ref and MuJoCo's zero displacement lands on
+           that assembled pose. Net effect: the model RESETS half-raised (torso 0.9015 m
+           above the chassis instead of 0.5840 m), matching SAFE_HOME_LIFT = 0.3175 m in
+           controller/mabel/config.py. Nothing about the command mapping moves: joint qpos
+           is still "metres of stage extension", the Total Lift tendon is still their sum,
+           and the Lift actuator keeps ctrlrange 0..0.635 (0 = bottomed, 0.635 = topped).
+           Because the URDF/GLB/rig are baked at the assembled pose, every derived viewer
+           shows the same half-raised default and articulates it as (qpos - ref). -->
+      <body name="lift_base" pos="-0.096 0 0.00" euler="0 0 3.1415926">
+        <geom class="l_visual"    mesh="m_lift_base" material="mat_base"/>
+        <geom class="l_collision" mesh="m_lift_base"/>
+        <body name="lift_mid" pos="0 0 0.17575">
+          <joint name="Lift Lower" class="l_slide" ref="0.15875"/>
+          <geom class="l_visual" mesh="m_lift_mid" material="mat_mid"/>
+          <body name="lift_top" pos="0 0 0.16575">
+            <joint name="Lift Upper" class="l_slide" ref="0.15875"/>
+            <geom class="l_visual" mesh="m_lift_top" material="mat_top"/>
+            <geom type="cylinder" size="0.05 0.1" pos="0 0 -0.1" mass="2.0" contype="0" conaffinity="0" material="invisible"/>
+
+            <body name="body_mount" pos="0 -0.043 0.56" euler="1.570796 0 0">
+      <inertial pos="5.9105267e-05 -0.015092891 -0.047821146" quat="0.81030502 0.50342709 -0.13198969 0.269343" mass="1.95836" diaginertia="0.0035741105 0.0035256756 0.0032254595"/>
+              <geom class="b_visual"    mesh="m_lift_to_body" material="mat_mount"/>
+              <geom class="b_collision" mesh="m_lift_to_body"/>
+
+              <body name="torso" pos="0 0 0">
+      <inertial pos="0.0050530103 0.097628617 -0.044603704" quat="0.71832376 0.69411141 -0.035451898 -0.031040337" mass="4.51091" diaginertia="0.034278941 0.028676702 0.022475771"/>
+                <joint name="Torso" class="motor_DM_J10422P"/>
+                <geom class="b_visual"    mesh="m_body_link" material="mat_torso"/>
+                <geom class="b_collision" mesh="m_body_link" mass="5.0"/>
+
+                <!-- Body camera: monocular global-shutter, 170 deg FOV (fovy=83), 1280x720 @60fps.
+                     Rigidly attached to the torso link, looking forward (-X). -->
+                <!-- pitched 10 deg downward (xyaxes up-vector tilted -> view = local (cos10, -sin10, 0)). -->
+                <camera name="body_cam" pos="0.0940 0.0960 -0.0430" xyaxes="0 0 1  0.1736 0.9848 0" fovy="83" resolution="1280 720"/>
+                <geom name="body_cam_marker" type="box"      pos="0.0940 0.0960 -0.0430" xyaxes="0 0 1  0.1736 0.9848 0" size="0.012 0.012 0.008" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+                <geom name="body_cam_lens"   type="cylinder" fromto="0.0940 0.0960 -0.0430  0.1432 0.0873 -0.0430" size="0.005"      rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+
+                <body name="head_mount" pos="0 0.21 -0.045" euler="0 1.57 1.57">
+      <inertial pos="2.9485514e-06 -0.00045869441 0.021005005" quat="0.12387986 0.69450758 0.11508769 0.69933384" mass="0.0379181" diaginertia="1.2163842e-05 1.1354899e-05 1.1185905e-05"/>
+                  <geom class="h_visual" mesh="m_h_1_mount" material="mat_h_dark" pos="0 0 0" euler="0 0 0"/>
+                  <geom class="h_collision" mesh="m_h_1_mount"/>
+                  <body name="neck_1" pos="0.0 0.0 0.045" euler="0 0 0">
+      <inertial pos="5.8965299e-08 2.7720524e-08 0.017283191" quat="0.5 0.5 0.5 0.5" mass="0.0140212" diaginertia="4.8794924e-06 4.055205e-06 2.9871522e-06"/>
+                    <joint name="Neck Yaw" class="motor_dynamixel" axis="0 0 1" range="-1.570796 1.570796"/>
+                    <geom class="h_visual" mesh="m_h_2_neck1" material="mat_h_light" pos="0 0 0" euler="0 0 0"/>
+                    <body name="neck_2" pos="-0.02 0.0 0.035" euler="0 1.570796 0">
+      <inertial pos="-0.012331342 0.00030064264 0.019151689" quat="0.70830859 0.1105017 -0.67689795 -0.16702539" mass="0.0344612" diaginertia="7.7219582e-06 7.7060711e-06 5.0780044e-06"/>
+                      <joint name="Neck Pitch" class="motor_dynamixel" axis="0 0 1" range="-0.785398 0.785398"/>
+                      <geom class="h_visual" mesh="m_h_3_neck2" material="mat_h_dark" pos="0 0 0" euler="0 0 -1.570796"/>
+                      <body name="head" pos="-0.025 0.02 0.019" euler="0 1.57 1.57">
+      <inertial pos="-3.107847e-05 0.011905083 -0.050737528" quat="-0.021951334 0.70754829 -0.019028005 0.70606763" mass="1.44503" diaginertia="0.0033390523 0.002346851 0.0021407056"/>
+                        <joint name="Neck Roll" class="motor_dynamixel" axis="0 0 1" range="-0.785398 0.785398"/>
+                        <geom class="h_visual" mesh="m_h_4_head" material="mat_h_light" pos="0 0 -0.043712" euler="0 3.141593 0"/>
+                        <geom class="h_collision" mesh="m_h_4_head" pos="0 0 -0.043712" euler="0 3.141593 0"/>
+
+                        <!-- Head stereo: Stereolabs ZED Mini, HD720 1280x720 @60Zfps.
+                             Baseline 63 mm (left/right eyes +/-31.5 mm); intrinsics fx=fy~695, cx=640, cy=360
+                             MMlove USB stereo module: dual global-shutter, 112° diagonal
+                             wide angle on a 4:3 sensor (1600x1200@60 / 800x600@120 per eye)
+                             → fovy=83.3, hfov≈100. Left eye = robot's left. -->
+                        <camera name="zed_left"  pos="-0.0317 0.0180 -0.105712" xyaxes="1 0.0008 -0.0008 -0.0008 1 0" fovy="83.3" resolution="1600 1200"/>
+                        <camera name="zed_right" pos="0.0313 0.0180 -0.105712"  xyaxes="1 0.0008 -0.0008 -0.0008 1 0" fovy="83.3" resolution="1600 1200"/>
+                        <geom name="zed_left_marker"  type="box"      pos="-0.0317 0.0180 -0.105712" xyaxes="1 0.0008 -0.0008 -0.0008 1 0" size="0.010 0.008 0.006" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+                        <geom name="zed_left_lens"    type="cylinder" fromto="-0.0317 0.0180 -0.105712  -0.0317 0.0180 -0.165712"           size="0.004"             rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+                        <geom name="zed_right_marker" type="box"      pos="0.0313 0.0180 -0.105712"  xyaxes="1 0.0008 -0.0008 -0.0008 1 0" size="0.010 0.008 0.006" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+                        <geom name="zed_right_lens"   type="cylinder" fromto="0.0313 0.0180 -0.105712  0.0313 0.0180 -0.165712"            size="0.004"             rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+
+                <body name="l_arm_mount" pos="0.0 0.15 -0.15" euler="-0.174533 3.14 0">
+      <inertial pos="0.00092058093 0.0018274949 -0.035022636" quat="0.50668954 0.60919106 -0.42918644 0.43353311" mass="0.697682" diaginertia="0.00086775425 0.00070530438 0.00054501147"/>
+                  <geom class="la_visual" mesh="m_l_1_mount" material="mat_la_dark"/>
+                  <geom class="la_collision" mesh="m_l_1_mount"/>
+                  <body name="l_shoulder_1" pos="0.0 0.0 0.0" euler="0 0 0">
+      <inertial pos="-0.0011466777 0.00011025871 0.048578497" quat="0.99962422 0.0075077752 -0.026360764 0.00039767352" mass="0.732088" diaginertia="0.0010757844 0.00082958094 0.00061763062"/>
+                    <joint name="Left Arm 1" class="motor_DM8009" axis="0 0 1" range="-3.490659 1.396263"/>
+                    <geom class="la_visual" mesh="m_l_2_shoulder" material="mat_la_light"/>
+                    <body name="l_shoulder_2" pos="-0.0301 0.0 0.06" euler="0 -1.570796 0">
+      <inertial pos="-0.00034722938 -0.017612826 -0.027176968" quat="0.99262454 0.12072591 -0.00017838044 -0.011033471" mass="0.698691" diaginertia="0.0010942296 0.00088867713 0.00079540705"/>
+                      <joint name="Left Arm 2" class="motor_DM8009" axis="0 0 1" range="-0.174533 3.316125"/>
+                      <geom class="la_visual" mesh="m_l_3_s_link" material="mat_la_dark"/>
+                      <body name="l_shoulder_3" pos="0.0 -0.06625 -0.0301" euler="-1.570796 0 3.1415926">
+      <inertial pos="-0.00073130413 0.0049936454 0.086680351" quat="0.99718272 -0.012781696 -0.011342692 -0.073038331" mass="1.46697" diaginertia="0.0047280852 0.0046624958 0.0012642778"/>
+                        <joint name="Left Arm 3" class="motor_DM4340" axis="0 0 1" range="-1.570796 1.570796"/>
+                        <geom class="la_visual" mesh="m_l_4_s_link" material="mat_la_light"/>
+                        <body name="l_elbow" pos="0.0315 0.0 0.15375" euler="0 -1.570796 0">
+      <inertial pos="0.0031611927 -0.044765735 0.030496717" quat="0.72961475 0.68280908 -0.017580905 -0.033540804" mass="0.943183" diaginertia="0.0016140189 0.0014265884 0.0010609133"/>
+                          <joint name="Left Arm 4" class="motor_DM4340" axis="0 0 1" range="-0.943 1.542"/>
+                          <geom class="la_visual" mesh="m_l_5_elbow" material="mat_la_dark"/>
+                          <body name="l_forearm" pos="0.0 -0.0955 0.0315" euler="1.570796 0 0">
+      <inertial pos="-0.00070688287 -0.00027560931 0.051771681" quat="0.70785247 0.07588679 0.057759987 0.69989275" mass="0.837592" diaginertia="0.0012248752 0.00092446955 0.00089396916"/>
+                            <joint name="Left Arm 5" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796"/>
+                            <geom class="la_visual" mesh="m_l_6_forearm" material="mat_la_light"/>
+                            <body name="l_wrist" pos="-0.0375 0.0 0.1205" euler="1.570796 3.14 1.570796">
+      <inertial pos="-0.0052024156 -0.00040404052 0.033716311" quat="0.27824884 0.5134727 0.2970049 0.75545447" mass="0.302966" diaginertia="0.00016883191 0.00016242116 0.00015017384"/>
+                              <joint name="Left Arm 6" class="motor_DM4310" axis="0 0 1" range="-0.785398 0.785398"/>
+                              <geom class="la_visual" mesh="m_l_7_wrist" material="mat_la_dark"/>
+                              <body name="l_hand_mount" pos="0.02 0.0 0.035" euler="1.570796 1.570796 1.570796">
+      <inertial pos="9.5180055e-07 -0.036665736 -0.0097976747" quat="0.29086602 0.64452529 -0.6445048 0.29085678" mass="0.318773" diaginertia="0.00037016871 0.00031218091 0.00020093097"/>
+                                <joint name="Left Arm 7" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796"/>
+                                <geom class="la_visual" mesh="m_l_8_hand_mount" material="mat_la_acc"/>
+
+                                <!-- l_wrist_cam is mounted on the left_palm body (below) -->
+
+                                <body name="left_tower" euler="1.5708 0 0" pos="0.04 -0.111 -0.02" childclass="hand_base">
+                                  <inertial diaginertia="0.00150422 0.00125262 0.0007962" euler="-0.00261 -0.00737 -0.04145" mass="0.9" pos="-0.04034 -0.00091 0.01912"/>
+                                  <geom class="hand_bone"      mesh="l_v_tower_main"/>
+                                  <geom class="hand_collision" mesh="l_c_tower_main"/>
+                                  <geom class="hand_bone"      mesh="l_v_tower_hull"/>
+                                  <geom class="hand_collision" mesh="l_c_tower_hull"/>
+                                  <geom class="hand_skin"      mesh="l_v_tower_text"/>
+                                  <geom class="hand_collision" mesh="l_c_tower_text"/>
+
+                                  <body name="left_palm" euler="0.0 0.0 0.0" pos="-0.03863 0.00144 0.14359">
+                                    <inertial diaginertia="1.612e-05 1.151e-05 6.72e-06" euler="1.67519 -0.0475 -1.55556" mass="0.0257" pos="-0.00193 -0.00052 -0.00664"/>
+                                    <joint axis="-1.0 0.0 0.0" name="Left Wrist" pos="-0.002 -0.00144 -0.03872" range="-0.8972 0.6736" ref="0.15"/>
+                                    <geom class="hand_bone"      mesh="l_v_palm"/>
+                                    <geom class="hand_collision" mesh="l_c_palm"/>
+                                    <geom class="hand_skin"      mesh="l_v_palm_skin"/>
+                                    <geom class="hand_collision" mesh="l_c_palm_skin"/>
+                                    <!-- MMlove wrist cam (B0BZYW6DJT): on the VOLAR (palm, +Y) side at the
+                                         wrist base (z~-0.035, ORCA lower wrist), looking distally (+Z) and
+                                         tilted slightly toward the palm (-Y) so the grasp region is centered.
+                                         170 deg fisheye approximated by fovy=100 (pinhole). -->
+                                    <!-- Lowered ~20 mm in world (palm local +Y is world-down here: y 0.028 -> 0.048),
+                                         re-aimed at the palm-grasp centre (palm-frame ~0,0,0.102) so it still looks at the palm. -->
+                                    <camera name="l_wrist_cam" pos="0 0.048 -0.035" xyaxes="-1 0 0  0 0.9438 0.3307" fovy="100" resolution="1280 720"/>
+                                    <geom name="l_wrist_cam_marker" type="box"      pos="0 0.048 -0.035" xyaxes="-1 0 0  0 0.9438 0.3307" size="0.008 0.008 0.006" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+                                    <geom name="l_wrist_cam_lens"   type="cylinder" fromto="0 0.048 -0.035  0 0.0315 0.0122"          size="0.004"             rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+
+                                    <body euler="0.53857 0.05595 1.27047" name="left_thumb_mp" pos="0.02821 0.01777 -0.01321">
+                                      <inertial diaginertia="8.4e-07 6.6e-07 2.7e-07" euler="0.0 -0.01625 0.0" mass="0.00586" pos="-0.00247 0.0 0.004"/>
+                                      <joint axis="0.0 0.0 1.0" name="Left Thumb MCP" range="-0.87266 0.87266" ref="0.0"/>
+                                      <geom class="hand_bone"      mesh="l_v_thumb_mp"/>
+                                      <geom class="hand_collision" mesh="l_c_thumb_mp"/>
+                                      <body euler="-1.22173 0.0 0.0" name="left_thumb_pp" pos="0.03 0.0 0.0">
+                                        <inertial diaginertia="7.5e-07 7.1e-07 3e-07" euler="1.5708 -0.77392 -1.5708" mass="0.00655" pos="-0.01848 1e-05 2e-05"/>
+                                        <joint axis="0.0 -0.34202 -0.93969" name="Left Thumb Abd" pos="-0.03 0.0 0.0" range="-1.08211 0.0" ref="-0.73304"/>
+                                        <geom class="hand_bone"      mesh="l_v_thumb_pp"/>
+                                        <geom class="hand_collision" mesh="l_c_thumb_pp"/>
+                                        <body euler="3.14159 -1.5708 0.0" name="left_thumb_ip" pos="0.0 0.0 0.0">
+                                          <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 -0.03263 -0.00034" mass="0.01402" pos="-0.00135 2e-05 0.01383"/>
+                                          <joint axis="0.0 1.0 0.0" name="Left Thumb PIP" range="-0.7944 1.23" ref="-0.58496"/>
+                                          <geom class="hand_bone"      mesh="l_v_thumb_ip"/>
+                                          <geom class="hand_collision" mesh="l_c_thumb_ip"/>
+                                          <geom class="hand_skin"      mesh="l_v_thumb_ip_skin"/>
+                                          <geom class="hand_collision" mesh="l_c_thumb_ip_skin"/>
+                                          <body euler="0.0 0.0 0.0" name="left_thumb_dp" pos="-0.0005 0.0 0.033">
+                                            <inertial diaginertia="1.4e-06 1.37e-06 4.4e-07" euler="0.00075 -0.08211 -0.00013" mass="0.0132" pos="-0.00233 1e-05 0.01133"/>
+                                            <joint axis="0.0 1.0 0.0" name="Left Thumb DIP" range="-0.85384 1.45" ref="-0.50477"/>
+                                            <geom class="hand_bone"      mesh="l_v_thumb_dp"/>
+                                            <geom class="hand_collision" mesh="l_c_thumb_dp"/>
+                                            <geom class="hand_skin"      mesh="l_v_thumb_dp_skin" euler="0.0 -0.52 0.0" pos="0.009 0 -0.011"/>
+                                            <geom class="hand_collision" mesh="l_c_thumb_dp_skin" euler="0.0 -0.52 0.0" pos="0.009 0 -0.011"/>
+                                          </body>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="1.6067 -1.13552 0.05339" name="left_index_mp" pos="0.03251 0.00235 0.0433">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 1.0" name="Left Index Abd" pos="-0.02 0.0 0.0" range="-1.04577 0.24577" ref="-0.4"/>
+                                      <geom class="hand_bone"      mesh="l_v_index_mp"/>
+                                      <geom class="hand_collision" mesh="l_c_index_mp"/>
+                                      <body euler="0.0 1.5708 0.0" name="left_index_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="2.39e-06 2.31e-06 7.1e-07" euler="0.00034 -0.02055 -0.00038" mass="0.0165" pos="-0.00135 2e-05 0.01637"/>
+                                        <joint axis="0.0 1.0 0.0" name="Left Index MCP" range="-0.34907 1.65806"/>
+                                        <geom class="hand_bone"      mesh="l_v_index_pp"/>
+                                        <geom class="hand_collision" mesh="l_c_index_pp"/>
+                                        <geom class="hand_skin"      mesh="l_v_index_pp_skin"/>
+                                        <geom class="hand_collision" mesh="l_c_index_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="left_index_ip" pos="-0.0005 0.0 0.038">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 1.0 0.0" name="Left Index PIP" range="-0.34907 1.88496"/>
+                                          <geom class="hand_bone"      mesh="l_v_index_ip"/>
+                                          <geom class="hand_collision" mesh="l_c_index_ip"/>
+                                          <geom class="hand_skin"      mesh="l_v_index_ip_skin"/>
+                                          <geom class="hand_collision" mesh="l_c_index_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="1.5708 -1.5708 0.0" name="left_middle_mp" pos="0.0 0.0 0.05">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 1.0" name="Left Middle Abd" pos="-0.02 0.0 0.0" range="-0.64577 0.64577"/>
+                                      <geom class="hand_bone"      mesh="l_v_middle_mp"/>
+                                      <geom class="hand_collision" mesh="l_c_middle_mp"/>
+                                      <body euler="0.0 1.5708 0.0" name="left_middle_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 -0.01386 -0.0006" mass="0.02006" pos="-0.00144 2e-05 0.02021"/>
+                                        <joint axis="0.0 1.0 0.0" name="Left Middle MCP" range="-0.34907 1.58825"/>
+                                        <geom class="hand_bone"      mesh="l_v_middle_pp"/>
+                                        <geom class="hand_collision" mesh="l_c_middle_pp"/>
+                                        <geom class="hand_skin"      mesh="l_v_middle_pp_skin"/>
+                                        <geom class="hand_collision" mesh="l_c_middle_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="left_middle_ip" pos="-0.0005 0.0 0.046">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 1.0 0.0" name="Left Middle PIP" range="-0.34907 1.8675"/>
+                                          <geom class="hand_bone"      mesh="l_v_middle_ip"/>
+                                          <geom class="hand_collision" mesh="l_c_middle_ip"/>
+                                          <geom class="hand_skin"      mesh="l_v_middle_ip_skin"/>
+                                          <geom class="hand_collision" mesh="l_c_middle_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="-1.53597 -1.30836 3.05441" name="left_ring_mp" pos="-0.02669 0.00199 0.04014">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 1.0" name="Left Ring Abd" pos="-0.02 0.0 0.0" range="-0.47577 0.80577" ref="0.17"/>
+                                      <geom class="hand_bone"      mesh="l_v_ring_mp"/>
+                                      <geom class="hand_collision" mesh="l_c_ring_mp"/>
+                                      <body euler="0.0 1.5708 0.0" name="left_ring_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 -0.01386 -0.0006" mass="0.02006" pos="-0.00144 2e-05 0.02021"/>
+                                        <joint axis="0.0 1.0 0.0" name="Left Ring MCP" range="-0.34907 1.58825"/>
+                                        <geom class="hand_bone"      mesh="l_v_ring_pp"/>
+                                        <geom class="hand_collision" mesh="l_c_ring_pp"/>
+                                        <geom class="hand_skin"      mesh="l_v_ring_pp_skin"/>
+                                        <geom class="hand_collision" mesh="l_c_ring_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="left_ring_ip" pos="-0.0005 0.0 0.046">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 1.0 0.0" name="Left Ring PIP" range="-0.34907 1.8675"/>
+                                          <geom class="hand_bone"      mesh="l_v_ring_ip"/>
+                                          <geom class="hand_collision" mesh="l_c_ring_ip"/>
+                                          <geom class="hand_skin"      mesh="l_v_ring_ip_skin"/>
+                                          <geom class="hand_collision" mesh="l_c_ring_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="-1.49694 -0.86149 2.88373" name="left_pinky_mp" pos="-0.05518 0.00831 0.02242">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 1.0" name="Left Pinky Abd" pos="-0.02 0.0 0.0" range="-0.12244 1.1691" ref="0.52333"/>
+                                      <geom class="hand_bone"      mesh="l_v_pinky_mp"/>
+                                      <geom class="hand_collision" mesh="l_c_pinky_mp"/>
+                                      <body euler="0.0 1.5708 0.0" name="left_pinky_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 -0.03263 -0.00034" mass="0.01402" pos="-0.00135 2e-05 0.01383"/>
+                                        <joint axis="0.0 1.0 0.0" name="Left Pinky MCP" range="-0.34907 1.71042"/>
+                                        <geom class="hand_bone"      mesh="l_v_pinky_pp"/>
+                                        <geom class="hand_collision" mesh="l_c_pinky_pp"/>
+                                        <geom class="hand_skin"      mesh="l_v_pinky_pp_skin"/>
+                                        <geom class="hand_collision" mesh="l_c_pinky_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="left_pinky_ip" pos="-0.0005 0.0 0.033">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 1.0 0.0" name="Left Pinky PIP" range="-0.34907 1.88496"/>
+                                          <geom class="hand_bone"      mesh="l_v_pinky_ip"/>
+                                          <geom class="hand_collision" mesh="l_c_pinky_ip"/>
+                                          <geom class="hand_skin"      mesh="l_v_pinky_ip_skin"/>
+                                          <geom class="hand_collision" mesh="l_c_pinky_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                  </body>
+                                </body>
+
+                              </body>
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+
+                <body name="r_arm_mount" pos="0.0 0.14 -0.002" euler="-0.174533 0 0">
+      <inertial pos="-0.00092050288 0.0018274729 0.026677458" quat="0.43353297 0.42918837 -0.60918853 0.50669107" mass="0.69702" diaginertia="0.00086692284 0.00070463176 0.00054448939"/>
+                  <geom class="ra_visual" mesh="m_r_1_mount" material="mat_ra_dark"/>
+                  <geom class="ra_collision" mesh="m_r_1_mount"/>
+                  <body name="r_shoulder_1" pos="0.0 0.0 0.062" euler="0 0 0">
+      <inertial pos="0.0011466438 0.00011024107 0.04857799" quat="0.99962424 0.0075089874 0.026359695 -0.00039790514" mass="0.731383" diaginertia="0.0010747227 0.00082875785 0.00061702434"/>
+                    <joint name="Right Arm 1" class="motor_DM8009" axis="0 0 1" range="-1.396263 3.490659"/>
+                    <geom class="ra_visual" mesh="m_r_2_shoulder" material="mat_ra_light"/>
+                    <body name="r_shoulder_2" pos="-0.0301 0.0 0.06" euler="0 1.570796 0">
+      <inertial pos="-0.00034722484 -0.017612584 0.027176837" quat="0.99262318 -0.12073712 0.00017830492 -0.011033955" mass="0.698035" diaginertia="0.0010931957 0.00088783594 0.00079465327"/>
+                      <joint name="Right Arm 2" class="motor_DM8009" axis="0 0 1" range="-3.316125 0.174533"/>
+                      <geom class="ra_visual" mesh="m_r_3_s_link" material="mat_ra_dark"/>
+                      <body name="r_shoulder_3" pos="0.0 -0.06625 0.0301" euler="-1.570796 3.1415926 3.1415926">
+      <inertial pos="-0.00073126156 -0.0049937085 0.086681345" quat="0.99718089 0.012780498 -0.011342586 0.073063512" mass="1.4656" diaginertia="0.0047236506 0.0046581135 0.0012630927"/>
+                        <joint name="Right Arm 3" class="motor_DM4340" axis="0 0 1" range="-1.570796 1.570796"/>
+                        <geom class="ra_visual" mesh="m_r_4_s_link" material="mat_ra_light"/>
+                        <body name="r_elbow" pos="0.033 0.0 0.15375" euler="0 1.570796 3.1415926">
+      <inertial pos="-0.0031611522 -0.04476586 0.032196804" quat="0.72961288 0.6828111 0.017578022 0.033541913" mass="0.942285" diaginertia="0.0016124682 0.0014252153 0.0010598928"/>
+                          <joint name="Right Arm 4" class="motor_DM4340" axis="0 0 1" range="-1.67 0.773461"/>
+                          <geom class="ra_visual" mesh="m_r_5_elbow" material="mat_ra_dark"/>
+                          <body name="r_forearm" pos="0.0 -0.0955 0.0315" euler="1.570796 1.570796 0">
+      <inertial pos="-0.00027558112 -0.0007069156 0.051771391" quat="0.99542207 -0.094545324 -0.012822823 0.0056266614" mass="0.836794" diaginertia="0.0012236909 0.00092357437 0.0008931156"/>
+                            <joint name="Right Arm 5" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796"/>
+                            <geom class="ra_visual" mesh="m_r_6_forearm" material="mat_ra_light"/>
+                            <body name="r_wrist" pos="0.0 0.0375 0.1205" euler="1.570796 3.14 0">
+      <inertial pos="0.005401 -0.0003930308 0.034032267" quat="0.39538572 0.67395561 0.3488295 0.51746687" mass="0.309131" diaginertia="0.00017286144 0.00016606252 0.00015409259"/>
+                              <joint name="Right Arm 6" class="motor_DM4310" axis="0 0 1" range="-0.785398 0.785398"/>
+                              <geom class="ra_visual" mesh="m_r_7_wrist" material="mat_ra_dark"/>
+                              <body name="r_hand_mount" pos="-0.02 0.0 0.035" euler="-1.570796 1.570796 1.570796">
+      <inertial pos="8.56678e-07 0.036666424 -0.0097979071" quat="0.64452379 0.29086589 -0.29085782 0.64450589" mass="0.318463" diaginertia="0.00036979903 0.00031187236 0.00020073125"/>
+                                <joint name="Right Arm 7" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796"/>
+                                <geom class="ra_visual" mesh="m_r_8_hand_mount" material="mat_ra_acc"/>
+
+                                <!-- r_wrist_cam is mounted on the right_palm body (below) -->
+
+                                <body name="right_tower" euler="1.5708 0 3.14159" pos="0.04 0.111 -0.02" childclass="hand_base">
+                                  <inertial diaginertia="0.00150422 0.00125262 0.0007962" euler="-0.00261 0.00737 0.04145" mass="0.9" pos="0.04034 -0.00091 0.01912"/>
+                                  <geom class="hand_bone"      mesh="r_v_tower_main"/>
+                                  <geom class="hand_collision" mesh="r_c_tower_main"/>
+                                  <geom class="hand_bone"      mesh="r_v_tower_hull"/>
+                                  <geom class="hand_collision" mesh="r_c_tower_hull"/>
+                                  <geom class="hand_skin"      mesh="r_v_tower_text"/>
+                                  <geom class="hand_collision" mesh="r_c_tower_text"/>
+
+                                  <body name="right_palm" euler="0.0 0.0 0.0" pos="0.03863 0.00144 0.14359">
+                                    <inertial diaginertia="1.612e-05 1.151e-05 6.72e-06" euler="1.67519 0.0475 1.55556" mass="0.0257" pos="0.00193 -0.00052 -0.00664"/>
+                                    <joint axis="1.0 0.0 0.0" name="Right Wrist" pos="0.002 -0.00144 -0.03872" range="-0.6736 0.8972" ref="-0.15"/>
+                                    <geom class="hand_bone"      mesh="r_v_palm"/>
+                                    <geom class="hand_collision" mesh="r_c_palm"/>
+                                    <geom class="hand_skin"      mesh="r_v_palm_skin"/>
+                                    <geom class="hand_collision" mesh="r_c_palm_skin"/>
+                                    <!-- MMlove wrist cam (B0BZYW6DJT): VOLAR (+Y) side at the wrist base,
+                                         mirror of left; looks distally and tilts toward the palm. -->
+                                    <!-- Lowered ~20 mm in world (palm local +Y is world-down here: y 0.028 -> 0.048),
+                                         re-aimed at the palm-grasp centre (palm-frame ~0,0,0.102) so it still looks at the palm. -->
+                                    <camera name="r_wrist_cam" pos="0 0.048 -0.035" xyaxes="-1 0 0  0 0.9438 0.3307" fovy="100" resolution="1280 720"/>
+                                    <geom name="r_wrist_cam_marker" type="box"      pos="0 0.048 -0.035" xyaxes="-1 0 0  0 0.9438 0.3307" size="0.008 0.008 0.006" rgba="0.10 0.90 0.90 0.75" group="3" contype="0" conaffinity="0" mass="0"/>
+                                    <geom name="r_wrist_cam_lens"   type="cylinder" fromto="0 0.048 -0.035  0 0.0315 0.0122"         size="0.004"             rgba="1.0 0.45 0.0 0.95" group="3" contype="0" conaffinity="0" mass="0"/>
+
+                                    <body euler="0.53857 -0.05595 -1.27047" name="right_thumb_mp" pos="-0.02821 0.01777 -0.01321">
+                                      <inertial diaginertia="8.4e-07 6.6e-07 2.7e-07" euler="0.0 0.01625 0.0" mass="0.00586" pos="0.00247 0.0 0.004"/>
+                                      <joint axis="0.0 0.0 -1.0" name="Right Thumb MCP" range="-0.87266 0.87266" ref="0.0"/>
+                                      <geom class="hand_bone"      mesh="r_v_thumb_mp"/>
+                                      <geom class="hand_collision" mesh="r_c_thumb_mp"/>
+                                      <body euler="-1.22173 0.0 0.0" name="right_thumb_pp" pos="-0.03 0.0 0.0">
+                                        <inertial diaginertia="7.5e-07 7.1e-07 3e-07" euler="1.5708 0.77392 1.5708" mass="0.00655" pos="0.01848 1e-05 2e-05"/>
+                                        <joint axis="0.0 0.34202 0.93969" name="Right Thumb Abd" pos="0.03 0.0 0.0" range="-1.08211 0.0" ref="-0.73304"/>
+                                        <geom class="hand_bone"      mesh="r_v_thumb_pp"/>
+                                        <geom class="hand_collision" mesh="r_c_thumb_pp"/>
+                                        <body euler="3.14159 1.5708 0.0" name="right_thumb_ip" pos="0.0 0.0 0.0">
+                                          <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 0.03263 0.00034" mass="0.01402" pos="0.00135 2e-05 0.01383"/>
+                                          <joint axis="0.0 -1.0 0.0" name="Right Thumb PIP" range="-0.7944 1.23" ref="-0.58496"/>
+                                          <geom class="hand_bone"      mesh="r_v_thumb_ip"/>
+                                          <geom class="hand_collision" mesh="r_c_thumb_ip"/>
+                                          <geom class="hand_skin"      mesh="r_v_thumb_ip_skin"/>
+                                          <geom class="hand_collision" mesh="r_c_thumb_ip_skin"/>
+                                          <body euler="0.0 0.0 0.0" name="right_thumb_dp" pos="0.0005 0.0 0.033">
+                                            <inertial diaginertia="1.4e-06 1.37e-06 4.4e-07" euler="0.00075 0.08211 0.00013" mass="0.0132" pos="0.00233 1e-05 0.01133"/>
+                                            <joint axis="0.0 -1.0 0.0" name="Right Thumb DIP" range="-0.85384 1.45" ref="-0.50477"/>
+                                            <geom class="hand_bone"      mesh="r_v_thumb_dp"/>
+                                            <geom class="hand_collision" mesh="r_c_thumb_dp"/>
+                                            <geom class="hand_skin"      mesh="r_v_thumb_dp_skin" euler="0.0 0.52 0.0" pos="-0.009 0 -0.011"/>
+                                            <geom class="hand_collision" mesh="r_c_thumb_dp_skin" euler="0.0 0.52 0.0" pos="-0.009 0 -0.011"/>
+                                          </body>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="1.6067 1.13552 -0.05339" name="right_index_mp" pos="-0.03251 0.00235 0.0433">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 -1.0" name="Right Index Abd" pos="0.02 0.0 0.0" range="-1.04577 0.24577" ref="-0.4"/>
+                                      <geom class="hand_bone"      mesh="r_v_index_mp"/>
+                                      <geom class="hand_collision" mesh="r_c_index_mp"/>
+                                      <body euler="0.0 -1.5708 0.0" name="right_index_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="2.39e-06 2.31e-06 7.1e-07" euler="0.00034 0.02055 0.00038" mass="0.0165" pos="0.00135 2e-05 0.01637"/>
+                                        <joint axis="0.0 -1.0 0.0" name="Right Index MCP" range="-0.34907 1.65806"/>
+                                        <geom class="hand_bone"      mesh="r_v_index_pp"/>
+                                        <geom class="hand_collision" mesh="r_c_index_pp"/>
+                                        <geom class="hand_skin"      mesh="r_v_index_pp_skin"/>
+                                        <geom class="hand_collision" mesh="r_c_index_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="right_index_ip" pos="0.0005 0.0 0.038">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 -1.0 0.0" name="Right Index PIP" range="-0.34907 1.88496"/>
+                                          <geom class="hand_bone"      mesh="r_v_index_ip"/>
+                                          <geom class="hand_collision" mesh="r_c_index_ip"/>
+                                          <geom class="hand_skin"      mesh="r_v_index_ip_skin"/>
+                                          <geom class="hand_collision" mesh="r_c_index_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="1.5708 1.5708 0.0" name="right_middle_mp" pos="0.0 0.0 0.05">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 -1.0" name="Right Middle Abd" pos="0.02 0.0 0.0" range="-0.64577 0.64577"/>
+                                      <geom class="hand_bone"      mesh="r_v_middle_mp"/>
+                                      <geom class="hand_collision" mesh="r_c_middle_mp"/>
+                                      <body euler="0.0 -1.5708 0.0" name="right_middle_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 0.01386 0.0006" mass="0.02006" pos="0.00144 2e-05 0.02021"/>
+                                        <joint axis="0.0 -1.0 0.0" name="Right Middle MCP" range="-0.34907 1.58825"/>
+                                        <geom class="hand_bone"      mesh="r_v_middle_pp"/>
+                                        <geom class="hand_collision" mesh="r_c_middle_pp"/>
+                                        <geom class="hand_skin"      mesh="r_v_middle_pp_skin"/>
+                                        <geom class="hand_collision" mesh="r_c_middle_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="right_middle_ip" pos="0.0005 0.0 0.046">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 -1.0 0.0" name="Right Middle PIP" range="-0.34907 1.8675"/>
+                                          <geom class="hand_bone"      mesh="r_v_middle_ip"/>
+                                          <geom class="hand_collision" mesh="r_c_middle_ip"/>
+                                          <geom class="hand_skin"      mesh="r_v_middle_ip_skin"/>
+                                          <geom class="hand_collision" mesh="r_c_middle_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="-1.53597 1.30836 -3.05441" name="right_ring_mp" pos="0.02669 0.00199 0.04014">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 -1.0" name="Right Ring Abd" pos="0.02 0.0 0.0" range="-0.47577 0.80577" ref="0.17"/>
+                                      <geom class="hand_bone"      mesh="r_v_ring_mp"/>
+                                      <geom class="hand_collision" mesh="r_c_ring_mp"/>
+                                      <body euler="0.0 -1.5708 0.0" name="right_ring_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 0.01386 0.0006" mass="0.02006" pos="0.00144 2e-05 0.02021"/>
+                                        <joint axis="0.0 -1.0 0.0" name="Right Ring MCP" range="-0.34907 1.58825"/>
+                                        <geom class="hand_bone"      mesh="r_v_ring_pp"/>
+                                        <geom class="hand_collision" mesh="r_c_ring_pp"/>
+                                        <geom class="hand_skin"      mesh="r_v_ring_pp_skin"/>
+                                        <geom class="hand_collision" mesh="r_c_ring_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="right_ring_ip" pos="0.0005 0.0 0.046">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 -1.0 0.0" name="Right Ring PIP" range="-0.34907 1.8675"/>
+                                          <geom class="hand_bone"      mesh="r_v_ring_ip"/>
+                                          <geom class="hand_collision" mesh="r_c_ring_ip"/>
+                                          <geom class="hand_skin"      mesh="r_v_ring_ip_skin"/>
+                                          <geom class="hand_collision" mesh="r_c_ring_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                    <body euler="-1.49694 0.86149 -2.88373" name="right_pinky_mp" pos="0.05518 0.00831 0.02242">
+                                      <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 -1.5708 0.0" mass="0.00498" pos="0.01155 0.0 -4e-05"/>
+                                      <joint axis="0.0 0.0 -1.0" name="Right Pinky Abd" pos="0.02 0.0 0.0" range="-0.12244 1.1691" ref="0.52333"/>
+                                      <geom class="hand_bone"      mesh="r_v_pinky_mp"/>
+                                      <geom class="hand_collision" mesh="r_c_pinky_mp"/>
+                                      <body euler="0.0 -1.5708 0.0" name="right_pinky_pp" pos="0.0 0.0 0.0">
+                                        <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 0.03263 0.00034" mass="0.01402" pos="0.00135 2e-05 0.01383"/>
+                                        <joint axis="0.0 -1.0 0.0" name="Right Pinky MCP" range="-0.34907 1.71042"/>
+                                        <geom class="hand_bone"      mesh="r_v_pinky_pp"/>
+                                        <geom class="hand_collision" mesh="r_c_pinky_pp"/>
+                                        <geom class="hand_skin"      mesh="r_v_pinky_pp_skin"/>
+                                        <geom class="hand_collision" mesh="r_c_pinky_pp_skin"/>
+                                        <body euler="0.0 0.0 0.0" name="right_pinky_ip" pos="0.0005 0.0 0.033">
+                                          <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 -0.18549 0.0044" mass="0.01521" pos="0.00071 1e-05 0.01929"/>
+                                          <joint axis="0.0 -1.0 0.0" name="Right Pinky PIP" range="-0.34907 1.88496"/>
+                                          <geom class="hand_bone"      mesh="r_v_pinky_ip"/>
+                                          <geom class="hand_collision" mesh="r_c_pinky_ip"/>
+                                          <geom class="hand_skin"      mesh="r_v_pinky_ip_skin"/>
+                                          <geom class="hand_collision" mesh="r_c_pinky_ip_skin"/>
+                                        </body>
+                                      </body>
+                                    </body>
+
+                                  </body>
+                                </body>
+
+                              </body>
+                            </body>
+                          </body>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+
+              </body>
+            </body>
+
+          </body>
+        </body>
+      </body>
+
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="fl_swerve_housing" body2="fl_steer_body"/>
+    <exclude body1="fl_swerve_housing" body2="fl_wheel"/>
+    <exclude body1="fl_steer_body"     body2="fl_wheel"/>
+    <exclude body1="mabel_chassis"     body2="fl_steer_body"/>
+    <exclude body1="mabel_chassis"     body2="fl_wheel"/>
+
+    <exclude body1="fr_swerve_housing" body2="fr_steer_body"/>
+    <exclude body1="fr_swerve_housing" body2="fr_wheel"/>
+    <exclude body1="fr_steer_body"     body2="fr_wheel"/>
+    <exclude body1="mabel_chassis"     body2="fr_steer_body"/>
+    <exclude body1="mabel_chassis"     body2="fr_wheel"/>
+
+    <exclude body1="b_swerve_housing"  body2="b_steer_body"/>
+    <exclude body1="b_swerve_housing"  body2="b_wheel"/>
+    <exclude body1="b_steer_body"      body2="b_wheel"/>
+    <exclude body1="mabel_chassis"     body2="b_steer_body"/>
+    <exclude body1="mabel_chassis"     body2="b_wheel"/>
+
+    <exclude body1="lift_base" body2="lift_mid"/>
+    <exclude body1="lift_base" body2="lift_top"/>
+    <exclude body1="lift_mid"  body2="lift_top"/>
+    <exclude body1="mabel_chassis" body2="lift_base"/>
+    <exclude body1="mabel_chassis" body2="lift_mid"/>
+    <exclude body1="mabel_chassis" body2="lift_top"/>
+    <exclude body1="body_mount" body2="torso"/>
+    <exclude body1="torso"      body2="lift_top"/>
+    <exclude body1="torso"      body2="lift_mid"/>
+
+    <exclude body1="torso"      body2="head_mount"/>
+    <exclude body1="head_mount" body2="neck_1"/>
+    <exclude body1="neck_1"     body2="neck_2"/>
+    <exclude body1="neck_2"     body2="head"/>
+
+    <exclude body1="torso" body2="l_arm_mount"/>
+    <exclude body1="torso" body2="l_shoulder_1"/>
+    <exclude body1="l_arm_mount"  body2="l_shoulder_1"/>
+    <exclude body1="l_shoulder_1" body2="l_shoulder_2"/>
+    <exclude body1="l_shoulder_2" body2="l_shoulder_3"/>
+    <exclude body1="l_shoulder_3" body2="l_elbow"/>
+    <exclude body1="l_elbow"      body2="l_forearm"/>
+    <exclude body1="l_forearm"    body2="l_wrist"/>
+    <exclude body1="l_wrist"      body2="l_hand_mount"/>
+
+    <exclude body1="left_tower"     body2="left_palm"/>
+    <exclude body1="left_palm"      body2="left_thumb_mp"/>
+    <exclude body1="left_thumb_mp"  body2="left_thumb_pp"/>
+    <exclude body1="left_thumb_pp"  body2="left_thumb_ip"/>
+    <exclude body1="left_thumb_ip"  body2="left_thumb_dp"/>
+    <exclude body1="left_palm"      body2="left_thumb_pp"/>
+    <exclude body1="left_palm"      body2="left_index_mp"/>
+    <exclude body1="left_index_mp"  body2="left_index_pp"/>
+    <exclude body1="left_index_pp"  body2="left_index_ip"/>
+    <exclude body1="left_palm"      body2="left_middle_mp"/>
+    <exclude body1="left_middle_mp" body2="left_middle_pp"/>
+    <exclude body1="left_middle_pp" body2="left_middle_ip"/>
+    <exclude body1="left_palm"      body2="left_ring_mp"/>
+    <exclude body1="left_ring_mp"   body2="left_ring_pp"/>
+    <exclude body1="left_ring_pp"   body2="left_ring_ip"/>
+    <exclude body1="left_palm"      body2="left_pinky_mp"/>
+    <exclude body1="left_pinky_mp"  body2="left_pinky_pp"/>
+    <exclude body1="left_pinky_pp"  body2="left_pinky_ip"/>
+
+    <exclude body1="torso" body2="r_arm_mount"/>
+    <exclude body1="torso" body2="r_shoulder_1"/>
+    <exclude body1="r_arm_mount"  body2="r_shoulder_1"/>
+    <exclude body1="r_shoulder_1" body2="r_shoulder_2"/>
+    <exclude body1="r_shoulder_2" body2="r_shoulder_3"/>
+    <exclude body1="r_shoulder_3" body2="r_elbow"/>
+    <exclude body1="r_elbow"      body2="r_forearm"/>
+    <exclude body1="r_forearm"    body2="r_wrist"/>
+    <exclude body1="r_wrist"      body2="r_hand_mount"/>
+
+    <exclude body1="right_tower"     body2="right_palm"/>
+    <exclude body1="right_palm"      body2="right_thumb_mp"/>
+    <exclude body1="right_thumb_mp"  body2="right_thumb_pp"/>
+    <exclude body1="right_thumb_pp"  body2="right_thumb_ip"/>
+    <exclude body1="right_thumb_ip"  body2="right_thumb_dp"/>
+    <exclude body1="right_palm"      body2="right_thumb_pp"/>
+    <exclude body1="right_palm"      body2="right_index_mp"/>
+    <exclude body1="right_index_mp"  body2="right_index_pp"/>
+    <exclude body1="right_index_pp"  body2="right_index_ip"/>
+    <exclude body1="right_palm"      body2="right_middle_mp"/>
+    <exclude body1="right_middle_mp" body2="right_middle_pp"/>
+    <exclude body1="right_middle_pp" body2="right_middle_ip"/>
+    <exclude body1="right_palm"      body2="right_ring_mp"/>
+    <exclude body1="right_ring_mp"   body2="right_ring_pp"/>
+    <exclude body1="right_ring_pp"   body2="right_ring_ip"/>
+    <exclude body1="right_palm"      body2="right_pinky_mp"/>
+    <exclude body1="right_pinky_mp"  body2="right_pinky_pp"/>
+    <exclude body1="right_pinky_pp"  body2="right_pinky_ip"/>
+  </contact>
+
+  <equality>
+    <joint name="Sync Lift" joint1="Lift Upper" joint2="Lift Lower" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <tendon>
+    <fixed name="Total Lift">
+      <joint joint="Lift Lower" coef="1"/>
+      <joint joint="Lift Upper" coef="1"/>
+    </fixed>
+  </tendon>
+
+  <keyframe>
+    <!-- HOME: the model's default state. qpos is omitted, so it defaults to qpos0 —
+         which now assembles the lift at mid-travel (0.3175 m of the 0.635 m stroke).
+         ctrl CANNOT be omitted for the lift: mj_resetData zeroes every ctrl, and the
+         Lift position servo (kp 10000) then drags the stages back to the bottom within
+         ~0.5 s, so the half-raised default would only survive until the first step.
+         Every other actuator stays at 0 (unchanged behaviour); only slot 6 (Lift)
+         is seeded. Runtimes that reset via mj_resetDataKeyframe(m, d, 0) — e.g.
+         simulation_bridge/engine.py, boot + _intake() — come up half-raised and hold.
+         QUIRK: the LiDAR ring's <replicate count="360"> also replicates keyframes, so
+         this single <key> compiles to 361 IDENTICAL copies (home000..home360). Only
+         key 0 is ever used; the copies cost ~0.55 MB and change nothing. -->
+    <key name="home" ctrl="0 0 0 0 0 0 0.31750 0 0 0 0 0
+                          0 0 0 0 0 0 0 0 0 0 0 0
+                          0 0 0 0 0 0 0 0 0 0 0 0
+                          0 0 0 0 0 0 0 0 0 0 0 0
+                          0 0 0 0 0 0 0 0 0 0 0"/>
+  </keyframe>
+
+  <actuator>
+    <!-- 3in REV MAXSwerve (REV-21-3005). Drive = NEO (5676 rpm, 2.6 Nm stall)
+         @ 4.71:1 high-speed ratio, 3in wheel -> wheel free speed ~126 rad/s
+         (~4.8 m/s), stall ~11 Nm. Steer = NEO 550 (11000 rpm, 0.97 Nm stall)
+         @ 46.42:1 -> azimuth free speed ~25 rad/s, stall ~32 Nm. Steer kv is
+         low for snappy, low-latency reorientation (agile strafing).
+         Steer joints are continuous (limited="false"); the controller must be
+         too, else shortest-path steering accumulates past +/-2pi and saturates. -->
+    <position name="FL Steer" joint="FL Steer" kp="350" kv="12" forcerange="-32 32" ctrllimited="false"/>
+    <velocity name="FL Drive" joint="FL Drive" kv="2" forcerange="-11 11" ctrlrange="-126 126" ctrllimited="true"/>
+    <position name="FR Steer" joint="FR Steer" kp="350" kv="12" forcerange="-32 32" ctrllimited="false"/>
+    <velocity name="FR Drive" joint="FR Drive" kv="2" forcerange="-11 11" ctrlrange="-126 126" ctrllimited="true"/>
+    <position name="B Steer"  joint="B Steer"  kp="350" kv="12" forcerange="-32 32" ctrllimited="false"/>
+    <velocity name="B Drive"  joint="B Drive"  kv="2" forcerange="-11 11" ctrlrange="-126 126" ctrllimited="true"/>
+    <!-- LIFT SERVO STIFFNESS. The real lift is a WORM-GEAR drive: non-backdrivable, it
+         holds its height with the motor unpowered (see SAFE_HOME_LIFT in
+         controller/mabel/config.py). kp=10000 modelled it as a soft spring instead, which
+         sagged 2.83 cm under the ~40 kg upper body. That was invisible while the default
+         pose sat at the BOTTOM, because the joints' range limit (qpos >= 0) is a hard
+         constraint doing the holding; parking the default at mid-travel exposed it — the
+         column also deflected under an arm reach, costing the wrist IK ~5 mm of tracking
+         (control_lab test_wrist_ik_tracks_without_oscillation went 24 -> 31 mm).
+         kp=80000/kv=3000 measures 0.35 cm droop and is stable at the 2 ms timestep.
+         Droop vs kp, settled in mabel_home.xml: 10k -> 2.83 cm, 30k -> 0.94 cm,
+         80k -> 0.35 cm, 200k -> 0.14 cm. -->
+    <position name="Lift" tendon="Total Lift" kp="80000" kv="3000" ctrlrange="0 0.635" ctrllimited="true" forcerange="-5000 5000"/>
+    <!-- Torso = DAMIAO DM-J10422P-2EC: 100 Nm rated / 400 Nm peak (forcerange = peak). -->
+    <position name="Torso" joint="Torso" kp="5000" kv="100" ctrlrange="-1.0472 0.2618" ctrllimited="true" forcerange="-400 400"/>
+
+    <position name="Neck Yaw"   joint="Neck Yaw"   kp="50" kv="5" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-10 10"/>
+    <position name="Neck Pitch" joint="Neck Pitch" kp="50" kv="5" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-10 10"/>
+    <position name="Neck Roll"  joint="Neck Roll"  kp="50" kv="5" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-10 10"/>
+
+    <!-- ARM SERVOS: kp 500 / kv 45. This is NOT a fresh tuning — it is the
+         value simulation/mabel_mujoco/models/right_arm.xml has always used on
+         these same joints with these same force limits; the full model's old
+         100/20 was the outlier of the two, and it was the single largest source
+         of teleop lag. Operator report 2026-07-28: "the teleop whole body
+         re-targeting is way too slow".
+
+         PER-JOINT, 2026-08-23 (controller/experiments/exp_pd_tuning.py). One
+         gain for fourteen joints could not be right for any of them: the
+         reflected inertia spans 0.053 to 0.52 kg m^2 and the actuators span
+         7 to 40 N.m, so kp=500 kv=45 gave damping ratios of 1.39 (Arm 2) to
+         3.83 (Arm 6) — every joint OVERDAMPED, the distal ones by ~4x, which is
+         not ringing but SLOWNESS. And because tracking lag is kd/kp and nothing
+         else, one gain pair gave one uniform 90 ms lag regardless of inertia.
+
+         Each joint now gets kp = M_j w_n^2, kd = 2 zeta M_j w_n at a shared
+         w_n = 60 rad/s (9.5 Hz), zeta = 1.00, chosen by sweep (P2). M_j is the
+         MEDIAN reflected inertia over the joint's own range. Measured:
+
+                          shipped 500/45      per-joint w60 z1.0
+           tracking lag      89.5 ms              32.1 ms
+           rise (10-90%)    190   ms              66   ms
+           settle (2%)      364   ms             120   ms
+           overshoot          0.0 %               2.3 %
+           steady-state       1.0 mrad            1.9 mrad   (stiction 0.5/kp)
+           torque on 2 mrad  16.3 % of F_lim     10.3 % of F_lim
+           command jitter
+
+         The last row is the "not too stiff" check, and it goes the right way:
+         normalised by each joint's OWN actuator, the tuned set is quieter than
+         the uniform one, because the uniform kp=500 was 14 % of full scale on a
+         7 N.m wrist and 2.5 % on the 40 N.m shoulder. forcerange is the
+         HARDWARE limit and is unchanged.
+
+         THE TWO ORCA "<Side> Wrist" SERVOS ARE DELIBERATELY LEFT ALONE. They
+         have no explicit gains (kp=1, kv=0 — MuJoCo's bare defaults; the
+         hand_base class that sets kp=2.0 does not reach them), which looks like
+         an oversight and was very nearly "fixed" here. It is load-bearing:
+         stiffening this joint breaks external-contact force estimation. The palm
+         hangs off it, so its compliance is what makes a push observable in the
+         arm's joint torques —
+         test_dynamic_models.py::test_whole_body_base_wrench_and_contacts pushes
+         the palm with 15 N and the estimated direction degrades from correct at
+         kp=1 to cos 0.17-0.22 at ANY stiffening, kp=2.0 included. Raising it is
+         a coupled decision about the admittance/contact features, not a free
+         correction; exp_pd_tuning.py (wrists option) derives the values if wanted. -->
+    <position name="Left Arm 1" joint="Left Arm 1" kp="1204.6" kv="40.15" ctrlrange="-3.491 1.396" ctrllimited="true" forcerange="-40 40"/>
+    <position name="Left Arm 2" joint="Left Arm 2" kp="1880.1" kv="62.67" ctrlrange="-0.175 3.316" ctrllimited="true" forcerange="-40 40"/>
+    <position name="Left Arm 3" joint="Left Arm 3" kp="760.0" kv="25.33" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-27 27"/>
+    <position name="Left Arm 4" joint="Left Arm 4" kp="939.8" kv="31.33" ctrlrange="-0.943 1.542"  ctrllimited="true" forcerange="-27 27"/>
+    <position name="Left Arm 5" joint="Left Arm 5" kp="269.1" kv="8.97" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-7 7"/>
+    <position name="Left Arm 6" joint="Left Arm 6" kp="248.8" kv="8.29" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-7 7"/>
+    <position name="Left Arm 7" joint="Left Arm 7" kp="314.5" kv="10.48" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-7 7"/>
+
+    <position name="Left Wrist"       joint="Left Wrist"      ctrlrange="-0.8972 0.6736"/>
+    <position name="Left Thumb MCP"  joint="Left Thumb MCP"  ctrlrange="-0.87266 0.87266"/>
+    <position name="Left Thumb Abd"  joint="Left Thumb Abd"  ctrlrange="-1.08211 0.0"/>
+    <position name="Left Thumb PIP"  joint="Left Thumb PIP"  ctrlrange="-0.7944 1.23"/>
+    <position name="Left Thumb DIP"  joint="Left Thumb DIP"  ctrlrange="-0.85384 1.45"/>
+    <position name="Left Index Abd"  joint="Left Index Abd"  ctrlrange="-1.04577 0.24577"/>
+    <position name="Left Index MCP"  joint="Left Index MCP"  ctrlrange="-0.34907 1.65806"/>
+    <position name="Left Index PIP"  joint="Left Index PIP"  ctrlrange="-0.34907 1.88496"/>
+    <position name="Left Middle Abd" joint="Left Middle Abd" ctrlrange="-0.64577 0.64577"/>
+    <position name="Left Middle MCP" joint="Left Middle MCP" ctrlrange="-0.34907 1.58825"/>
+    <position name="Left Middle PIP" joint="Left Middle PIP" ctrlrange="-0.34907 1.8675"/>
+    <position name="Left Ring Abd"   joint="Left Ring Abd"   ctrlrange="-0.47577 0.80577"/>
+    <position name="Left Ring MCP"   joint="Left Ring MCP"   ctrlrange="-0.34907 1.58825"/>
+    <position name="Left Ring PIP"   joint="Left Ring PIP"   ctrlrange="-0.34907 1.8675"/>
+    <position name="Left Pinky Abd"  joint="Left Pinky Abd"  ctrlrange="-0.12244 1.1691"/>
+    <position name="Left Pinky MCP"  joint="Left Pinky MCP"  ctrlrange="-0.34907 1.71042"/>
+    <position name="Left Pinky PIP"  joint="Left Pinky PIP"  ctrlrange="-0.34907 1.88496"/>
+
+    <position name="Right Arm 1" joint="Right Arm 1" kp="1204.6" kv="40.15" ctrlrange="-1.396 3.491" ctrllimited="true" forcerange="-40 40"/>
+    <position name="Right Arm 2" joint="Right Arm 2" kp="1880.1" kv="62.67" ctrlrange="-3.316 0.175" ctrllimited="true" forcerange="-40 40"/>
+    <position name="Right Arm 3" joint="Right Arm 3" kp="760.0" kv="25.33" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-27 27"/>
+    <position name="Right Arm 4" joint="Right Arm 4" kp="939.8" kv="31.33" ctrlrange="-1.670 0.773"  ctrllimited="true" forcerange="-27 27"/>
+    <position name="Right Arm 5" joint="Right Arm 5" kp="269.1" kv="8.97" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-7 7"/>
+    <position name="Right Arm 6" joint="Right Arm 6" kp="248.8" kv="8.29" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-7 7"/>
+    <position name="Right Arm 7" joint="Right Arm 7" kp="314.5" kv="10.48" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-7 7"/>
+
+    <position name="Right Wrist"       joint="Right Wrist"      ctrlrange="-0.6736 0.8972"/>
+    <position name="Right Thumb MCP"  joint="Right Thumb MCP"  ctrlrange="-0.87266 0.87266"/>
+    <position name="Right Thumb Abd"  joint="Right Thumb Abd"  ctrlrange="-1.08211 0.0"/>
+    <position name="Right Thumb PIP"  joint="Right Thumb PIP"  ctrlrange="-0.7944 1.23"/>
+    <position name="Right Thumb DIP"  joint="Right Thumb DIP"  ctrlrange="-0.85384 1.45"/>
+    <position name="Right Index Abd"  joint="Right Index Abd"  ctrlrange="-1.04577 0.24577"/>
+    <position name="Right Index MCP"  joint="Right Index MCP"  ctrlrange="-0.34907 1.65806"/>
+    <position name="Right Index PIP"  joint="Right Index PIP"  ctrlrange="-0.34907 1.88496"/>
+    <position name="Right Middle Abd" joint="Right Middle Abd" ctrlrange="-0.64577 0.64577"/>
+    <position name="Right Middle MCP" joint="Right Middle MCP" ctrlrange="-0.34907 1.58825"/>
+    <position name="Right Middle PIP" joint="Right Middle PIP" ctrlrange="-0.34907 1.8675"/>
+    <position name="Right Ring Abd"   joint="Right Ring Abd"   ctrlrange="-0.47577 0.80577"/>
+    <position name="Right Ring MCP"   joint="Right Ring MCP"   ctrlrange="-0.34907 1.58825"/>
+    <position name="Right Ring PIP"   joint="Right Ring PIP"   ctrlrange="-0.34907 1.8675"/>
+    <position name="Right Pinky Abd"  joint="Right Pinky Abd"  ctrlrange="-0.12244 1.1691"/>
+    <position name="Right Pinky MCP"  joint="Right Pinky MCP"  ctrlrange="-0.34907 1.71042"/>
+    <position name="Right Pinky PIP"  joint="Right Pinky PIP"  ctrlrange="-0.34907 1.88496"/>
+  </actuator>
+
+  <sensor>
+    <jointpos name="FL Steer Pos" joint="FL Steer"/>
+    <jointpos name="FR Steer Pos" joint="FR Steer"/>
+    <jointpos name="B Steer Pos"  joint="B Steer"/>
+    <jointvel name="FL Drive Vel" joint="FL Drive"/>
+    <jointvel name="FR Drive Vel" joint="FR Drive"/>
+    <jointvel name="B Drive Vel"  joint="B Drive"/>
+    <jointpos name="Torso Pos"    joint="Torso"/>
+
+    <!-- 360 deg planar LiDAR: auto-replicated into lidar_range0 .. lidar_range359 (one per ray site). -->
+    <rangefinder name="lidar_range" site="lidar_ray" cutoff="12"/>
+
+    <!-- Front D435i IMU (BMI055), read by mujoco_node -> sensor_msgs/Imu on
+         /camera/front/imu. accelerometer = specific force INCLUDING the gravity
+         reaction (reads +9.81 along the site up-axis at rest, like a real IMU);
+         gyro = body angular rate; framequat = site orientation in world. All in
+         the front_imu (optical) frame. Simulated noise/bias is added in the node. -->
+    <accelerometer name="front_imu_acc"  site="front_imu"/>
+    <gyro          name="front_imu_gyro" site="front_imu"/>
+    <framequat     name="front_imu_quat" objtype="site" objname="front_imu"/>
+  </sensor>
+
+</mujoco>

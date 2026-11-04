@@ -1,0 +1,1448 @@
+/* Control-Center-specific styles layered over the shared studio.css design
+   system (same tokens: --accent, --glass, --mono, vp-chip / seg / gbtn). */
+
+/* CC grid: the telemetry band (camera strip + joint state) spans ONLY the
+   center column — the network rail and status dock run full height beside it */
+.studio.cc{ grid-template-rows:50px 1fr 6px var(--plots-h) 6px var(--tl-h);
+  grid-template-areas:
+    "top     top  top    top  top"
+    "browser bs   center ds   dock"
+    "browser bs   ps     ds   dock"
+    "browser bs   plots  ds   dock"
+    "tls     tls  tls    tls  tls"
+    "timeline timeline timeline timeline timeline"; }
+
+/* ── top bar: [brand] · [ROBOT BEHAVIOUR center] · [mapping + tools right] ── */
+.safety-cluster{ display:flex; gap:10px; align-items:center; }
+/* Stiff|Soft rides with E-STOP + Torque: all three answer "will the robot move,
+   and how hard" — the visionOS mode-line grouping, minus a second row. */
+.tb-seg{ background:rgba(20,18,16,.65); border:1px solid var(--glass-bd);
+  border-radius:999px; }
+.tb-seg button{ font-size:10px; }
+
+/* ── SLAM menu (top right): live mapping · saved rooms · reset ─────────────
+   The saved rooms come from the GATEWAY's store, the same one iOS + Vision Pro
+   read — see js/slammenu.js. */
+.slam-wrap{ position:relative; }
+.slam-btn{ display:inline-flex; align-items:center; gap:7px; }
+.slam-btn .slam-dot{ width:7px; height:7px; border-radius:50%;
+  background:var(--ash-dim); flex:none; }
+.slam-btn.on .slam-dot{ background:#4dff8a; box-shadow:0 0 7px rgba(77,255,138,.7);
+  animation:slamPulse 2s infinite; }
+.slam-btn.warn .slam-dot{ background:var(--warn); animation:none; }
+@keyframes slamPulse{ 50%{ opacity:.45; } }
+.slam-btn .slam-state{ font-size:9px; letter-spacing:.06em; color:var(--ash);
+  max-width:88px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.slam-btn.on{ color:var(--ink); border-color:var(--glass-bd); background:var(--glass); }
+.slam-btn.warn{ color:var(--warn); border-color:rgba(233,166,121,.4); }
+/* the menu now hangs on the LEFT side of the bar, so it opens flush-left under
+   its button (was right:0 when SLAM lived in .topright) */
+.slam-menu{ position:absolute; left:0; top:calc(100% + 8px); z-index:400;
+  width:250px; max-height:70vh; overflow:auto; padding:5px;
+  background:rgba(20,18,16,.97); border:1px solid var(--glass-bd);
+  border-radius:12px; box-shadow:0 18px 40px -10px rgba(0,0,0,.7);
+  backdrop-filter:blur(14px) saturate(1.4); }
+.slam-menu.hidden{ display:none; }
+.rf-sec{ font-family:var(--mono); font-size:8.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ash-dim); padding:8px 7px 4px; }
+.rf-sec:first-child{ padding-top:5px; }
+.rf-empty{ font-family:var(--mono); font-size:10px; color:var(--ash-dim);
+  padding:5px 9px 7px; }
+.slam-menu .vp-mi{ position:relative; padding-right:26px; }
+.slam-menu .vp-mi.on .vmi-dot{ background:var(--accent-soft);
+  border-color:var(--accent-soft); }
+.rf-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rf-meta{ margin-left:auto; font-size:8.5px; color:var(--ash-dim); flex:none; }
+/* delete sits INSIDE the row's padding-right gutter, so it never overlaps the
+   name however long the name is */
+.rf-del{ position:absolute; right:4px; top:50%; transform:translateY(-50%);
+  width:19px; height:19px; border:0; border-radius:5px; background:transparent;
+  color:var(--ash-dim); font-size:13px; line-height:1; cursor:pointer; }
+.rf-del:hover{ background:rgba(210,59,42,.22); color:#fff; }
+.rf-act{ font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; }
+.rf-danger:hover{ background:rgba(210,59,42,.22); color:#fff; }
+.rf-live .vmi-dot{ border-color:#4dff8a; }
+.slam-menu .vp-mi.on.rf-live .vmi-dot{ background:#4dff8a; border-color:#4dff8a; }
+/* ── THE POWER BUTTON: Torque ON ⇄ E-STOP (one button, two faces) ──────────
+   Limp (default): amber "⚡ Torque ON" — press to energise + reveal controls.
+   Energised (.armed): red "■ E-STOP" — press to stop + fold the controls away.
+   The colour flip IS the state read-out: amber = safe to approach, red = live. */
+.gbtn.power.big{ font-size:12px; padding:9px 22px; border-radius:999px;
+  font-weight:600; letter-spacing:.08em;
+  background:var(--accent); border-color:var(--accent); color:#fff;
+  box-shadow:0 6px 18px -6px rgba(194,91,42,.5); }
+.gbtn.power.big:hover{ filter:brightness(1.12); }
+.gbtn.power.big.armed{ background:var(--danger); border-color:var(--danger);
+  box-shadow:0 6px 18px -6px rgba(210,59,42,.6); animation:estopPulse 1.4s infinite; }
+@keyframes estopPulse{ 50%{ filter:brightness(1.28);} }
+.gbtn.power.big.loading{ opacity:.7; pointer-events:none; }
+.tb-sep{ width:1px; height:18px; background:var(--hairline); margin:0 4px; }
+.topright{ display:flex; align-items:center; gap:8px; }
+.conn-label{ font-size:10px; color:var(--ash); letter-spacing:.08em; }
+.conn.ok{ color:var(--live); }
+.gbtn.rec{ background:var(--danger); color:#fff; border-color:var(--danger); }
+/* generic .on chip highlight (record etc.) */
+.gbtn.on{ color:var(--accent-soft); border-color:var(--accent-soft);
+  background:rgba(194,91,42,.14); }
+.rec-task{ font-family:var(--mono); font-size:10px; color:var(--ash);
+  cursor:pointer; padding:4px 8px; border-radius:999px; border:1px dashed var(--glass-bd); }
+.rec-task:hover{ color:var(--ink); }
+
+/* ── viewport top-center: the ONE control decision, and nothing else ────────
+   Everything that used to crowd this line has moved to where it belongs:
+   Stiff|Soft → the top bar (it is a property of the robot, like torque);
+   the layer chips → the left rail; Nav + SLAM → a tap on the floor and the
+   top-bar SLAM menu. What is left is Drive·Task·Joint and the POV. */
+.vp-teleop{ position:absolute; top:10px; left:50%; transform:translateX(-50%);
+  display:flex; gap:8px; align-items:center; z-index:30; white-space:nowrap; }
+/* TASK space only: the webcam-teleop start + how far down the chain IK reaches.
+   Both are inert in Drive and Joint, so neither appears there. */
+.vp-manip{ position:absolute; top:52px; left:50%; transform:translateX(-50%);
+  display:flex; gap:8px; align-items:center; z-index:30; }
+.vp-manip.hidden{ display:none; }
+.vp-manip-lab{ font-size:8.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ash); }
+.tp-start{ font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; padding:7px 14px; border-radius:999px;
+  background:var(--accent); color:#fff; border:1px solid var(--accent);
+  cursor:pointer; box-shadow:var(--sh); white-space:nowrap; }
+.tp-start.on{ background:var(--danger); border-color:var(--danger); }
+.tp-seg{ background:rgba(20,18,16,.65); backdrop-filter:blur(12px) saturate(1.5);
+  border:1px solid var(--glass-bd); border-radius:999px; }
+.tp-seg button{ font-size:10px; }
+
+/* ── THE VIEWER RAIL: one compact column down the LEFT edge (js/viewrail.js) ─
+   Camera verbs on top, scene layers below. Sub-options expand RIGHTWARD into a
+   flyout, so the rail itself never reflows and the top of the view stays for
+   the control decision. Same glass family as the module rail on the opposite
+   edge — the two read as bookends, not as two different design systems. */
+/* WRAPS INTO A SECOND COLUMN rather than scrolling. Fifteen entries need
+   ~500px of column; the 3-D view is only ~350–450px tall once the telemetry
+   bands and the timeline take their share, so a single column overflowed — and
+   because a scrollbar here would be hidden chrome over the robot, the overflow
+   was SILENT: five layers simply could not be reached. `column wrap` spends
+   width (which the view has) instead of height (which it does not), and it
+   grows in the same direction the flyouts already open. */
+.vp-rail{ position:absolute; left:10px; top:10px; z-index:29;
+  display:flex; flex-flow:column wrap; align-content:flex-start;
+  gap:2px; padding:4px; border-radius:14px; background:rgba(20,18,16,.72);
+  border:1px solid var(--glass-bd); backdrop-filter:blur(14px) saturate(1.4);
+  box-shadow:var(--sh); max-height:calc(100% - 20px); }
+/* the separator spans its own column only — a wrapped rail must not draw a rule
+   across the gap between columns */
+.rail-sep{ height:1px; margin:3px 5px; background:var(--glass-bd); flex:none;
+  width:28px; }
+.rail-btn{ position:relative; width:38px; height:30px; flex:none; display:grid;
+  place-items:center; border:0; border-radius:9px; background:transparent;
+  color:var(--ink-soft); cursor:pointer;
+  transition:background .16s var(--ease), color .16s var(--ease); }
+.rail-btn svg{ width:17px; height:17px; }
+.rail-btn:hover{ background:rgba(242,238,230,.09); color:var(--ink); }
+.rail-btn.on{ background:var(--accent); color:#fff; }
+.rail-btn.open{ background:rgba(242,238,230,.14); color:var(--ink); }
+/* AUDIO controls: dimmed + no-pointer when the link carries no robot audio
+   (no direct voice link, or a rig with no sound card) — honest, not fake. */
+.rail-btn:disabled{ opacity:.32; cursor:not-allowed; }
+.rail-btn:disabled:hover{ background:none; color:inherit; }
+/* Push-to-talk pressed / mic hot: a red pulse, so a held mic is never ambiguous. */
+.rail-btn[data-id="speak"].on{ background:#c0392b; color:#fff; }
+.rail-btn[data-id="speak"].on{ animation:ptt-pulse 1s ease-in-out infinite; }
+@keyframes ptt-pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(192,57,43,.55); }
+                      50%{ box-shadow:0 0 0 4px rgba(192,57,43,0); } }
+/* the caret is a SECOND hit zone inside the button (sub-options vs. the layer
+   itself) — it needs its own generous target, not a 6px triangle */
+.rail-caret{ position:absolute; right:1px; top:50%; width:9px; height:26px;
+  transform:translateY(-50%); border-radius:0 8px 8px 0; }
+.rail-caret::after{ content:''; position:absolute; right:2px; top:50%;
+  width:0; height:0; margin-top:-2.5px;
+  border:3px solid transparent; border-left-color:currentColor; opacity:.55; }
+.rail-btn:hover .rail-caret::after{ opacity:1; }
+.rail-caret:hover{ background:rgba(242,238,230,.14); }
+/* the NAME arrives on hover, floating clear of the rail — twelve words down the
+   left edge would shout over the robot (same trick as .mod-lab) */
+.rail-lab{ position:absolute; left:calc(100% + 8px); top:50%;
+  transform:translateY(-50%); padding:4px 8px; border-radius:7px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.06em;
+  text-transform:uppercase; white-space:nowrap; color:var(--ink);
+  background:rgba(20,18,16,.95); border:1px solid var(--glass-bd);
+  opacity:0; pointer-events:none; transition:opacity .12s var(--ease);
+  z-index:2; }
+.rail-btn:hover .rail-lab{ opacity:1; }
+.rail-btn.open .rail-lab, .vp-rail:hover .rail-btn.open .rail-lab{ opacity:0; }
+
+/* the flyout: sub-options, opening to the RIGHT of their button */
+.rail-flyout{ position:fixed; z-index:400; width:212px; max-height:64vh;
+  overflow:auto; padding:5px; border-radius:12px;
+  background:rgba(20,18,16,.97); border:1px solid var(--glass-bd);
+  box-shadow:0 18px 40px -10px rgba(0,0,0,.7);
+  backdrop-filter:blur(14px) saturate(1.4); }
+.rf-head{ font-family:var(--mono); font-size:9px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ash); padding:5px 7px 6px; }
+.vp-caret{ margin-left:6px; opacity:.65; padding:2px 3px; border-radius:4px; }
+.vp-caret:hover{ opacity:1; background:rgba(242,238,230,.12); }
+.vp-mslider{ display:flex; align-items:center; gap:7px; padding:7px 9px;
+  font-family:var(--mono); font-size:10px; color:var(--ash);
+  border-top:1px solid var(--hairline); }
+.vp-mslider input{ flex:1; accent-color:var(--accent); min-width:70px; }
+.vp-mslider b{ width:42px; text-align:right; color:var(--ink-soft); }
+/* .vp-camctl: keep studio.css's top-right column (curation-studio layout) */
+.vp-camctl{ top:48px; }
+.vp-camctl .cc-size{ width:84px; accent-color:var(--accent); }
+
+/* ── nav goal: the consequence of a floor tap, bottom-center ────────────────
+   There is no "Nav" arm button any more — clicking the floor places the goal
+   (viewport3d tap-vs-drag), and THIS appears to dispatch or discard it. It sits
+   above the joystick row so it can never sit under a thumb. */
+/* `bottom` clears the keyboard hint (bottom:8px), which is also centred — the
+   two would otherwise print on top of each other the moment a goal is placed */
+.vp-goalbar{ position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+  display:flex; gap:6px; align-items:center; z-index:27;
+  padding:5px 6px 5px 12px; border-radius:999px;
+  background:rgba(20,18,16,.72); border:1px solid var(--glass-bd);
+  backdrop-filter:blur(12px) saturate(1.5); box-shadow:var(--sh); }
+.vp-goalbar.hidden{ display:none; }
+.gb-where{ font-size:10px; color:var(--ash); letter-spacing:.06em;
+  font-variant-numeric:tabular-nums; }
+
+/* ── TASK-SPACE PLAN BAR (MoveIt-style): sits just above the goal bar's slot,
+   same glass pill. Execute is the green GO; ✕ cancels. ─────────────────────── */
+.vp-planbar{ position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+  display:flex; gap:6px; align-items:center; z-index:27;
+  padding:5px 6px 5px 12px; border-radius:999px;
+  background:rgba(20,18,16,.78); border:1px solid rgba(77,255,138,.4);
+  backdrop-filter:blur(12px) saturate(1.5); box-shadow:var(--sh); }
+.vp-planbar.hidden{ display:none; }
+.pb-tag{ font-size:8.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:#4dff8a; }
+.pb-where{ font-size:10px; color:var(--ash); letter-spacing:.06em;
+  font-variant-numeric:tabular-nums; }
+.vp-chip.go{ color:#0d0c0b; background:#4dff8a; border-color:#4dff8a;
+  font-weight:600; animation:goPulse 1.4s infinite; }
+@keyframes goPulse{ 50%{ filter:brightness(1.25);} }
+.vp-chip.stopnav{ color:#fff; background:var(--danger); border-color:var(--danger);
+  font-weight:600; animation:none; }
+.vp-chip.goal{ color:#4dff8a; border-color:rgba(77,255,138,.4); }
+/* busy state: spinner ring so a relaunch never reads as frozen */
+.vp-chip.loading, .gbtn.loading{ pointer-events:none; opacity:.85; }
+.vp-chip.loading::after, .gbtn.loading::after{ content:''; display:inline-block;
+  width:9px; height:9px; margin-left:7px; vertical-align:-1px; border-radius:50%;
+  border:1.5px solid rgba(77,255,138,.35); border-top-color:#4dff8a;
+  animation:chipSpin .7s linear infinite; }
+@keyframes chipSpin{ to{ transform:rotate(360deg); } }
+
+/* ── THE MANIPULATE SURFACE: module rail + the focused module's panel ───────
+   The rail says WHAT you are working on (L Arm · R Arm · Neck · L Hand ·
+   R Hand · Lift · Torso — the iOS ModuleFocus list); the panel beside it says
+   HOW. A hand is a module like any other: there is no separate hand dock. */
+/* The module rail sits on the RIGHT edge, opposite the viewer rail: the left
+   column is "what do I SEE", the right column is "what am I WORKING ON". They
+   used to share the left edge (both at left:10px), so selecting a manipulate
+   space dropped the module rail straight on top of the layer controls. Mirrors
+   visionOS, where the layers ornament is leading and the module panel trailing. */
+.mod-rail{ position:absolute; right:10px; top:52px; z-index:28;
+  display:flex; flex-direction:column; gap:3px; padding:4px;
+  border-radius:14px; background:rgba(20,18,16,.72);
+  border:1px solid var(--glass-bd); backdrop-filter:blur(14px) saturate(1.4);
+  box-shadow:var(--sh); }
+.mod-rail.hidden{ display:none; }
+.mod-chip{ position:relative; width:42px; height:36px; display:grid;
+  place-items:center; border:0; border-radius:10px; background:transparent;
+  color:var(--ink-soft); cursor:pointer;
+  transition:background .16s ease, color .16s ease; }
+.mod-chip svg{ width:19px; height:19px; }
+.mod-chip:hover{ background:rgba(242,238,230,.09); color:var(--ink); }
+.mod-chip.on{ background:var(--accent); color:#fff; }
+.mod-side{ position:absolute; top:3px; right:5px; font-family:var(--mono);
+  font-style:normal; font-size:7.5px; font-weight:700; opacity:.75; }
+/* the module's NAME arrives on hover, floating clear of the rail — the rail
+   never reflows, and seven words never shout over the robot. The rail now hangs
+   on the RIGHT edge, so the label opens LEFT (it would sit off-screen otherwise). */
+.mod-lab{ position:absolute; right:calc(100% + 8px); top:50%;
+  transform:translateY(-50%); padding:4px 8px; border-radius:7px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.08em;
+  white-space:nowrap; color:var(--ink); background:rgba(20,18,16,.94);
+  border:1px solid var(--glass-bd); box-shadow:var(--sh);
+  opacity:0; pointer-events:none; transition:opacity .14s ease; }
+.mod-chip:hover .mod-lab{ opacity:1; }
+
+/* …and the panel opens leftward from the rail, for the same reason. `bottom`
+   clears the joystick row; `top` clears the Task-space row above it. */
+.mod-panel{ position:absolute; right:64px; top:52px; bottom:56px; width:256px;
+  z-index:27; display:flex; flex-direction:column; overflow:hidden;
+  border-radius:14px; background:rgba(20,18,16,.72);
+  border:1px solid var(--glass-bd); backdrop-filter:blur(14px) saturate(1.4);
+  box-shadow:var(--sh); }
+.mod-panel.hidden{ display:none; }
+.mp-head{ display:flex; align-items:baseline; gap:8px; flex:0 0 auto;
+  padding:9px 11px 7px; border-bottom:1px solid var(--hairline); }
+.mp-title{ font-size:9.5px; letter-spacing:.16em; color:var(--accent-soft); }
+.mp-hint{ margin-left:auto; font-size:8px; letter-spacing:.06em; color:var(--ash); }
+.mp-body{ flex:1; min-height:0; overflow-y:auto; padding:7px 11px 10px; }
+.mp-row{ display:flex; align-items:center; gap:7px; padding:3px 0;
+  position:relative; }
+.mp-lab{ font-family:var(--mono); font-size:9px; color:var(--ink-soft);
+  width:84px; flex:none; white-space:nowrap; overflow:hidden;
+  text-overflow:ellipsis; }
+.mp-row input[type=range]{ flex:1; min-width:0; accent-color:var(--accent);
+  height:12px; }
+.mp-val{ width:52px; flex:none; font-size:8.5px; color:var(--ash);
+  text-align:right; font-variant-numeric:tabular-nums; }
+/* the MEASURED angle, riding on the slider track: the slider is the target, this
+   is where the joint actually is — so a joint that lags, fights or is limp SHOWS */
+.mp-cur{ position:absolute; top:3px; width:2px; height:12px; background:var(--live);
+  opacity:0; pointer-events:none; transition:opacity .12s; }
+/* a target the operator owns reads "target ▸ measured" */
+.mp-row[data-touched] .mp-lab{ color:var(--ink); }
+.mp-note{ margin-top:9px; font-size:9px; line-height:1.5; color:var(--ash); }
+
+/* the HAND module: the ORCA dexterity controls, compacted into the panel */
+.mp-hand .dex{ height:auto; }
+.mp-hand .dex-row{ gap:6px; padding:2px 0; }
+.mp-hand .dex-lab{ width:62px; font-size:8.5px; letter-spacing:.04em;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mp-hand .dex-row input[type=range]{ height:12px; min-width:0; }
+.mp-hand .dex-val{ width:44px; font-size:8px; font-variant-numeric:tabular-nums; }
+.mp-hand .dex-poses{ display:flex; flex-wrap:wrap; gap:3px; margin:3px 0; }
+.mp-hand .dex-poses .gbtn{ font-size:8px; padding:3px 6px; letter-spacing:.02em; }
+.mp-hand .dex-sec{ margin:9px 2px 3px; }
+
+/* ── first-person view ── */
+.fpv{ position:absolute; inset:0; z-index:20; background:transparent; }
+.fpv-img{ background:#000; }
+/* cover (not contain): footage fills the frame with no bars, and the 3D view
+   behind can match it EXACTLY during the crossfade (same center crop) */
+.fpv-img{ width:100%; height:100%; object-fit:cover; }
+.fpv-tag{ position:absolute; top:10px; right:12px; font-size:10px;
+  letter-spacing:.14em; color:var(--accent-soft); text-transform:uppercase; }
+/* PiP: shrink the live 3D canvas into the TOP-RIGHT corner above the fpv
+   image, clear of the joysticks (bottom corners) and the nav bar (bottom
+   center); the camera-control column hides while the PiP occupies its spot */
+.viewport3d.pip-3d > canvas{ position:absolute; right:12px; top:48px;
+  left:auto; bottom:auto; width:240px !important; height:170px !important;
+  z-index:26; border:1px solid var(--glass-bd-2); border-radius:var(--r-md);
+  background:rgba(13,12,11,.85); }
+.viewport3d.pip-3d .vp-camctl{ display:none; }
+
+/* ── virtual joysticks ──────────────────────────────────────────────────────
+   THE STICKS SIT INBOARD OF THE RAILS, BY ARITHMETIC — never under them.
+   `--rail-w` is published by js/viewrail.js from the rail's real rendered width
+   (it grows a column on short views); `--mod-w` is the module rail on the
+   opposite edge. Hard-coding these offsets is what put the rail on top of the
+   left stick: the rail's width is not a constant, so neither is the clearance.
+   The wrist up/down buttons follow their stick INBOARD for the same reason —
+   they used to flank it from the outside, which is where the rails now live. */
+.viewport3d{ --rail-w:46px; --mod-w:50px; --stick-w:120px; }
+.stick{ position:absolute; bottom:26px; width:var(--stick-w); height:var(--stick-w);
+  z-index:28;
+  border-radius:50%; border:1px solid var(--glass-bd-2);
+  background:radial-gradient(circle at 50% 40%, rgba(242,238,230,.08), rgba(20,18,16,.5));
+  backdrop-filter:blur(10px); touch-action:none; }
+.stick.left{ left:calc(var(--rail-w) + 14px); }
+.stick.right{ right:calc(var(--mod-w) + 14px); }
+.stick-knob{ position:absolute; left:50%; top:50%; width:44px; height:44px;
+  margin:-22px 0 0 -22px; border-radius:50%; background:var(--accent);
+  opacity:.85; box-shadow:var(--sh); pointer-events:none; }
+.stick-tag{ position:absolute; bottom:-18px; width:100%; text-align:center;
+  font-family:var(--mono); font-size:8.5px; letter-spacing:.14em; color:var(--ash); }
+/* per-arm height hold-buttons flanking the sticks (manipulate mode) */
+.stick-ud{ position:absolute; bottom:36px; display:flex; flex-direction:column;
+  gap:8px; z-index:28; }
+.stick-ud.left{ left:calc(var(--rail-w) + 14px + var(--stick-w) + 6px); }
+.stick-ud.right{ right:calc(var(--mod-w) + 14px + var(--stick-w) + 6px); }
+.stick-ud button{ width:34px; height:42px; border-radius:10px;
+  background:rgba(20,18,16,.6); border:1px solid var(--glass-bd);
+  color:var(--ink-soft); font-size:13px; backdrop-filter:blur(10px);
+  cursor:pointer; touch-action:none; }
+.stick-ud button:active{ background:var(--accent); color:#fff;
+  border-color:var(--accent); }
+.kbd-hint{ position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+  font-size:9px; color:var(--ash-dim); z-index:24; letter-spacing:.08em;
+  white-space:normal;   /* MUST wrap, or max-width cannot bind */
+  /* keep to the corridor BETWEEN the joysticks and wrap rather than run
+     under a thumb — the hint is long ('WASD drive · QE turn · RF lift ·
+     click the floor to set a nav goal') and reached both sticks on a
+     932 px viewer */
+  max-width:calc(100% - 40px); text-align:center; line-height:1.5; }
+/* The corridor is what the joysticks LEAVE, and they sit beyond the rail and
+   module gutters — not flush to the edge. Deriving it from --stick-w alone was
+   ~28 px too generous and the hint clipped both thumbs. Use the same variables
+   the sticks are positioned with, so the two can never disagree. */
+.viewport3d.sticks-live .kbd-hint{
+  max-width:calc(100% - var(--rail-w) - var(--mod-w)
+                 - 2*var(--stick-w) - 72px); }
+
+/* ── left networking rail ── */
+.np-sec{ font-family:var(--mono); text-transform:uppercase; letter-spacing:.16em;
+  font-size:9.5px; color:var(--ash); padding:12px 14px 5px; }
+.np-row{ display:flex; align-items:center; gap:7px; padding:3px 14px;
+  font-size:11.5px; color:var(--ink-soft); }
+.np-row span{ flex:1; color:var(--ash); }
+.np-row b{ font-weight:500; }
+.np-dot{ width:7px; height:7px; border-radius:50%; background:var(--ash-dim); flex:none; }
+.np-dot.up{ background:var(--live); box-shadow:0 0 6px rgba(63,181,107,.7); }
+.np-dot.down{ background:var(--danger); }
+.np-empty{ padding:4px 14px; font-size:11px; color:var(--ash-dim); font-style:italic; }
+.np-offline{ margin:8px 12px 10px; padding:10px 12px; border-radius:10px;
+  background:rgba(210,59,42,.14); border:1px solid rgba(210,59,42,.5);
+  color:var(--danger); font-family:var(--mono); font-size:11px; font-weight:600;
+  letter-spacing:.04em; display:flex; flex-direction:column; gap:5px; }
+.np-offline span{ color:var(--ink-soft); font-weight:400; letter-spacing:0;
+  font-family:var(--font); font-size:11px; line-height:1.4; }
+.np-client{ margin:5px 10px; padding:7px 9px; border-radius:var(--r-sm);
+  background:var(--glass); border:1px solid var(--hairline); }
+.np-client.driver{ border-color:rgba(194,91,42,.5); }
+.np-cl-head{ display:flex; gap:6px; align-items:center; font-size:11.5px; }
+.np-cl-sub{ font-size:10px; color:var(--ash); margin-top:2px; }
+.np-ic{ font-size:12px; }
+.np-badge{ font-family:var(--mono); font-size:8px; padding:1px 6px;
+  border-radius:999px; background:var(--accent); color:#fff; letter-spacing:.1em; }
+.np-chip{ font-family:var(--mono); font-size:8.5px; padding:1px 7px;
+  border-radius:999px; border:1px solid var(--glass-bd); color:var(--ash);
+  margin-left:auto; }
+.np-chip.t-lan{ color:#3ecf8e; border-color:rgba(62,207,142,.4); }
+.np-chip.t-ts{ color:#bf8af2; border-color:rgba(191,138,242,.4); }
+.np-chip.t-inet{ color:#e7c24b; border-color:rgba(231,194,75,.4); }
+
+/* ── right status dock ── */
+.st-row{ display:flex; justify-content:space-between; padding:4px 14px;
+  font-size:11.5px; color:var(--ash); border-bottom:1px solid var(--hairline); }
+.st-row b{ color:var(--ink-soft); font-weight:500; }
+.st-row b.ok{ color:var(--live); }
+.st-row b.warn{ color:var(--warn); }
+.st-row b.bad{ color:var(--danger); }
+.st-task .st-row{ border-bottom:none; }
+/* hardware roster: a status dot before the connected/offline word so the panel
+   reads at a glance (green = up, red = down) */
+.st-row.hw b{ display:inline-flex; align-items:center; gap:6px; font-size:10.5px;
+  letter-spacing:.02em; text-transform:none; }
+.st-row.hw .hw-dot{ width:7px; height:7px; border-radius:50%; flex:none;
+  background:currentColor; box-shadow:0 0 6px currentColor; }
+
+/* ── compact status dock (iOS StatusDetailPanel parity) ──────────────────────
+   The panel used to be ~25 full-width label/value rows — three screens of
+   scrolling for four numbers anybody actually watches. Now: a KPI strip, a
+   wrapped chip roster for hardware, and 2-up pair grids. Same information,
+   about a third of the height. */
+.st-kpis{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px;
+  background:var(--hairline); border-bottom:1px solid var(--hairline); }
+.st-kpi{ background:var(--panel,var(--glass)); padding:7px 12px 6px;
+  display:flex; flex-direction:column; gap:1px; min-width:0; }
+.st-kpi b{ font-family:var(--mono); font-size:15px; font-weight:600; line-height:1.05;
+  color:var(--ink-soft); letter-spacing:-.01em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.st-kpi b u{ font-size:9.5px; text-decoration:none; color:var(--ash); margin-left:1px; }
+.st-kpi span{ font-family:var(--mono); font-size:8.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ash-dim); }
+.st-kpi.ok b{ color:var(--live); }
+.st-kpi.warn b{ color:var(--warn); }
+.st-kpi.bad b{ color:var(--danger); }
+
+/* hardware roster as wrapped chips: 10 subsystems in ~3 lines, not 10 rows */
+.st-chips{ display:flex; flex-wrap:wrap; gap:4px; padding:5px 12px 7px; }
+.st-chip{ display:inline-flex; align-items:center; gap:5px; font-size:10px;
+  color:var(--ink-soft); background:var(--glass); border:1px solid var(--hairline);
+  border-radius:999px; padding:2.5px 8px; white-space:nowrap; }
+.st-chip i{ width:6px; height:6px; border-radius:50%; flex:none;
+  background:currentColor; box-shadow:0 0 5px currentColor; }
+.st-chip.ok i{ color:var(--live); }
+.st-chip.bad i{ color:var(--danger); }
+/* amber = "no report yet", NOT "broken" — the two send you to different fixes */
+.st-chip.wait i{ color:var(--warn); box-shadow:none; opacity:.75; }
+
+/* 2-up label/value pairs */
+.st-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px; background:var(--hairline); border-bottom:1px solid var(--hairline); }
+.st-pair{ background:var(--panel,var(--glass)); padding:4px 12px 5px;
+  display:flex; flex-direction:column; gap:0; min-width:0; }
+.st-pair span{ font-family:var(--mono); font-size:8.5px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ash-dim); }
+.st-pair b{ font-size:11.5px; font-weight:500; color:var(--ink-soft);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.st-pair b.ok{ color:var(--live); }
+.st-pair b.warn{ color:var(--warn); }
+.st-pair b.bad{ color:var(--danger); }
+/* an odd trailing pair spans both columns rather than leaving a hole */
+.st-grid > .st-pair:last-child:nth-child(odd){ grid-column:1 / -1; }
+
+/* ── joint band extras ── */
+.temp-legend i{ display:inline-block; width:8px; height:8px; border-radius:2px;
+  margin-right:4px; vertical-align:-1px; }
+.temp-legend .t-ok{ background:#3ecf8e; } .temp-legend .t-warn{ background:#E7C24B; }
+.temp-legend .t-hot{ background:#D9463A; }
+/* ── RIGHT-DOCK TELEMETRY: joint state + trends (moved off the bottom band) ──
+   Collapsible sections in the Status pane; click a header to show/hide. The
+   dock is narrow, so the 59 joint bars are tight — drag the dock splitter wider
+   for more room. */
+.dock-telemetry.dock-pane{ padding:0; border-top:1px solid var(--hairline);
+  flex-direction:column; }
+.dock-telemetry.dock-pane.on{ display:flex; }   /* base .dock-pane stays display:none */
+.dt-sec{ display:flex; flex-direction:column; border-bottom:1px solid var(--hairline); }
+.dt-head{ display:flex; align-items:center; gap:8px; padding:8px 10px;
+  cursor:pointer; user-select:none; }
+.dt-head:hover{ background:rgba(242,238,230,.04); }
+.dt-caret{ font-size:9px; color:var(--ash); transition:transform .15s var(--ease);
+  width:10px; flex:none; }
+.dt-sec.collapsed .dt-caret{ transform:rotate(-90deg); }
+.dt-title{ font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ash); white-space:nowrap; }
+.dt-mode{ margin-left:auto; flex:none; }
+.dt-mode button{ font-size:9px; }
+.dt-body{ display:flex; flex-direction:column; padding:0 8px 8px; }
+.dt-sec.collapsed .dt-body{ display:none; }
+.dt-legend{ display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:2px 2px 6px; }
+.dt-legend .plots-legend{ font-size:9px; }
+.dt-legend .plots-hint{ margin-left:auto; }
+#jointCanvas{ width:100%; height:200px; display:block; cursor:crosshair; }
+.dt-sec#trendsSec .dt-body{ padding-bottom:8px; }
+/* `flex:0 0 auto` is LOAD-BEARING, not tidying. `.hist-band` carries
+   `flex:1 1 0` for its row-cell role in the bottom band; inside `.dt-body`
+   (a column flex box with no definite height) that flex-basis:0 beat the
+   `height` outright, so the band computed to 0px, the canvas stayed at its
+   300×150 default and draw() bailed on `H < 16`. The graph was therefore blank
+   in the dock NO MATTER WHAT the data did — a second, independent cause of
+   "trends show nothing" on top of the timestamp bug in history.js. Measure the
+   canvas box, never trust `display` — the band reported `display:flex` and
+   `clientHeight:0` at the same time. */
+.dock-telemetry .hist-band{ height:210px; flex:0 0 auto; }
+/* the trends toolbar wraps in the narrow dock instead of overflowing */
+.dock-telemetry .hb-bar{ flex-wrap:wrap; gap:6px 10px; padding:6px 2px; }
+.dock-telemetry .hb-legend{ display:none; }
+
+/* ── The dock must ALWAYS show the joint trace AND the live pose ──────────────
+   The three blocks (status rows, Joint State, Trends) summed to ~900px in a
+   ~700px dock, so Trends fell below the fold and the operator had to scroll to
+   the one graph they watch continuously. Now: the status rows keep their
+   natural height, and the two telemetry sections SHARE whatever is left —
+   `flex:1 1 0` + `min-height:0` so they shrink rather than overflow. A
+   collapsed section costs only its header, so collapsing one genuinely gives
+   its space to the other. */
+/* The dock is a fixed-height column, so its children must SHARE that height —
+   otherwise they stack at their natural sizes and the last one falls off the
+   bottom. That is exactly what hid the TRENDS graph: status(362) + joints(292)
+   + trends(248) = 902 px inside a 696 px dock, and the operator reported the
+   trends as "not working" when they were rendering perfectly, off-screen.
+   `.dock-body` must therefore claim the leftover height and be allowed to
+   shrink (`min-height:0` defeats the flex auto-minimum). */
+/* the dock is a CONTAINER: its panes size against the dock's own width, not the
+   window's — the splitter can make it narrow on a wide screen and vice versa */
+.dock{ container-type:inline-size; container-name:dock; }
+.dock-body{ display:flex; flex-direction:column; flex:1 1 auto;
+  min-height:0; overflow:hidden; }
+/* The status rows YIELD: they scroll internally and never squeeze the graphs
+   out. Capped so a long hardware roster cannot eat the dock either. */
+.dock-pane#statusPane{ flex:0 1 auto; min-height:0; max-height:46%;
+  overflow-y:auto; overscroll-behavior:contain; }
+/* joints + trends are the point of the dock: they get the remaining height
+   and a floor, so both are ALWAYS visible rather than pushed below. */
+.dock-telemetry.dock-pane.on{ flex:1 1 0; min-height:240px; overflow:hidden; }
+.dock-telemetry .dt-sec{ flex:1 1 0; min-height:0; }
+.dock-telemetry .dt-sec.collapsed{ flex:0 0 auto; }
+.dock-telemetry .dt-body{ flex:1 1 auto; min-height:0; overflow:hidden; }
+/* the two canvases fill their section instead of holding a fixed height */
+.dock-telemetry #jointCanvas{ flex:1 1 auto; min-height:60px; height:auto; }
+.dock-telemetry .hist-band{ flex:1 1 auto; min-height:80px; height:auto; }
+
+/* the pos/vel/torque toggle must survive a narrow dock: it is the control that
+   says WHICH quantity the bars mean, so a dock too thin for the title must drop
+   the TITLE, never the toggle */
+.dt-head{ flex-wrap:nowrap; gap:6px; min-width:0; }
+.dt-head .dt-title{ min-width:0; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; }
+.dt-head .dt-mode{ flex:0 0 auto; margin-left:auto; }
+/* ── the dock header degrades instead of clipping ────────────────────────────
+   The pos/vel/torque seg is the only control in the telemetry header, and the
+   operator NEEDS it. Sitting it beside the title works at a wide dock and fails
+   at a narrow one: it wrapped under the title and then ran past the dock's right
+   edge entirely (measured clipped at --dock-w:170px), which reads as "the
+   pos/vel/torque toggle is hidden". So: the head may wrap, the title may
+   ellipsize, and when the seg DOES wrap it takes a full row of three equal
+   buttons — always reachable, never clipped, and a bigger tap target than it
+   had before. */
+.dock-telemetry .dt-head{ flex-wrap:wrap; row-gap:4px; min-width:0; }
+.dock-telemetry .dt-head .dt-title{ min-width:0; flex:1 1 auto;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dock-telemetry .dt-mode{ flex:1 1 100%; margin-left:0; min-width:0;
+  display:flex; }
+.dock-telemetry .dt-mode button{ flex:1 1 0; min-width:0; padding:0 4px;
+  text-align:center; }
+/* wide enough for one line: keep the seg beside the title, hugging the right */
+@container dock (min-width: 300px){
+  .dock-telemetry .dt-mode{ flex:0 0 auto; margin-left:auto; }
+}
+
+@media (max-width:1400px){ .dock-telemetry .dt-head .dt-title{ font-size:9px; } }
+
+/* chips scroll on one line here — wrapping them eats the plot in a 254px dock */
+.dock-telemetry .hb-chips{ flex-wrap:nowrap; overflow-x:auto; padding:0 2px 5px;
+  scrollbar-width:none; }
+.dock-telemetry .hb-chips::-webkit-scrollbar{ display:none; }
+
+/* ── BOTTOM band: cameras only ─────────────────────────────────────────── */
+.studio.cc{ --plots-h:138px; }
+.plots.plots-cams{ overflow:hidden; }
+.cam-strip{ display:flex; gap:8px; height:124px; padding:6px 10px 2px;
+  justify-content:center; }
+/* tiles keep the stream's true aspect: 16:9 boxes, letterboxed content */
+.cam-strip .cam-tile.strip{ flex:0 1 auto; aspect-ratio:16/9; height:116px;
+  cursor:default; background:#000; }
+.cam-strip .cam-tile.strip img{ object-fit:contain; }
+.cam-dchip{ position:absolute; top:5px; right:5px; font-family:var(--mono);
+  font-size:9px; padding:2px 7px; border-radius:999px; background:rgba(20,18,16,.7);
+  border:1px solid var(--glass-bd); color:var(--ash); cursor:pointer; }
+.cam-dchip.on{ color:var(--bg); background:var(--accent-soft); border-color:var(--accent-soft); }
+.cam-dchip:disabled{ opacity:.35; cursor:not-allowed; }
+
+/* ── dexterity window ── */
+.dex{ display:flex; flex-direction:column; height:100%; }
+.dex-head{ display:flex; gap:8px; padding:8px; border-bottom:1px solid var(--hairline); }
+.dex-body{ flex:1; overflow-y:auto; padding:8px 10px; }
+.dex-row{ display:flex; gap:8px; align-items:center; padding:3px 0; position:relative; }
+.dex-lab{ font-family:var(--mono); font-size:9.5px; color:var(--ash);
+  width:78px; flex:none; text-transform:uppercase; letter-spacing:.06em; }
+.dex-row input[type=range]{ flex:1; accent-color:var(--accent); height:14px; }
+.dex-val{ width:36px; font-size:10px; color:var(--ink-soft); text-align:right; }
+.dex-cur{ position:absolute; top:2px; width:2px; height:12px;
+  background:var(--live); opacity:0; pointer-events:none; }
+.dex-poses{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:10px 0; }
+.dex-poses .gbtn{ text-align:center; }
+.dex-cam{ width:100%; margin-top:4px; }
+.dex-video{ width:100%; border-radius:var(--r-sm); margin-top:8px;
+  transform:scaleX(-1); }
+
+/* ── setpoint timeline ── */
+.sp-lane{ position:relative; height:44px; margin-top:4px;
+  background:var(--glass); border-radius:var(--r-sm);
+  border:1px solid var(--hairline); }
+.sp-key{ position:absolute; top:10px; font-size:15px; color:var(--accent-soft);
+  cursor:grab; user-select:none; line-height:1; }
+.sp-key.sel{ color:#fff; text-shadow:0 0 8px var(--accent); }
+#tlPlayBtn{ color:var(--live); }
+
+/* ── add-window types ── */
+.win-bar{ display:flex; gap:10px; align-items:center; padding:7px 9px;
+  border-bottom:1px solid var(--hairline); flex-wrap:wrap; }
+.win-bar .cc-lbl{ display:flex; align-items:center; gap:6px;
+  font-family:var(--mono); font-size:9px; color:var(--ash);
+  text-transform:uppercase; letter-spacing:.08em; }
+.win-bar input[type=range]{ width:90px; accent-color:var(--accent); }
+.win-cam{ position:relative; height:calc(100% - 40px); background:#000; }
+.win-cam img{ width:100%; height:100%; object-fit:contain; display:block; }
+.win-tftree{ overflow-y:auto; font-size:11px; padding:6px 0; }
+.tft-row{ display:flex; justify-content:space-between; gap:10px; padding:2px 10px 2px 0;
+  color:var(--ash); border-left:1px solid transparent; }
+.tft-row.joint{ color:var(--accent-soft); }
+.tft-name{ white-space:nowrap; }
+.tft-pos{ font-size:9.5px; color:var(--ash-dim); }
+.win-grid2d{ position:relative; }
+.win-grid2d canvas{ width:100%; height:100%; display:block; }
+.win-jhist canvas{ display:block; }
+/* ── telemetry bands: SIDE BY SIDE (Joints | Trends), not stacked ──────────
+   A persistent slim bar carries the three toggle chips (so a hidden band's
+   restore chip never vanishes with it), then a flex row holds the two bands:
+   each is flex:1, so one alone fills the width and both split it 50/50. */
+.bands-bar{ display:flex; align-items:center; padding:3px 12px; flex:none;
+  border-top:1px solid var(--hairline); }
+.band-toggles{ margin-left:auto; display:flex; gap:6px; flex:none; }
+.bands-row{ flex:1 1 auto; min-height:0; display:flex; }
+.band{ flex:1 1 0; min-width:0; display:flex; flex-direction:column;
+  overflow:hidden; }
+.joint-band canvas{ flex:1; width:100%; min-height:0; display:block;
+  cursor:crosshair; }
+/* a hairline between the two cells whenever both are present */
+.joint-band + .hist-band{ border-left:1px solid var(--hairline); }
+
+/* ── TRENDS: the rolling joint-history graph (js/histband.js), now a row cell */
+.hist-band{ flex:1 1 0; min-width:0; display:flex; flex-direction:column;
+  overflow:hidden; }
+.hb-bar{ display:flex; align-items:center; gap:10px; padding:5px 12px; flex:none; }
+.hb-title{ font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ash); }
+.hb-ch button{ font-size:9.5px; }
+/* module chips: multi-select, and the chip's dot IS the curve's colour (--hue
+   is set per chip from names.js MODULE_HUE) */
+.hb-chips{ display:flex; flex-wrap:wrap; gap:4px; padding:0 12px 5px; flex:none; }
+.hb-chips button{ display:inline-flex; align-items:center; gap:5px;
+  font-size:9.5px; font-weight:600; letter-spacing:.02em; color:var(--ink-soft);
+  background:var(--glass); border:1px solid var(--hairline); border-radius:999px;
+  padding:2.5px 8px; cursor:pointer; transition:background .12s, border-color .12s, color .12s; }
+.hb-chips button i{ width:6px; height:6px; border-radius:50%; flex:none;
+  background:var(--hue,#8a8178); opacity:.4; transition:opacity .12s; }
+.hb-chips button.on{ color:var(--ink); background:color-mix(in srgb, var(--hue) 16%, transparent);
+  border-color:color-mix(in srgb, var(--hue) 55%, transparent); }
+.hb-chips button.on i{ opacity:1; }
+.hb-win{ display:flex; align-items:center; gap:6px; font-size:9.5px;
+  color:var(--ash); letter-spacing:.06em; }
+.hb-win input{ width:82px; accent-color:var(--accent); }
+.hb-win b{ color:var(--ink-soft); min-width:30px; }
+.hb-legend{ margin-left:auto; font-size:9.5px; color:var(--ash);
+  display:flex; align-items:center; gap:4px; }
+.hb-legend i{ width:12px; height:2px; display:inline-block; background:var(--accent); }
+.hb-legend i.tgt{ background:transparent;
+  border-top:2px dashed var(--accent-soft); height:0; }
+.hist-band canvas{ flex:1; width:100%; min-height:0; display:block; }
+.vp-chip.warn{ color:var(--warn); border-color:rgba(233,166,121,.4); }
+
+/* camera wall tiles (floating panel) */
+.vw-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:8px; padding:8px; overflow-y:auto; height:100%; }
+.cam-tile{ position:relative; aspect-ratio:16/9; border-radius:var(--r-sm);
+  overflow:hidden; background:#0a0908; border:1px solid var(--hairline);
+  cursor:pointer; }
+.cam-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* H.264/WebCodecs surface (js/camview.js) — layered exactly over the MJPEG <img>
+   it replaces. Only ONE of the two is ever displayed; camview.js does the swap and
+   copies the img's object-fit onto the canvas inline, so the two are visually
+   interchangeable in every context (strip = contain, tile = cover, fpv = cover). */
+canvas.cam-h264{ position:absolute; inset:0; width:100%; height:100%;
+  display:block; background:#000; }
+.cam-tile .cam-tag{ position:absolute; left:7px; bottom:5px; top:auto; right:auto;
+  font-family:var(--mono); font-size:9px; letter-spacing:.1em;
+  color:var(--accent-soft); text-transform:uppercase;
+  /* pill hugs the text exactly — no stretched backdrop */
+  display:inline-block; width:auto; max-width:max-content; white-space:nowrap;
+  background:rgba(0,0,0,.55); padding:2px 6px; border-radius:5px; }
+.cam-tile .cam-missing{ display:none; position:absolute; inset:0;
+  align-items:center; justify-content:center; font-family:var(--mono);
+  font-size:10px; color:var(--ash); background:rgba(13,12,11,.8); }
+.cam-tile.dead .cam-missing{ display:flex; }
+.cam-tile.off{ opacity:.35; }
+.cam-tile.off img, .cam-tile.off canvas.cam-h264{ display:none; }
+
+/* ── ports from the sim control center (shared frontend) ── */
+.gbtn.loading{ opacity:.55; pointer-events:none; position:relative; }
+
+/* ── top bar: E-STOP dead-centered, and NOTHING overlaps ─────────────────────
+   The cluster used to be `position:absolute; left:50%` — pinned out of flow so
+   a widening latency readout could not nudge E-STOP. But out of flow means out
+   of the layout: nothing reserved its space, so the moment the cluster grew
+   (Stiff|Soft) and the right side grew (the SLAM menu), the two silently
+   overlapped and drew on top of each other.
+   `1fr auto 1fr` gets both properties honestly: the side columns are equal by
+   construction, so the auto middle is EXACTLY centred no matter what either
+   side does — and being real columns, they cannot overlap. The side columns
+   clip their own content instead of pushing into the centre. */
+.topbar{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
+  gap:12px; }
+/* LEFT column: brand + SLAM/maps (the operator wants mapping on the left, clear
+   of the power button). It flexes so the two sit side by side without pushing
+   into the centred power cluster. */
+.topleft{ justify-self:start; min-width:0; display:flex; align-items:center;
+  gap:12px; overflow:visible; }
+.brand{ min-width:0; }
+.safety-cluster{ position:static; transform:none; justify-self:center;
+  margin:0; }
+/* NOT `overflow:hidden` — the SLAM dropdown is absolutely positioned BELOW this
+   box, and an overflow ancestor clips it however far down it hangs. Clipping
+   here made the menu open invisibly. The column's width is kept honest by the
+   grid + the capped readout below, not by clipping. */
+.topright{ justify-self:end; min-width:0; }
+/* latency/name readout: tabular digits so it updates in place, and a CAP (not
+   a floor) on its width — a 220px minimum is what shoved the right cluster
+   into the centre in the first place */
+.conn-label{ display:inline-block; max-width:200px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  text-align:right; font-variant-numeric:tabular-nums; }
+
+/* browser MuJoCo viewer window */
+.win-simview{ user-select:none; touch-action:none; }
+.win-simview img{ width:100%; height:100%; object-fit:contain; display:block;
+  background:#151413; }
+
+/* dexterity sections (now rendered INSIDE the module panel — the hand is a
+   module, not a dock; see .mod-panel .dex below) */
+.dex-sec{ font-size:8.5px; letter-spacing:.16em; color:var(--ash);
+  margin:10px 2px 4px; }
+.dex-camrow{ display:flex; gap:8px; }
+.dex-camrow .gbtn{ font-size:10px; }
+.dex-camview{ position:relative; margin-top:8px; border-radius:10px;
+  overflow:hidden; }
+.dex-camview.hidden{ display:none; }
+.dex-camview video, .dex-camview canvas{ width:100%; display:block;
+  transform:scaleX(-1); }             /* selfie mirror, skeleton matches */
+.dex-camview canvas{ position:absolute; inset:0; height:100%; }
+
+/* ── webcam full-body teleop (bodyteleop.js) ───────────────────────────────
+   The teleop cluster becomes a column: row 1 = the two start buttons + segs,
+   row 2 = live region/tracking chips, row 3 = mirrored webcam preview. */
+.vp-teleop{ flex-direction:column; max-width:calc(100% - 24px); }
+.vp-teleop .tp-row{ display:flex; gap:8px; row-gap:6px; align-items:center;
+  white-space:nowrap; flex-wrap:wrap; justify-content:center; }
+.tp-start.kbd{ background:rgba(20,18,16,.65); border-color:var(--glass-bd);
+  color:var(--ink); }
+.tp-start.kbd.on{ background:var(--danger); border-color:var(--danger); color:#fff; }
+.bt-status{ display:flex; gap:6px; margin-top:6px; justify-content:center; }
+.bt-chip{ font-size:9.5px; letter-spacing:.06em; padding:3px 10px;
+  border-radius:999px; background:rgba(20,18,16,.72);
+  border:1px solid var(--glass-bd); color:var(--ash); white-space:nowrap; }
+.bt-chip b{ color:var(--ink); font-weight:600; }
+.bt-chip .ok{ color:#4dff8a; }
+.bt-chip .no{ color:#ff6a5e; }
+.bt-preview{ position:relative; margin-top:6px; width:210px; border-radius:10px;
+  overflow:hidden; border:1px solid var(--glass-bd); box-shadow:var(--sh);
+  background:#000; }
+.bt-preview video, .bt-preview canvas{ display:block; width:100%;
+  transform:scaleX(-1); }                    /* mirrored selfie view */
+.bt-preview canvas{ position:absolute; inset:0; height:100%; }
+.bt-preview .bt-tag{ position:absolute; left:8px; bottom:6px; font-size:8.5px;
+  letter-spacing:.12em; color:rgba(255,255,255,.75); text-shadow:0 1px 2px #000; }
+
+/* ── timeline v2: choreography lanes + action blocks (NLE) ── */
+.tl-lane{ position:relative; height:44px; margin-top:4px;
+  background:var(--glass); border-radius:var(--r-sm);
+  border:1px solid var(--hairline); }
+.tl-lane.lane-nav{ background:rgba(94,176,255,.05); }
+.lane-tag{ position:absolute; left:6px; top:3px; font-size:8.5px;
+  letter-spacing:.12em; color:var(--ash-dim); pointer-events:none;
+  z-index:2; display:flex; gap:4px; align-items:center; }
+.lane-tag .lane-toggle{ pointer-events:auto; background:none; border:none;
+  color:var(--ash); font-size:10px; cursor:pointer; padding:0 2px; }
+.lane-tag.sub{ color:var(--ash-dim); letter-spacing:.08em; }
+
+.clip-block{ position:absolute; top:14px; height:26px; display:flex;
+  align-items:center; gap:5px; padding:0 8px 0 10px; overflow:hidden;
+  background:linear-gradient(180deg, rgba(194,91,42,.32), rgba(194,91,42,.18));
+  border:1px solid rgba(194,91,42,.55); border-radius:6px;
+  font-size:10px; color:var(--ink-soft); cursor:grab; user-select:none;
+  white-space:nowrap; box-sizing:border-box; }
+.clip-block.nav{
+  background:linear-gradient(180deg, rgba(94,176,255,.28), rgba(94,176,255,.14));
+  border-color:rgba(94,176,255,.5); }
+.clip-block.goal{ border-style:dashed; }
+.clip-block.sel{ box-shadow:0 0 0 1.5px var(--accent), 0 0 12px rgba(194,91,42,.45);
+  color:#fff; }
+.clip-block .cb-emoji{ font-size:12px; flex:none; }
+.clip-block .cb-title{ overflow:hidden; text-overflow:ellipsis; }
+.clip-block .cb-dur{ font-size:8.5px; color:var(--ash); flex:none; margin-left:auto; }
+.cb-trim{ position:absolute; top:0; bottom:0; width:7px; cursor:ew-resize; }
+.cb-trim.l{ left:0; border-left:2px solid rgba(255,255,255,.25); border-radius:6px 0 0 6px; }
+.cb-trim.r{ right:0; border-right:2px solid rgba(255,255,255,.25); border-radius:0 6px 6px 0; }
+.clip-block.sel .cb-trim.l, .clip-block.sel .cb-trim.r{ border-color:var(--accent-soft); }
+
+/* module sub-tracks (expanded manipulation lane, read-only) */
+.tl-lane.tl-module{ height:16px; margin-top:2px; background:rgba(242,238,230,.02); }
+.tl-module .lane-tag{ top:2px; }
+.mod-seg{ position:absolute; top:4px; height:8px; border-radius:3px;
+  background:rgba(194,91,42,.4); border:1px solid rgba(194,91,42,.5); }
+.mod-key{ position:absolute; top:3px; width:4px; height:10px; border-radius:2px;
+  background:var(--accent-soft); }
+
+/* location gap markers (navigation lane) */
+.gap-marker{ position:absolute; top:10px; width:18px; height:18px; z-index:3;
+  background:rgba(233,166,121,.18); color:var(--warn, #E9A679);
+  border:1px dashed rgba(233,166,121,.7); border-radius:50%;
+  font-size:10px; line-height:1; cursor:pointer; padding:0;
+  animation:gapPulse 1.6s infinite; }
+@keyframes gapPulse{ 50%{ box-shadow:0 0 10px rgba(233,166,121,.5);} }
+
+/* "+ Action ▾" library menu */
+.action-wrap{ position:relative; }
+.tl-tools .action-btn{ color:var(--accent-soft); border-color:rgba(194,91,42,.5); }
+.action-menu{ position:fixed; z-index:200;
+  width:280px; max-height:46vh; overflow-y:auto; padding:6px;
+  background:rgba(20,18,16,.96); backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid var(--glass-bd); border-radius:var(--r-md, 10px);
+  box-shadow:0 14px 40px -12px rgba(0,0,0,.7); }
+.action-menu.hidden{ display:none; }
+.am-head{ font-family:var(--mono); font-size:8.5px; letter-spacing:.14em;
+  color:var(--ash-dim); padding:8px 8px 4px; text-transform:uppercase; }
+.am-item{ display:flex; align-items:center; gap:8px; padding:6px 8px;
+  border-radius:6px; font-size:11px; color:var(--ink-soft); cursor:pointer; }
+.am-item:hover{ background:rgba(194,91,42,.14); color:#fff; }
+.am-item.soon{ opacity:.42; cursor:not-allowed; }
+.am-item.soon:hover{ background:none; color:var(--ink-soft); }
+.am-emoji{ width:18px; text-align:center; flex:none; }
+.am-title{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.am-dur{ font-size:9px; color:var(--ash); flex:none; }
+.am-soon{ font-family:var(--mono); font-size:8px; letter-spacing:.08em;
+  color:var(--warn, #E9A679); border:1px solid rgba(233,166,121,.4);
+  padding:1px 5px; border-radius:999px; flex:none; }
+.am-mini{ flex:none; font-size:9px; padding:2px 6px; border-radius:5px;
+  background:rgba(242,238,230,.06); border:1px solid var(--hairline);
+  color:var(--ink-soft); cursor:pointer; }
+.am-mini:hover{ border-color:var(--accent-soft); color:#fff; }
+/* the pop-up action menu must float above the 3D viewport */
+.studio.cc .timeline{ position:relative; z-index:45; }
+
+/* network panel: this page's own connection ("Current window") */
+.np-client.self{ border-color:rgba(194,91,42,.55);
+  background:rgba(194,91,42,.08); }
+.np-client.self .np-ic{ filter:none; }
+
+/* ── webcam-operator dock (body teleop) — corner panel, not mid-viewport ── */
+.bt-dock{ position:absolute; left:12px; bottom:12px; z-index:32; width:380px;
+  padding:8px 8px 6px; background:rgba(20,18,16,.85);
+  backdrop-filter:blur(12px) saturate(1.4); border:1px solid var(--glass-bd);
+  border-radius:var(--r-md, 10px); box-shadow:var(--sh); }
+.bt-dock.big{ width:620px; }
+.bt-dock-head{ display:flex; gap:6px; align-items:center; margin-bottom:6px;
+  flex-wrap:wrap; }
+.bt-title{ font-size:9px; letter-spacing:.12em; color:var(--ash); }
+.bt-size{ margin-left:auto; background:none; border:1px solid var(--glass-bd);
+  color:var(--ash); border-radius:6px; font-size:11px; padding:1px 7px;
+  cursor:pointer; }
+.bt-size:hover{ color:var(--ink); border-color:var(--accent-soft); }
+.bt-dock .bt-preview{ width:100%; margin-top:0; }
+
+/* ── timeline: full-height playhead line (NLE), language lane, preview ── */
+.studio.cc .tl-playhead{ top:0; bottom:0; }
+.tl-lane.lane-lang{ height:24px; background:rgba(160,108,213,.05); }
+.lang-derived{ position:absolute; top:4px; height:16px; overflow:hidden;
+  font-size:8.5px; color:var(--ash); padding:1px 6px; white-space:nowrap;
+  text-overflow:ellipsis; border-left:2px solid rgba(160,108,213,.45);
+  background:rgba(160,108,213,.10); border-radius:3px; pointer-events:none; }
+.lang-note{ position:absolute; top:3px; height:18px; overflow:hidden;
+  font-size:9.5px; color:var(--ink-soft); padding:1px 7px; white-space:nowrap;
+  text-overflow:ellipsis; background:rgba(160,108,213,.28);
+  border:1px solid rgba(160,108,213,.6); border-radius:4px; cursor:grab;
+  user-select:none; z-index:2; }
+.lang-note.sel{ box-shadow:0 0 0 1.5px #a06cd5; color:#fff; }
+.tl-tools .tl-execute{ color:#fff; background:var(--accent);
+  border-color:var(--accent); }
+.tl-tools .tl-execute:hover{ filter:brightness(1.15); color:#fff; }
+
+/* 3D viewer: timeline-preview veil + execute fade-back */
+.vp-preview-veil{ position:absolute; left:50%; bottom:44px;
+  transform:translateX(-50%); z-index:34; padding:4px 14px; font-size:9px;
+  letter-spacing:.14em; color:#e8d5f5; background:rgba(90,50,140,.35);
+  border:1px solid rgba(160,108,213,.55); border-radius:999px;
+  backdrop-filter:blur(8px); opacity:0; pointer-events:none; transition:opacity .25s; }
+.vp-preview-veil.on{ opacity:1; }
+.vp-fadeflash{ position:absolute; inset:0; z-index:33; background:#0d0c0b;
+  opacity:0; pointer-events:none; }
+.vp-fadeflash.run{ animation:vpFade .55s ease-out; }
+@keyframes vpFade{ 0%{opacity:0} 25%{opacity:.85} 100%{opacity:0} }
+
+/* ── timeline toolbar v2: grouped, lean (add · edit · view · transport) ── */
+.tl-tools{ gap:4px; }
+.tl-grp{ display:inline-flex; gap:4px; align-items:center; }
+.tl-sep{ width:1px; height:16px; background:var(--hairline); margin:0 8px; }
+.tl-tools .tl-add{ color:var(--accent-soft); border-color:rgba(194,91,42,.35); }
+.tl-tools .tl-add:hover{ background:rgba(194,91,42,.14); color:#fff; }
+.tl-tools .tl-ico{ min-width:30px; padding:6px 8px; text-align:center; }
+
+/* ── skills: rail tabs, library cards, dock roster ── */
+.rail-tabs{ display:flex; gap:2px; align-items:center; }
+.rail-tab{ background:none; border:none; padding:4px 9px; border-radius:7px;
+  color:var(--ash); font-family:var(--mono); font-size:10px; cursor:pointer;
+  letter-spacing:.06em; text-transform:uppercase; }
+.rail-tab.on{ color:var(--ink); background:var(--glass-2, rgba(242,238,230,.07)); }
+.rail-tabs .lib-refresh{ margin-left:auto; }
+.lib-actions{ display:flex; flex-direction:column; gap:6px; padding:10px; }
+.lib-import{ text-align:center; cursor:pointer; }
+.sk-list{ padding-bottom:10px; }
+.sk-card{ display:flex; gap:8px; align-items:center; margin:4px 10px;
+  padding:7px 9px; border-radius:var(--r-sm); border:1px solid var(--hairline);
+  background:var(--glass); cursor:pointer; font-size:11px; color:var(--ink-soft); }
+.sk-card:hover{ border-color:var(--accent-soft); color:#fff; }
+.sk-card.soon{ opacity:.42; cursor:not-allowed; }
+.sk-card.soon:hover{ border-color:var(--hairline); color:var(--ink-soft); }
+.sk-card.mine{ border-color:rgba(160,108,213,.4);
+  background:rgba(160,108,213,.07); }
+.sk-emoji{ flex:none; width:18px; text-align:center; }
+.sk-mid{ flex:1; display:flex; flex-direction:column; gap:1px; min-width:0; }
+.sk-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sk-card.lib .sk-name{ flex:none; }
+.sk-meta{ font-size:8.5px; color:var(--ash); flex:none; }
+.sk-btns{ flex:none; display:flex; gap:3px; }
+.sk-btns button{ background:none; border:1px solid var(--hairline);
+  border-radius:5px; color:var(--ash); font-size:10px; padding:2px 6px;
+  cursor:pointer; }
+.sk-btns button:hover{ color:#fff; border-color:var(--accent-soft); }
+
+/* physics-preview status chip in the timeline toolbar */
+.tl-chip{ font-size:9px; color:#e8d5f5; padding:3px 9px; border-radius:999px;
+  background:rgba(90,50,140,.3); border:1px solid rgba(160,108,213,.5);
+  letter-spacing:.04em; white-space:nowrap; }
+
+/* ══ MOBILE / COMPACT ═══════════════════════════════════════════════════════
+   The studio is a five-column desk (rail · viewer · dock, over bands, over a
+   timeline). On a phone that desk does not shrink — it has to become the ONE
+   thing a phone is for: driving the robot while watching it.
+
+   The rules below are the iOS app's, ported (apps/ios + apps/visionos):
+     · LABELS DROP, HEIGHT DOES NOT — segments go icon-only, never smaller.
+       The apps do this with `title: { isLandscape ? $0.title : "" }`.
+     · PADDING SHRINKS, THE TAP TARGET DOES NOT — everything stays ≥44px, the
+       platform minimum. An inactive chip with no background still needs its
+       hit area: hence explicit min-height, not just padding.
+     · FURNITURE FOLDS — the network rail, the status dock and the timeline are
+       desk tools; they are not how you drive. They fold away and come back at
+       ≥900px, rather than squeezing the viewer to a letterbox.
+     · CLEARANCE IS ARITHMETIC, NOT GUESSWORK — the goal bar sits above the
+       joystick row, and the joysticks scale with the viewport, so a thumb
+       never lands on a control it did not mean to. */
+
+/* Top-bar button words live in `.gb-lab` so a narrow bar can collapse them to
+   their icon without JS re-rendering the label (⌂ Home, and the sim's world
+   cluster). `syncTopButtons` must keep emitting the span when it rewrites a
+   button's innerHTML, or the word stops collapsing. */
+.gb-lab{ display:inline; }
+
+/* ── the top bar SHEDS before it collides ──────────────────────────────────
+   Energising widens the centre cluster (⌂ Home and Stiff|Soft appear beside the
+   power button: 312 px), and the two side groups do not shrink on their own —
+   they carry nowrap buttons. Measured at 1280: left 463 + centre 312 + right
+   565 = 1340 px of content in a 1280 px bar, so the groups overlapped and the
+   centre cluster sat UNDER the session tools. Drop the least load-bearing
+   pieces first; the power button and the world verbs are never among them. */
+@media (max-width:1560px){
+  .rec-task{ display:none; }            /* the task chip: also in the dock */
+  .conn-label{ max-width:120px; }
+}
+@media (max-width:1400px){
+  .topright .gbtn{ padding:8px 10px; font-size:10px; }
+  .addwin-wrap .gbtn .gb-lab, .topright .tb-sep{ display:none; }
+  .conn-label{ display:none; }          /* the dot already carries link state */
+}
+@media (max-width:1320px){
+  .brand .sub{ display:none; }          /* keep the MABEL mark, drop the words */
+}
+
+/* ── tablet: the dock folds first (it is the widest, least-used column) ── */
+@media (max-width: 1180px){
+  .studio.cc{ --dock-w:0px; --browser-w:210px; }
+  .dock, .vsplit[data-split="dock"]{ display:none; }
+  .conn-label{ min-width:0; max-width:120px; }
+  .rec-task{ display:none; }
+}
+
+/* ── phone / narrow: viewer + bands only ─────────────────────────────── */
+@media (max-width: 900px){
+  .studio.cc{
+    --plots-h:150px;
+    grid-template-columns:1fr;
+    grid-template-rows:auto 1fr 6px var(--plots-h);
+    grid-template-areas:
+      "top"
+      "center"
+      "ps"
+      "plots";
+  }
+  .browser, .dock, .timeline,
+  .vsplit[data-split="browser"], .vsplit[data-split="dock"],
+  .hsplit[data-split="timeline"]{ display:none; }
+
+  /* The top bar WRAPS to two lines instead of overflowing: [brand · safety]
+     then [tools]. It must drop back to flex to do that — the desktop rule is a
+     `1fr auto 1fr` grid, whose whole job is holding E-STOP dead-centre against
+     two side clusters, and on a 414px screen those three columns just crush
+     each other (the brand clipped to "MA" and the tools row vanished).
+     Centring is a wide-screen luxury; reachability is not.
+     E-STOP stays on the FIRST line and never wraps out of reach — the apps give
+     it `.layoutPriority(2)` for exactly this reason. */
+  .topbar{ display:flex; flex-wrap:wrap; gap:8px; padding:6px 10px; height:auto;
+    min-height:50px; row-gap:6px; }
+  .topleft{ order:1; justify-self:auto; gap:8px; }
+  .safety-cluster{ position:static; transform:none; order:2;
+    margin-left:auto; gap:6px; justify-self:auto; }
+  .brand .sub{ display:none; }
+  .topright{ order:3; width:100%; justify-content:flex-end; gap:6px;
+    justify-self:auto; overflow:visible; }
+  .gbtn.power.big{ padding:9px 16px; }
+  .tb-sep, .rec-task{ display:none; }
+  /* every top-bar button that can be an icon becomes one — the power button
+     keeps its words, because it is the one you must not mis-tap */
+  .gb-lab{ display:none; }
+  .conn-label{ min-width:0; max-width:none; flex:1; text-align:left;
+    font-size:9px; }
+  .slam-btn .slam-state{ max-width:60px; }
+  .slam-menu{ width:min(250px, calc(100vw - 20px)); }
+
+  /* the rail hugs the edge and loses its hover labels — there is no hover on a
+     touch screen, and a tooltip you cannot dismiss is worse than no tooltip */
+  .vp-rail{ left:6px; top:6px; padding:3px; gap:1px; }
+  .rail-btn{ width:34px; height:34px; }
+  .rail-lab{ display:none; }
+  .rail-flyout{ width:min(212px, calc(100vw - 60px)); }
+  .mod-rail{ right:6px; top:46px; }
+  .mod-panel{ right:56px; top:46px; bottom:170px; width:min(240px, calc(100vw - 74px)); }
+
+  /* the control decision stays centred and reachable; Task's row tucks under */
+  .vp-teleop{ top:6px; }
+  .vp-manip{ top:44px; flex-wrap:wrap; justify-content:center;
+    max-width:calc(100vw - 96px); }
+  .vp-manip-lab{ display:none; }
+
+  /* joysticks: scale with the viewport, clamped both ways (iOS
+     `min(116, max(80, height * 0.28))`) — big enough for a thumb, never so big
+     they collide across the middle of a small screen. The left/right offsets
+     stay the --rail-w / --mod-w arithmetic from the base rule; only the SIZE
+     changes here. */
+  .viewport3d{ --stick-w:clamp(84px, 24vh, 116px); }
+  .stick{ bottom:18px; }
+  .stick-ud button{ width:30px; height:38px; }
+
+  /* the goal bar clears the joysticks by sitting above them, not between */
+  .vp-goalbar{ bottom:calc(var(--stick-w) + 34px); }
+  .kbd-hint{ display:none; }              /* no keyboard to hint about */
+
+  /* bands: the trio must stay tappable, so the header scrolls sideways rather
+     than crushing the chips into each other */
+  .plots-head{ gap:8px; padding:6px 8px; overflow-x:auto;
+    scrollbar-width:none; }
+  .plots-head::-webkit-scrollbar{ display:none; }
+  .plots-legend, .plots-hint{ display:none; }
+  .plots-title{ flex:none; }
+  .band-toggles{ flex:none; }
+  .cam-strip{ height:96px; }
+  .cam-strip .cam-tile.strip{ height:88px; }
+  .hb-legend, .hb-win{ display:none; }
+  /* 50/50 of a phone width is unreadable, so the two bands STACK here instead
+     of splitting — the hairline moves from left to top to match */
+  .bands-row{ flex-direction:column; }
+  .joint-band + .hist-band{ border-left:0; border-top:1px solid var(--hairline); }
+  .band, .hist-band{ flex:1 1 auto; }
+  .bt-dock{ width:min(280px, calc(100vw - 24px)); left:6px; bottom:6px; }
+  .bt-dock.big{ width:min(280px, calc(100vw - 24px)); }
+}
+
+/* ── tap targets: coarse pointers get the platform minimum, everywhere ────
+   Keyed off the POINTER, not the width: a touch laptop needs this at 1400px
+   and a mouse-driven narrow window does not. */
+@media (pointer: coarse){
+  .rail-btn{ width:44px; height:44px; }
+  .rail-caret{ width:12px; height:34px; }
+  .mod-chip{ width:46px; height:44px; }
+  .seg button, .tp-seg button, .tb-seg button{ min-height:38px; padding:0 12px; }
+  .gbtn{ min-height:38px; }
+  .vp-chip{ min-height:34px; }
+  .vp-mi, .rf-act{ min-height:40px; }
+  .rf-del{ width:30px; height:30px; }
+  .dock-tab, .rail-tab{ min-height:40px; }
+  /* an inactive chip has no background — without an explicit hit shape its
+     target collapses to the glyph strokes (the iOS scar comment) */
+  .rail-btn, .mod-chip, .vp-chip{ -webkit-tap-highlight-color:transparent; }
+  .stick, .stick-ud button{ touch-action:none; }
+}
+
+/* ── short viewports (landscape phone) ──────────────────────────────────────
+   The teleop posture. The 3-D view here is only ~180px tall.
+   The rail's own collapse is NOT driven from here — js/viewrail.js measures the
+   view and adds `.compact` itself (RAIL_FULL_MIN_H), because the view can get
+   short while the window does not: open the Trends band and this query would
+   never fire. These rules only style the collapsed state and shrink the
+   furniture around it. */
+@media (max-height: 620px){
+  .studio.cc{ --plots-h:112px; }
+  .cam-strip{ height:74px; }
+  .cam-strip .cam-tile.strip{ height:66px; }
+  .hist-band{ height:96px; }
+  /* collapsed: one column of four, never tall enough to reach the sticks
+     (the .compact class comes from JS — see the note above) */
+  .vp-rail.compact{ flex-wrap:nowrap; }
+  .vp-rail.compact .rail-caret{ display:none; }   /* the whole button opens it */
+  .vp-goalbar{ bottom:calc(var(--stick-w) + 22px); }
+  /* the module rail shrinks too — at 7 chips it otherwise runs past the bottom
+     of a 294px view and into the right stick */
+  .viewport3d{ --mod-w:44px; }
+  .stick-ud button{ width:28px; height:34px; }
+  .mod-rail{ top:46px; gap:1px; padding:3px; }
+  .mod-chip{ width:36px; height:30px; }
+  .mod-chip svg{ width:15px; height:15px; }
+}
+
+/* ═══ SAFETY BLEND transitions (auto pose-jump interpolation) ═════════════ */
+/* hatched violet: reads as "generated connective tissue", not content */
+.clip-block.xfade{
+  background:repeating-linear-gradient(45deg,
+    rgba(160,108,213,.32) 0 6px, rgba(160,108,213,.16) 6px 12px);
+  border-color:rgba(160,108,213,.65); color:#e8d5f5; }
+.clip-block.xfade.sel{ box-shadow:0 0 0 1.5px #a06cd5, 0 0 12px rgba(160,108,213,.5); }
+/* unbridged pose-jump marker (autofix off): red — this WILL snap the robot */
+.gap-marker.pose{ background:rgba(217,70,58,.16); color:#ff8a7a;
+  border-color:rgba(217,70,58,.75); }
+
+/* ═══ COLLAPSIBLE PANELS ═══════════════════════════════════════════════════
+   Each of the three panels (network rail, status dock, timeline) can be folded
+   away to give the 3-D viewer the room, and each leaves its OWN restore stub on
+   the edge it vanished from. That is deliberately not a workspace toolbar: a
+   toolbar is a second place to look, and it goes stale against the panels it
+   claims to describe. Fold it where it lives; unfold it where it went.
+   The grid TEMPLATE is re-declared per state so the viewport genuinely reclaims
+   the space — `visibility:hidden` would leave the column sitting there. */
+.pane-hide{ margin-left:auto; flex:none; background:none; border:0;
+  color:var(--ash); font-size:13px; line-height:1; padding:2px 6px;
+  border-radius:6px; cursor:pointer; transition:.15s var(--ease); }
+.pane-hide:hover{ color:var(--ink); background:rgba(242,238,230,.10); }
+.tl-toolbar .pane-hide{ margin-left:0; margin-right:2px; }
+
+.pane-show{ position:fixed; z-index:60; display:none; align-items:center;
+  justify-content:center; background:rgba(20,18,16,.86); color:var(--ash);
+  border:1px solid var(--glass-bd); cursor:pointer; font-size:12px;
+  line-height:1; padding:0; backdrop-filter:blur(10px);
+  transition:color .15s var(--ease), background .15s var(--ease); }
+.pane-show:hover{ color:var(--ink); background:rgba(40,36,32,.95); }
+.pane-show.left,
+.pane-show.right{ top:50%; width:16px; height:72px; margin-top:-36px; }
+.pane-show.left{ left:0; border-left:0; border-radius:0 8px 8px 0; }
+.pane-show.right{ right:0; border-right:0; border-radius:8px 0 0 8px; }
+.pane-show.tl{ left:50%; bottom:0; width:72px; height:16px; margin-left:-36px;
+  border-bottom:0; border-radius:8px 8px 0 0; }
+.studio.cc.hide-left  ~ .pane-show.left,
+.studio.cc.hide-right ~ .pane-show.right,
+.studio.cc.hide-tl    ~ .pane-show.tl{ display:flex; }
+
+/* collapsed columns */
+.studio.cc.hide-left{ grid-template-columns:0 0 1fr 6px var(--dock-w); }
+.studio.cc.hide-right{ grid-template-columns:var(--browser-w) 6px 1fr 0 0; }
+.studio.cc.hide-left.hide-right{ grid-template-columns:0 0 1fr 0 0; }
+.studio.cc.hide-left .browser,
+.studio.cc.hide-left .vsplit[data-split="browser"]{ display:none; }
+.studio.cc.hide-right .dock,
+.studio.cc.hide-right .vsplit[data-split="dock"]{ display:none; }
+/* collapsed timeline row */
+.studio.cc.hide-tl{ grid-template-rows:50px 1fr 6px var(--plots-h) 0 0; }
+.studio.cc.hide-tl .timeline,
+.studio.cc.hide-tl .hsplit[data-split="timeline"]{ display:none; }
+/* floating windows + toast follow the reclaimed space */
+.studio.cc.hide-tl .fp-workspace{ bottom:12px; }
+.studio.cc.hide-tl ~ .toast{ bottom:34px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SIM-ONLY ADDITIONS
+   Everything ABOVE this line is byte-identical to control_center/web/css/
+   control.css — keep it that way. The two studios are meant to be the same
+   product, so a `diff` of the shared region should stay empty and any UX
+   change lands in BOTH. Only what the simulation genuinely has extra lives
+   below: the SIM badge, the world cluster (Reset · Respawn · Scene), the
+   scene-switch overlay, the episode-save modal, the MuJoCo viewer toolbar,
+   the webcam-teleop loading overlay, and the offline demo badge.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── SIM badge + the world cluster in the top bar ────────────────────────── */
+.sim-badge{ font-family:var(--mono); font-size:9px; letter-spacing:.18em;
+  color:#7fd4a0; border:1px solid rgba(127,212,160,.45); border-radius:4px;
+  padding:2px 6px; margin-left:8px; background:rgba(63,181,107,.12); }
+.sim-cluster{ display:flex; align-items:center; gap:6px; }
+
+.scene-wrap{ position:relative; }
+.scene-wrap #sceneName{ font-weight:600; color:var(--accent-soft);
+  display:inline-block; max-width:88px; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; vertical-align:bottom; }
+/* THE WORLD CLUSTER MUST NOT PUSH INTO THE POWER BUTTON.
+   The top bar is `1fr auto 1fr`, so the left track holds brand + world cluster
+   + SLAM. With full word labels that group ran 607 px wide and crossed into the
+   page-centred safety cluster at 1280 px (measured: left ended at 623, centre
+   began at 570) — and an overlapping cluster does not just look wrong, it eats
+   the clicks aimed at the power button underneath it.
+   So the words go early and the group is allowed to compress: the icons alone
+   are unambiguous next to the scene NAME, which is the only part that carries
+   information. */
+.sim-cluster{ min-width:0; flex-shrink:1; }
+@media (max-width:1600px){
+  .sim-cluster .gb-lab{ display:none; }
+  .sim-cluster .gbtn{ font-size:10px; padding:8px 9px; letter-spacing:.04em; }
+  .scene-wrap #sceneName{ max-width:64px; }
+}
+@media (max-width:1180px){
+  .scene-wrap #sceneName{ max-width:52px; }
+}
+@media (max-width:900px){ .scene-wrap #sceneName{ max-width:52px; } }
+
+.scene-menu{ position:absolute; top:calc(100% + 8px); left:50%;
+  transform:translateX(-50%); z-index:70; width:340px; max-height:66vh;
+  overflow-y:auto; padding:6px; border-radius:12px;
+  background:rgba(20,19,18,.96); border:1px solid var(--line, rgba(255,255,255,.09));
+  box-shadow:0 18px 48px -12px rgba(0,0,0,.7); backdrop-filter:blur(14px); }
+.scene-menu.hidden{ display:none; }
+.scene-note{ font-size:10px; color:var(--ink-soft); padding:8px 10px;
+  border-bottom:1px solid rgba(255,255,255,.07); margin-bottom:4px; }
+.scene-item{ display:flex; gap:10px; align-items:center; width:100%;
+  padding:6px; border:0; border-radius:9px; background:transparent;
+  color:var(--ink); cursor:pointer; text-align:left; }
+.scene-item:hover{ background:rgba(255,255,255,.06); }
+.scene-item.on{ outline:1px solid var(--accent-soft);
+  background:rgba(63,181,107,.08); }
+.scene-thumb{ flex:0 0 96px; height:60px; border-radius:6px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.05); color:var(--ink-soft); font-size:14px; }
+.scene-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.scene-meta{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.scene-meta b{ font-size:12px; font-weight:600; }
+.scene-meta small{ font-size:10px; color:var(--ink-soft); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; }
+.scene-cat{ position:sticky; top:-6px; z-index:2; font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-soft); padding:9px 10px 5px;
+  background:rgba(20,19,18,.97); border-bottom:1px solid rgba(255,255,255,.06);
+  margin:2px -2px 3px; }
+.scene-cat:first-child{ margin-top:0; }
+.scene-live{ display:inline-block; margin-left:6px; padding:1px 5px; border-radius:4px;
+  font-size:8.5px; font-weight:700; letter-spacing:.08em; vertical-align:1px;
+  color:#ffb46b; background:rgba(255,150,60,.14);
+  border:1px solid rgba(255,150,60,.35); animation:scene-live-pulse 2.4s ease-in-out infinite; }
+@keyframes scene-live-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+
+/* ── scene switch: full-screen relaunch overlay with auto-refresh ────────── */
+.switch-back{ position:fixed; inset:0; z-index:120; display:flex;
+  align-items:center; justify-content:center; background:rgba(8,8,10,.82);
+  backdrop-filter:blur(10px); animation:switch-fade .25s ease; }
+@keyframes switch-fade{ from{ opacity:0; } to{ opacity:1; } }
+.switch-card{ width:min(420px,88vw); padding:24px 26px 22px; border-radius:16px;
+  background:linear-gradient(180deg,rgba(30,28,26,.98),rgba(20,19,18,.98));
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.8); text-align:center; }
+.switch-thumb{ width:100%; height:150px; border-radius:11px; overflow:hidden;
+  margin-bottom:18px; background:rgba(255,255,255,.04);
+  display:flex; align-items:center; justify-content:center; }
+.switch-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.switch-card h3{ margin:0 0 4px; font-size:16px; font-weight:650; color:var(--ink); }
+.switch-card h3 b{ color:var(--accent-soft); }
+.switch-stage{ font-size:12px; color:var(--ink-soft); margin:0 0 16px;
+  min-height:16px; }
+.switch-bar{ position:relative; height:6px; border-radius:3px; overflow:hidden;
+  background:rgba(255,255,255,.08); margin-bottom:6px; }
+/* determinate fill: width driven by JS (0→100% across load milestones), with a
+   moving sheen so it always reads as "working" even while a stage waits */
+.switch-bar i{ position:absolute; inset:0 auto 0 0; display:block; height:100%;
+  width:0; border-radius:3px; background:var(--accent-soft);
+  transition:width .35s ease; overflow:hidden; }
+.switch-bar i::after{ content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+  transform:translateX(-100%); animation:switch-sheen 1.3s linear infinite; }
+@keyframes switch-sheen{ to{ transform:translateX(100%); } }
+.switch-pct{ font-size:10px; color:var(--ink-soft); text-align:right;
+  margin:0 0 10px; font-variant-numeric:tabular-nums; }
+/* readiness checklist: each dot goes grey → spinner → green ✓ as a subsystem
+   comes up, so it is obvious WHEN the world is fully loaded */
+.switch-check{ list-style:none; margin:0 0 12px; padding:0; text-align:left;
+  display:flex; flex-direction:column; gap:6px; }
+.switch-check li{ display:flex; align-items:center; gap:9px; font-size:11.5px;
+  color:var(--ink-soft); transition:color .2s; }
+.switch-check li .dot{ width:12px; height:12px; border-radius:50%; flex:none;
+  border:1.5px solid rgba(255,255,255,.25); position:relative; transition:all .2s; }
+.switch-check li.wait .dot{ border-top-color:var(--accent-soft);
+  animation:chipSpin .7s linear infinite; }
+.switch-check li.on{ color:var(--ink); }
+.switch-check li.on .dot{ border-color:var(--live,#3fb56b); background:var(--live,#3fb56b);
+  animation:none; }
+.switch-check li.on .dot::after{ content:'✓'; position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center; font-size:8px;
+  color:#0d0c0b; font-weight:700; }
+.switch-note{ font-size:10.5px; color:var(--ink-soft); margin:2px 0 14px;
+  line-height:1.5; }
+.switch-actions{ display:flex; gap:8px; justify-content:center; }
+.switch-actions button{ font:inherit; font-size:12px; padding:8px 16px;
+  border-radius:9px; cursor:pointer; border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05); color:var(--ink); transition:all .2s; }
+.switch-actions button:hover{ background:rgba(255,255,255,.12); }
+/* reload button stays LOCKED (greyed, un-clickable) until the sim is fully up */
+.switch-actions button.reload[disabled]{ opacity:.45; cursor:not-allowed;
+  border-style:dashed; }
+.switch-actions button.reload[disabled]:hover{ background:rgba(255,255,255,.05); }
+.switch-actions button.reload.ready{ border-color:var(--accent-soft);
+  background:rgba(63,181,107,.2); color:var(--accent-soft); font-weight:650;
+  animation:switch-ready-pulse 1.4s ease-in-out infinite; }
+.switch-actions button.reload.ready:hover{ background:rgba(63,181,107,.32); }
+@keyframes switch-ready-pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(63,181,107,.45); }
+  50%{ box-shadow:0 0 0 6px rgba(63,181,107,0); } }
+.switch-card.ready .switch-bar i{ background:var(--live,#3fb56b); }
+.switch-card.ready .switch-bar i::after{ animation:none; opacity:0; }
+
+/* ── save-episode confirm (record → stop → keep or discard) ──────────────── */
+.ep-modal-back{ position:fixed; inset:0; z-index:90; display:flex;
+  align-items:center; justify-content:center; background:rgba(0,0,0,.55);
+  backdrop-filter:blur(4px); }
+.ep-modal-back.hidden{ display:none; }
+.ep-modal{ width:440px; max-width:92vw; max-height:86vh; overflow-y:auto;
+  border-radius:14px; padding:16px 18px; background:rgba(22,21,20,.98);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 24px 64px -16px rgba(0,0,0,.8); }
+.ep-h{ font-size:15px; font-weight:650; margin-bottom:10px; }
+.ep-info{ font-size:11px; color:var(--ink-soft); }
+.ep-table{ width:100%; border-collapse:collapse; }
+.ep-table td{ padding:3px 6px 3px 0; vertical-align:top; }
+.ep-table td:first-child{ color:var(--ash, #8a857e); white-space:nowrap;
+  width:86px; }
+.ep-mods{ display:flex; flex-wrap:wrap; gap:5px; margin:10px 0 4px; }
+.ep-mod{ font-family:var(--mono); font-size:9.5px; padding:3px 7px;
+  border-radius:999px; border:1px solid rgba(255,255,255,.12);
+  color:var(--ink-soft); }
+.ep-mod small{ color:var(--accent-soft); margin-left:4px; }
+.ep-field{ display:flex; flex-direction:column; gap:4px; font-size:10px;
+  color:var(--ink-soft); margin-top:10px; text-transform:uppercase;
+  letter-spacing:.08em; }
+.ep-field input{ font-family:var(--mono); font-size:12px; color:var(--ink);
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+  border-radius:8px; padding:7px 10px; outline:none; }
+.ep-field input:focus{ border-color:var(--accent-soft); }
+.ep-path{ font-size:9.5px; color:var(--ash, #8a857e); margin-top:8px;
+  word-break:break-all; }
+.ep-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
+.ep-actions .ep-save{ background:var(--accent); border-color:var(--accent);
+  color:#fff; }
+.ep-actions .ep-save:hover{ filter:brightness(1.12); }
+
+/* ── MuJoCo viewer window toolbar: recenter / fit / follow ───────────────── */
+.sv-tools{ display:flex; gap:4px; align-items:center; }
+.sv-tools button{ font:inherit; font-size:9px; letter-spacing:.02em;
+  padding:3px 7px; border-radius:6px; cursor:pointer; white-space:nowrap;
+  border:1px solid var(--glass-bd, rgba(255,255,255,.14));
+  background:rgba(255,255,255,.05); color:var(--ink-soft); transition:all .15s; }
+.sv-tools button:hover{ background:rgba(255,255,255,.12); color:var(--ink); }
+.sv-tools button.on{ color:var(--accent-soft); border-color:var(--accent-soft);
+  background:rgba(63,181,107,.16); }
+
+/* ── webcam-teleop dock: close button + the model-loading overlay ────────── */
+.bt-dock{ transition:left .5s cubic-bezier(.4,.9,.3,1),
+  bottom .5s cubic-bezier(.4,.9,.3,1), top .5s cubic-bezier(.4,.9,.3,1),
+  width .4s ease, transform .5s ease; }
+/* side-by-side mode: the operator view rides the LEFT edge, vertically centred,
+   so the robot (shifted right by the camera) and your face sit side by side */
+.bt-dock.webcam-active{ left:16px; bottom:auto; top:50%; transform:translateY(-50%);
+  width:340px; }
+.bt-dock.webcam-active.big{ width:440px; }
+.bt-close{ background:none; border:1px solid var(--glass-bd); color:var(--ash);
+  border-radius:6px; font-size:11px; line-height:1; padding:2px 7px; cursor:pointer; }
+.bt-close:hover{ color:#fff; border-color:#ff6a5e; background:rgba(255,106,94,.16); }
+
+.bt-loading{ position:absolute; inset:0; z-index:3; display:none;
+  flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  padding:18px; text-align:center; border-radius:10px;
+  background:radial-gradient(120% 90% at 50% 20%, rgba(38,34,30,.94), rgba(16,14,12,.97)); }
+.bt-dock.loading .bt-loading{ display:flex; }
+.bt-dock.loading .bt-preview{ min-height:210px; background:#0d0b0a; }
+.bt-load-ring{ width:34px; height:34px; border-radius:50%;
+  border:3px solid rgba(255,255,255,.14); border-top-color:var(--accent, #ffb066);
+  animation:bt-spin .8s linear infinite; }
+@keyframes bt-spin{ to{ transform:rotate(360deg); } }
+.bt-load-title{ font-size:10px; letter-spacing:.16em; color:var(--ink); }
+.bt-load-step{ font-size:11px; color:var(--accent, #ffb066); min-height:14px; }
+.bt-load-hint{ font-size:9px; letter-spacing:.04em; color:var(--ash); opacity:.8; }
+.bt-load-bar{ width:80%; max-width:240px; height:5px; border-radius:3px;
+  background:rgba(255,255,255,.1); overflow:hidden; }
+.bt-load-fill{ width:0%; height:100%; border-radius:3px;
+  background:linear-gradient(90deg, var(--accent, #ffb066), #ffd9a8);
+  box-shadow:0 0 10px rgba(255,176,102,.6);
+  transition:width .35s cubic-bezier(.4,.9,.3,1); }
+
+/* ── offline recorded-idle badge (the viewport plays a demo when the sim
+   bridge is down).
+   TOP-RIGHT, under the layer-chip rail: the bottom-centre of the viewer is the
+   busiest real estate there is — nav cluster, keyboard hint, preview veil, and
+   on a phone both joysticks all want it. Up here the only other tenant is
+   `.vp-camctl` (which app.js hides) and the first-person PiP (handled below). */
+.vp-offline-badge{ display:none; align-self:center; align-items:center; gap:7px;
+  margin-top:6px; padding:4px 14px;
+  font-size:9px; letter-spacing:.14em; color:#ffd9a8; background:rgba(60,40,20,.42);
+  border:1px solid rgba(224,150,60,.55); border-radius:999px; backdrop-filter:blur(8px);
+  pointer-events:none; white-space:nowrap; }
+.vp-offline-badge.on{ display:inline-flex; }
+.vp-offline-badge .dot{ width:6px; height:6px; border-radius:50%; background:#ffb057;
+  box-shadow:0 0 6px #ffb057; animation:vpPulse 1.4s ease-in-out infinite; }
+@keyframes vpPulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+/* first person hides the whole teleop cluster's chrome anyway; the page-top SIM
+   OFFLINE banner stays up, so nothing is lost */
+.viewport3d.pip-3d .vp-offline-badge{ display:none !important; }
+@media (max-width:900px){ .vp-offline-badge{ font-size:8px; padding:3px 10px; } }
+
+/* narrow: the world cluster keeps Reset + Scene (the two sim verbs that matter
+   on a phone) and drops Respawn; the SIM badge stays — it is the whole point.
+   Same 900px breakpoint the shared base uses for its single-column layout. */
+@media (max-width:900px){
+  #relocateBtn{ display:none; }
+  .sim-cluster{ gap:4px; }
+  .scene-wrap #sceneName{ max-width:44px; }
+  .scene-menu{ position:fixed; left:8px; right:8px; top:52px; transform:none;
+    width:auto; max-height:60vh; }
+}

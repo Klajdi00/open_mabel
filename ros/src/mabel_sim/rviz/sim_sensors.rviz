@@ -1,0 +1,294 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /RobotModel1
+        - /Front Cloud1
+        - /ZED Head Cloud1
+        - /LaserScan1
+      Splitter Ratio: 0.5
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Color: 160; 160; 164
+      Cell Size: 0.5
+      Plane Cell Count: 20
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Enabled: true
+      Description Topic:
+        Value: /robot_description
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Visual Enabled: true
+      Collision Enabled: false
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+      Marker Scale: 0.3
+      Show Names: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Front Cloud
+      Enabled: true
+      Topic:
+        Value: /camera/front/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/PointCloud2
+      Name: ZED Head Cloud
+      Enabled: true
+      Topic:
+        Value: /camera/zed/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Back Cloud
+      Enabled: true
+      Topic:
+        Value: /camera/back/depth/points
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/LaserScan
+      Name: LaserScan
+      Enabled: true
+      Topic:
+        Value: /scan
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Style: Points
+      Size (Pixels): 4
+      Color Transformer: FlatColor
+      Color: 255; 85; 0
+      Decay Time: 0
+    # ---- SLAM layer (mabel_slam lidar_slam/visual_slam.launch.py) ----------------
+    # These SLAM launches now default rviz:=false and render into THIS one window
+    # instead of opening their own. They sit idle until a SLAM stack is up: lidar_slam
+    # fills the 2D /map; visual_slam fills the nvblox 3D mesh cloud.
+    - Class: rviz_default_plugins/Map
+      Name: SLAM Map (2D)
+      Enabled: true
+      Topic:
+        Value: /map
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Color Scheme: map
+      Alpha: 0.7
+    # The nvblox mesh as shaded SURFACES: mabel_slam/mesh_to_pointcloud re-emits the
+    # mesh as a TRIANGLE_LIST Marker (the apt-only nvblox_rviz_plugin can't load in
+    # this conda RViz, so we render with the stock Marker display). Per-vertex colour
+    # comes from the message, latched -> Transient Local.
+    - Class: rviz_default_plugins/Marker
+      Name: nvblox Mesh (3D)
+      Enabled: true
+      Namespaces: {}
+      Topic:
+        Value: /nvblox_node/mesh_marker
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+    # Same mesh as a coloured vertex cloud -- a lighter fallback view, off by default
+    # so the surfaces above aren't double-drawn. Enable if the Marker is too heavy.
+    - Class: rviz_default_plugins/PointCloud2
+      Name: nvblox Mesh (points)
+      Enabled: false
+      Topic:
+        Value: /nvblox_node/mesh_pointcloud
+        Depth: 5
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Style: Points
+      Size (Pixels): 3
+      Color Transformer: RGB8
+      Decay Time: 0
+    # ---- Nav2 layer (mabel_navigation navigation/exploration.launch.py) ---------
+    # These render only once Nav2 is up; until then they sit idle. They live HERE so
+    # navigation builds on top of this ONE window instead of opening its own RViz
+    # (those launches default rviz:=false). Frames in 'map'/'odom' resolve through TF.
+    - Class: rviz_default_plugins/Map
+      Name: Global Costmap
+      Enabled: true
+      Topic:
+        Value: /global_costmap/costmap
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+      Color Scheme: costmap
+      Alpha: 0.5
+    - Class: rviz_default_plugins/Map
+      Name: Local Costmap
+      Enabled: true
+      Topic:
+        Value: /local_costmap/costmap
+        Depth: 1
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Color Scheme: costmap
+      Alpha: 0.4
+    - Class: rviz_default_plugins/Path
+      Name: Global Plan
+      Enabled: true
+      Topic:
+        Value: /plan
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Color: 0; 255; 0
+      Line Style: Lines
+    - Class: rviz_default_plugins/Path
+      Name: Local Plan
+      Enabled: true
+      Topic:
+        Value: /local_plan
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+      Color: 0; 170; 255
+      Line Style: Lines
+    # exploration frontiers (orange = candidate, green = current goal)
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Frontiers
+      Enabled: true
+      Namespaces: {}
+      Topic:
+        Value: /frontier_explorer/frontiers
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+    # green balls at the keyboard-teleop Mode-2 wrist (palm) IK targets
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Wrist Targets
+      Enabled: true
+      Namespaces: {}
+      Topic:
+        Value: /wrist_targets
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+    # the goal you set (and the one the explorer is chasing)
+    - Class: rviz_default_plugins/Pose
+      Name: Goal Pose
+      Enabled: true
+      Topic:
+        Value: /goal_pose
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+      Color: 255; 25; 0
+      Shape: Arrow
+    # - Class: rviz_default_plugins/Image
+    #   Name: Front Color
+    #   Enabled: true
+    #   Topic:
+    #     Value: /camera/front/color/image_raw
+    #     Depth: 5
+    #     Durability Policy: Volatile
+    #     Reliability Policy: Best Effort
+    # - Class: rviz_default_plugins/Image
+    #   Name: Back Color
+    #   Enabled: true
+    #   Topic:
+    #     Value: /camera/back/color/image_raw
+    #     Depth: 5
+    #     Durability Policy: Volatile
+    #     Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: ZED Left
+      Enabled: true
+      Topic:
+        Value: /camera/zed/left/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: ZED Right
+      Enabled: true
+      Topic:
+        Value: /camera/zed/right/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Left Wrist
+      Enabled: true
+      Topic:
+        Value: /camera/left_wrist/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/Image
+      Name: Right Wrist
+      Enabled: true
+      Topic:
+        Value: /camera/right_wrist/image_raw
+        Depth: 5
+        Durability Policy: Volatile
+        Reliability Policy: Best Effort
+    # - Class: rviz_default_plugins/Image
+    #   Name: Body Cam
+    #   Enabled: true
+    #   Topic:
+    #     Value: /camera/body/image_raw
+    #     Depth: 5
+    #     Durability Policy: Volatile
+    #     Reliability Policy: Best Effort
+    # - Class: rviz_default_plugins/Image
+    #   Name: Front IR1
+    #   Enabled: false
+    #   Topic:
+    #     Value: /camera/front/infra1/image_rect_raw
+    #     Depth: 5
+    #     Durability Policy: Volatile
+    #     Reliability Policy: Best Effort
+  Global Options:
+    Fixed Frame: odom
+    Background Color: 48; 48; 48
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    # The "2D Goal Pose" tool -> /goal_pose -> goal_relay -> Nav2 NavigateToPose.
+    # Stamped with this view's Fixed Frame ('odom'); goal_relay re-frames it to 'map'.
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Distance: 4.0
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0.4
+      Pitch: 0.3
+      Yaw: 0.785
+Window Geometry:
+  Height: 900
+  Width: 1500
+  Hide Left Dock: false
+  Hide Right Dock: false

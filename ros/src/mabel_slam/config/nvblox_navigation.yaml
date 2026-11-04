@@ -1,0 +1,58 @@
+# nvblox -- NAVIGATION env (coarse 3D recon + 2D ESDF slice).
+#
+# Used by: visual_slam.launch.py env:=navigation  (front Intel RealSense D435i).
+# Goal: a cheap, persistent map of the ROOM for navigation -- big voxels, a 2D
+# occupancy/ESDF slice for Nav2. NOT for fine detail (use env:=manipulation).
+#
+#   in:  /camera/front/depth + color   (sim and real both publish this)
+#   out: /nvblox_node/mesh             (coarse coloured 3D mesh)
+#        /nvblox_node/static_map_slice (2D ESDF distance slice -> Nav2 costmap)
+/**:
+  ros__parameters:
+    # --- Frames ----------------------------------------------------------
+    global_frame: odom          # live costmap frame; avoids map-jump on loop closure
+    # --- Inputs ----------------------------------------------------------
+    use_depth: true
+    use_color: true             # integrate the front camera COLOR onto the mesh
+    use_lidar: false
+    num_cameras: 1
+    integrate_color_rate_hz: 5.0
+    # Camera images are published BEST_EFFORT (sensor data) by both the sim and the
+    # real RealSense. nvblox defaults its input subscribers to RELIABLE (input_qos
+    # = SYSTEM_DEFAULT), which is INCOMPATIBLE -> nvblox logs "No messages will be
+    # sent to it" for every camera topic and NO mesh is ever built. THIS nvblox
+    # version (Isaac ROS 4.x) takes a SINGLE `input_qos` for all sensor inputs --
+    # the per-stream depth_qos/color_qos keys belong to the RealSense/ZED *driver*
+    # nodes, not nvblox, so setting them here is silently ignored. Match the
+    # best-effort publishers with SENSOR_DATA.
+    input_qos: "SENSOR_DATA"
+    # --- Mapping type ----------------------------------------------------
+    # static_tsdf builds a TSDF -> 3D MESH (the dense map) + ESDF (the nav slice).
+    mapping_type: static_tsdf
+    # --- Resolution / range (EFFICIENCY knobs) --------------------------
+    # GPU cost scales ~1/voxel_size^3. For navigation, 0.05 m voxels are ~4x
+    # cheaper than 0.03 and still fine; cap the range at ~4 m so we don't
+    # integrate distant noise. Use the tabletop preset for detailed meshes.
+    voxel_size: 0.05            # 5 cm voxels -- coarse, nav-adequate
+    max_integration_distance_m: 4.0
+    # --- ESDF: 2D slice for Nav2 (publishes /nvblox_node/static_map_slice) ---
+    # The 3D MESH still publishes (from the TSDF, independent of esdf_mode). The
+    # slice collapses obstacles in the height band below into one 2D distance map.
+    esdf_mode: 2d
+    publish_esdf_distance_slice: true
+    # NOTE: these slice params live under the `static_mapper.` namespace on this
+    # nvblox version -- without the prefix they are silently ignored and nvblox
+    # falls back to a high default slice (the "2D map is very high and missed the
+    # obstacles" symptom). Heights are in the global (odom) frame, base_link at
+    # z=0, so the front D435i is ~0.13 m.
+    static_mapper:
+      esdf_slice_min_height: 0.02   # m: just above the floor
+      esdf_slice_max_height: 0.40   # m: up to ~robot-body height
+      esdf_slice_height: 0.13       # m: published slice z = camera height
+    # --- Rates -----------------------------------------------------------
+    integrator_max_integration_distance_m: 5.0
+    tsdf_integrator_max_weight: 100.0
+    # --- PERSISTENCE: keep the whole map (don't forget mapped areas) ------
+    decay_tsdf_rate_hz: 0.0                # 0 = never decay -> mapped areas persist
+    clear_map_outside_radius_rate_hz: 0.0  # 0 = never clear far voxels
+    map_clearing_radius_m: -1.0            # -1 = unbounded (no radius clearing)

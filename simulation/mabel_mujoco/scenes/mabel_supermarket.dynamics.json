@@ -1,0 +1,178 @@
+{
+ "version": 1,
+ "actors": [
+  {
+   "kind": "walker",
+   "root": "shopper1_root",
+   "z": 0.884,
+   "path": [
+    [
+     -6.0,
+     -2.5
+    ],
+    [
+     3.0,
+     -2.5
+    ],
+    [
+     3.0,
+     0.0
+    ],
+    [
+     -6.0,
+     0.0
+    ]
+   ],
+   "closed": true,
+   "speed": 0.9,
+   "accel": 1.6,
+   "s0": 2.0,
+   "bob": 0.0233,
+   "stride": 0.585,
+   "gait": {
+    "joints": [
+     "shopper1_hipL",
+     "shopper1_hipR",
+     "shopper1_kneeL",
+     "shopper1_kneeR",
+     "shopper1_shL",
+     "shopper1_shR",
+     "shopper1_elL",
+     "shopper1_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 5.0,
+     "period": 26.0,
+     "dur": 6.0,
+     "offset": 4.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.3,
+    0.3
+   ]
+  },
+  {
+   "kind": "walker",
+   "root": "shopper2_root",
+   "z": 0.822,
+   "path": [
+    [
+     -6.2,
+     2.5
+    ],
+    [
+     4.0,
+     2.5
+    ],
+    [
+     4.6,
+     3.9
+    ],
+    [
+     -5.0,
+     3.9
+    ]
+   ],
+   "closed": true,
+   "speed": 0.8,
+   "accel": 1.6,
+   "s0": 9.0,
+   "bob": 0.018,
+   "stride": 0.703,
+   "gait": {
+    "joints": [
+     "shopper2_hipL",
+     "shopper2_hipR",
+     "shopper2_kneeL",
+     "shopper2_kneeR",
+     "shopper2_shL",
+     "shopper2_shR",
+     "shopper2_elL",
+     "shopper2_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 14.0,
+     "period": 31.0,
+     "dur": 7.0,
+     "offset": 11.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.28,
+    0.28
+   ]
+  }
+ ],
+ "conveyors": []
+}

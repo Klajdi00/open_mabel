@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NOVA · Training Studio</title>
+<style>
+:root{
+  --accent:#C25B2A; --accent-dim:#8B3F1D; --accent-soft:#f0b68b;
+  --live:#3FB56B; --warn:#E9A679; --danger:#D23B2A;
+  --bg:#0d0c0b; --bg-2:#151311; --ink:#efeae3; --ink-soft:#cfc8be;
+  --ash:#97908a; --ash-dim:#6b655f;
+  --glass:rgba(242,238,230,.055); --glass-2:rgba(242,238,230,.10);
+  --glass-bd:rgba(242,238,230,.14); --hairline:rgba(242,238,230,.09);
+  --serif:'Instrument Serif',Georgia,serif; --font:-apple-system,BlinkMacSystemFont,'Geist',sans-serif;
+  --mono:'Geist Mono','SFMono-Regular',Menlo,monospace; --ease:cubic-bezier(.16,1,.3,1);
+  --c-act:#f0b68b; --c-dp:#7fb8d9; --c-pi0:#b48ce6; --c-pi05:#4fd1c5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:13px;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1200px 800px at 70% -10%,rgba(194,91,42,.07),transparent 60%)}
+button{font-family:var(--font);color:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:var(--mono);font-size:11px;color:var(--ink);background:var(--glass);border:1px solid var(--glass-bd);
+  border-radius:7px;padding:5px 7px;outline:none;width:100%}
+input:focus,select:focus{border-color:var(--accent)}
+input[type=checkbox]{width:auto}
+.studio{display:grid;height:100vh;grid-template-columns:340px 1fr;grid-template-rows:50px 1fr 112px;
+  grid-template-areas:"top top" "rail center" "bar bar"}
+/* top */
+.topbar{grid-area:top;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--hairline);
+  background:rgba(13,12,11,.7);backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:baseline;gap:9px}
+.brand .mark{font-family:var(--mono);font-weight:600;letter-spacing:.2em;font-size:13px}
+.brand .sub{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--accent-soft)}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;padding:5px 11px;border-radius:999px;background:var(--glass);
+  border:1px solid var(--glass-bd);color:var(--ash)}
+.chip.running{color:var(--live);border-color:var(--live);animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 5px rgba(63,181,107,.35)}50%{box-shadow:0 0 15px rgba(63,181,107,.8)}}
+.chip.done{color:var(--accent-soft);border-color:var(--accent)} .chip.crashed,.chip.failed{color:var(--danger);border-color:var(--danger)}
+.chip.stopped,.chip.external,.chip.preparing,.chip.evaluating{color:var(--warn);border-color:rgba(233,166,121,.5)}
+.dev{font-family:var(--mono);font-size:10px;color:var(--ash-dim)}
+.spacer{flex:1}
+.seg{display:flex;align-items:center;gap:1px;background:var(--glass);border:1px solid var(--glass-bd);border-radius:10px;padding:2px}
+.seg button{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:6px 11px;border-radius:8px;color:var(--ink-soft)}
+.seg button:hover{background:var(--glass-2);color:var(--ink)} .seg button:disabled{opacity:.3;pointer-events:none}
+.seg button.primary{background:var(--accent);color:#fff}
+.hero{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:12.5px;color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-dim));border:1px solid var(--accent);border-radius:11px;padding:7px 14px;
+  box-shadow:0 2px 12px rgba(194,91,42,.34)}
+.hero:hover{filter:brightness(1.08)}
+/* rail */
+.rail{grid-area:rail;display:flex;flex-direction:column;min-height:0;background:rgba(20,18,16,.5);border-right:1px solid var(--hairline)}
+.tabs{display:flex;padding:0 8px;border-bottom:1px solid var(--hairline)}
+.tab{flex:1;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;padding:11px 4px 9px;color:var(--ash);border-bottom:2px solid transparent}
+.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.pane{display:none;flex:1;overflow:auto;padding:12px} .pane.on{display:block}
+.h{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--accent-soft);margin:6px 0 8px}
+.lab{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--ash);margin:10px 0 4px}
+.card{background:var(--glass);border:1px solid var(--glass-bd);border-radius:12px;padding:10px 11px;margin-bottom:8px;cursor:pointer;transition:.15s var(--ease)}
+.card:hover{border-color:rgba(242,238,230,.25)} .card.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.card .t{font-weight:600;font-size:12.5px;display:flex;align-items:center;gap:8px}
+.card .s{font-family:var(--mono);font-size:10px;color:var(--ash);margin-top:4px;line-height:1.55}
+.card .b{font-size:11px;color:var(--ink-soft);margin-top:5px;line-height:1.45}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
+.grid2 label,.row label{font-family:var(--mono);font-size:9.5px;color:var(--ash);display:block;margin-bottom:2px}
+.note{font-size:11px;color:var(--ash);line-height:1.5;margin:6px 0}
+.warnbox{font-size:11px;color:var(--warn);background:rgba(233,166,121,.08);border:1px solid rgba(233,166,121,.3);border-radius:9px;padding:8px 9px;margin:8px 0;line-height:1.5}
+.btn{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding:6px 11px;border-radius:8px;
+  background:var(--glass);border:1px solid var(--glass-bd);color:var(--ink-soft)}
+.btn:hover{background:var(--glass-2);color:var(--ink)} .btn.acc{background:var(--accent);border-color:var(--accent);color:#fff}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:10.5px}
+th,td{padding:4px 6px;border-bottom:1px solid var(--hairline);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left} th{color:var(--ash);font-weight:500;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em}
+.camlist label{display:flex;align-items:center;gap:7px;font-size:12px;margin:5px 0;font-family:var(--font);color:var(--ink)}
+/* center */
+.center{grid-area:center;overflow:auto;padding:16px 20px;min-width:0}
+.runhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.runhead .name{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
+.tile{background:var(--glass);border:1px solid var(--glass-bd);border-radius:12px;padding:9px 11px}
+.tile .k{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ash)}
+.tile .v{font-size:20px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+.tile .u{font-size:10px;color:var(--ash);font-family:var(--mono)}
+.charts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.chart{background:var(--glass);border:1px solid var(--glass-bd);border-radius:12px;padding:8px 10px}
+.chart .ct{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--ash);display:flex;justify-content:space-between}
+.chart canvas{width:100%;height:170px;display:block}
+.sect{background:var(--glass);border:1px solid var(--glass-bd);border-radius:12px;padding:11px 13px;margin-bottom:12px}
+.sect .st{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--accent-soft);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.plots{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.plots img{width:100%;border-radius:8px;background:#fff;cursor:zoom-in}
+pre{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);white-space:pre-wrap;line-height:1.5;max-height:340px;overflow:auto}
+.cmd{font-family:var(--mono);font-size:10.5px;background:rgba(0,0,0,.35);border:1px solid var(--hairline);border-radius:8px;padding:7px 9px;
+  margin:4px 0;color:var(--ink-soft);cursor:copy;word-break:break-all}
+.empty{height:70%;display:grid;place-items:center;color:var(--ash);text-align:center;line-height:1.7}
+.empty .big{font-family:var(--serif);font-style:italic;font-size:30px;color:var(--accent-soft)}
+/* bottom bar */
+.bar{grid-area:bar;border-top:1px solid var(--hairline);display:flex;gap:10px;padding:10px 16px;overflow-x:auto;background:rgba(13,12,11,.6)}
+.job{min-width:300px;flex:0 0 auto;background:var(--glass);border:1px solid var(--glass-bd);border-radius:12px;padding:8px 11px;cursor:pointer}
+.job .top{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600}
+.job .top .eta{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ash);font-weight:400}
+.prog{height:6px;border-radius:4px;background:rgba(242,238,230,.08);margin:7px 0 5px;overflow:hidden}
+.prog .f{height:100%;background:linear-gradient(90deg,var(--accent-dim),var(--accent));transition:width .6s var(--ease)}
+.job .stats{font-family:var(--mono);font-size:10px;color:var(--ash)}
+.toast{position:fixed;bottom:126px;left:50%;transform:translateX(-50%);background:#221e1b;border:1px solid var(--glass-bd);
+  padding:9px 15px;border-radius:10px;font-size:12px;opacity:0;transition:.25s;pointer-events:none;max-width:70vw;z-index:50}
+.toast.on{opacity:1} .toast.bad{border-color:var(--danger);color:#f5b3aa}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;place-items:center;z-index:60;cursor:zoom-out}
+.zoom img{max-width:94vw;max-height:94vh;background:#fff;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="studio">
+  <header class="topbar">
+    <div class="brand"><span class="mark">NOVA</span><span class="sub">Training&nbsp;Studio</span></div>
+    <span class="chip" id="runChip">no run selected</span>
+    <span class="dev" id="dev">·</span>
+    <span class="spacer"></span>
+    <span class="dev" id="disk"></span>
+    <div class="seg">
+      <button id="stopBtn" title="Save a checkpoint and stop the selected run">⏸ Stop</button>
+      <button id="resumeBtn" title="Continue the selected run from its last checkpoint">↻ Resume</button>
+      <button id="evalBtn" title="Evaluate the last checkpoint on the test split">◎ Evaluate</button>
+      <button id="cmpBtn" title="Compare the selected runs (tick them in Runs)">⇄ Compare</button>
+    </div>
+    <button class="hero" id="trainBtn" title="Start a new run with this configuration (⌘↵)">▶&nbsp;Train</button>
+  </header>
+
+  <aside class="rail">
+    <div class="tabs">
+      <button class="tab on" data-tab="data">Data</button>
+      <button class="tab" data-tab="model">Model</button>
+      <button class="tab" data-tab="io">Inputs</button>
+      <button class="tab" data-tab="runs">Runs</button>
+    </div>
+    <div class="pane on" data-pane="data" id="dataPane"></div>
+    <div class="pane" data-pane="model" id="modelPane"></div>
+    <div class="pane" data-pane="io" id="ioPane"></div>
+    <div class="pane" data-pane="runs" id="runsPane"></div>
+  </aside>
+
+  <main class="center" id="center">
+    <div class="empty"><div><div class="big">Pick a run, or configure one</div>Data → Model → Inputs, then ▶ Train.</div></div>
+  </main>
+
+  <section class="bar" id="bar"></section>
+</div>
+<div class="toast" id="toast"></div>
+<div class="zoom" id="zoom"><img id="zoomImg"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const COL = {act:'#f0b68b', dp:'#7fb8d9', pi0:'#b48ce6', pi05:'#4fd1c5'};
+const S = {state:null, cfg:null, arch:'act', run:null, detail:null, metrics:[], mN:0, cmp:new Set(), report:null, reportKey:''};
+const api = async (path, body) => {
+  const r = await fetch(path, body ? {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)} : {});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || j.error) throw new Error(j.error || r.statusText);
+  return j;
+};
+let tt;
+function toast(m, bad){ const t=$('#toast'); t.textContent=m; t.className='toast on'+(bad?' bad':''); clearTimeout(tt); tt=setTimeout(()=>t.className='toast', bad?7000:3200); }
+const fmt = (x, d=3) => x==null || isNaN(x) ? '–' : (+x).toFixed(d);
+const dur = s => s==null ? '' : s>3600 ? `${(s/3600).toFixed(1)} h` : s>60 ? `${Math.round(s/60)} min` : `${Math.round(s)} s`;
+const mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+
+/* ── tabs ── */
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x===b));
+  document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.dataset.pane===b.dataset.tab));
+});
+
+/* ── config editing: every field writes S.cfg by dotted path ── */
+const getP = (o, p) => p.split('.').reduce((a,k)=>a?.[k], o);
+const setP = (o, p, v) => { const ks=p.split('.'); let n=o; ks.slice(0,-1).forEach(k=>n=n[k]); n[ks.at(-1)]=v; };
+function field(path, label, kind='num', opts){
+  const v = getP(S.cfg, path);
+  if (kind==='sel') return `<div><label>${label}</label><select data-p="${path}" data-k="${kind}">${opts.map(o=>`<option ${o==v?'selected':''}>${o}</option>`).join('')}</select></div>`;
+  const shown = Array.isArray(v) ? v.join(',') : v ?? '';
+  return `<div><label>${label}</label><input data-p="${path}" data-k="${kind}" value="${esc(shown)}"></div>`;
+}
+function bindFields(root){
+  root.querySelectorAll('[data-p]').forEach(el => el.onchange = () => {
+    const k = el.dataset.k; let v = el.value;
+    if (k==='num') v = v==='' || v==='null' ? null : +v;
+    if (k==='list') v = v.split(',').map(x=>+x);
+    if (k==='bool') v = el.checked;
+    setP(S.cfg, el.dataset.p, v); saveCfg(); renderIO(); if (root.id!=='modelPane') loadReport();
+  });
+}
+const saveCfg = () => localStorage.setItem('nova-train-cfg', JSON.stringify({cfg:S.cfg, arch:S.arch}));
+
+/* ── DATA ── */
+function renderData(){
+  const st = S.state, cur = st.curation;
+  let h = `<div class="h">Curated datasets</div>
+    <div class="note">Exports from the Curation Studio (<span style="font-family:var(--mono)">dataset/lerobot/</span>), re-scanned live.
+    ${cur ? `Curation library: <b>${cur.kept}</b> kept · ${cur.rejected} rejected${cur.kept_not_exported ? ` · <span style="color:var(--warn)">${cur.kept_not_exported} kept takes not in any export yet</span>` : ' · every kept take is exported'}.` : ''}</div>
+    <button class="btn" id="syncBtn">⟳ Sync &amp; cache</button>`;
+  for (const d of st.datasets){
+    h += `<div class="card ${d.name===S.cfg.dataset?'on':''}" data-ds="${esc(d.name)}">
+      <div class="t">${esc(d.name)}<span class="spacer"></span><span class="chip" style="padding:2px 7px;font-size:9px">${d.preparing ? 'caching…' : d.cached ? 'cached' : 'not cached'}</span></div>
+      <div class="s">${d.episodes} episodes · ${d.takes || '?'} takes · ${d.frames.toLocaleString()} frames · ${d.minutes.toFixed(1)} min @ ${d.fps} Hz<br>
+      state ${d.state_dim} · action ${d.action_dim} · ${d.cameras.length} cams · ${(d.size_mb/1024).toFixed(2)} GB</div>
+      ${d.task ? `<div class="b">“${esc(d.task)}”</div>` : ''}</div>`;
+  }
+  const sp = S.cfg.split;
+  h += `<div class="lab">Split (by take, seeded)</div><div class="grid2">
+      ${field('split','train,val,test','list')}${field('seed','seed')}</div>
+    <div class="lab">Cleaning</div><div class="grid2">
+      ${field('state_sigma_s','state smoothing σ (s)')}${field('action_sigma_s','action smoothing σ (s)')}
+      ${field('max_interp_s','max interpolated gap (s)')}${field('max_cam_age_s','stale frame age (s)')}
+      ${field('max_stale_frac','max stale share / clip')}${field('min_future_s','min real future (s)')}
+      ${field('std_floor','std floor (rad)')}</div>
+    <div class="lab">What this config trains on</div><div id="report" class="note">…</div>`;
+  $('#dataPane').innerHTML = h;
+  bindFields($('#dataPane'));
+  $('#dataPane').querySelectorAll('[data-ds]').forEach(c => c.onclick = () => { S.cfg.dataset = c.dataset.ds; saveCfg(); renderData(); loadReport(); });
+  $('#syncBtn').onclick = async () => { await api('/api/sync', {}); toast('Rescanning exports; uncached datasets are being cached'); refresh(); };
+  renderReport();
+}
+async function loadReport(){
+  const key = JSON.stringify(S.cfg);
+  if (key === S.reportKey) return;
+  S.reportKey = key; S.report = null; renderReport();
+  try { S.report = await api('/api/report', {config:S.cfg}); } catch(e){ S.report = {error:e.message}; }
+  if (S.report?.pending) { S.reportKey=''; setTimeout(loadReport, 8000); }
+  renderReport();
+}
+function renderReport(){
+  const el = $('#report'); if (!el) return;
+  const r = S.report;
+  if (!r) return el.innerHTML = 'computing…';
+  if (r.error) return el.innerHTML = `<span style="color:var(--danger)">${esc(r.error)}</span>`;
+  if (r.pending) return el.innerHTML = esc(r.message);
+  const sp = r.split, d = r.dropped_clips;
+  el.innerHTML = `<table><tr><th></th><th>takes</th><th>episodes</th><th>min</th><th>clips</th></tr>
+    ${['train','val','test'].map(s=>`<tr><td>${s}</td><td>${sp[s].takes}</td><td>${sp[s].episodes}</td><td>${(sp[s].frames/r.fps/60).toFixed(1)}</td><td>${sp[s].clips.toLocaleString()}</td></tr>`).join('')}</table>
+    <div style="margin-top:7px">Clip = one anchor frame: ${r.history_offsets.length} state samples (${r.history_offsets.map(o=>(o/r.fps).toFixed(1)).join(', ')} s) → ${r.chunk} actions (${(r.chunk/r.fps).toFixed(1)} s).<br>
+    Dropped: ${d.stale_now} stale current frame · ${d.stale_window} stale window · ${d.prop} long proprio gap · ${d.short_future} &lt; min future.<br>
+    Repaired: ${r.held_log_rows.toLocaleString()} rows of held robot log interpolated · ${r.interpolated_joint_rows} rows with interpolated joints · ${r.stale_video_rows} stale video rows.<br>
+    Smoothing removed (rms, state/action): ${Object.entries(r.smoothing_removed_deg).map(([g,v])=>`${g} ${v[0].toFixed(2)}/${v[1].toFixed(2)}°`).join(' · ')}.<br>
+    Held constant (not learned): ${r.masked.action.join(', ')}.</div>`;
+}
+
+/* ── MODEL ── */
+const HP = {
+  act: [['act.dim_model','d_model'],['act.n_heads','heads'],['act.n_encoder_layers','encoder layers'],['act.n_decoder_layers','decoder layers'],
+        ['act.dim_feedforward','feed-forward'],['act.latent_dim','latent dim'],['act.kl_weight','KL weight'],['act.dropout','dropout'],
+        ['act.lr','lr'],['act.lr_backbone','backbone lr'],['act.weight_decay','weight decay'],['act.warmup','warmup steps'],['act.grad_clip','grad clip'],
+        ['act.temporal_ensemble_coeff','temporal ensemble (null = off)']],
+  dp:  [['dp.down_dims','U-Net dims','list'],['dp.kernel_size','kernel'],['dp.n_groups','group-norm groups'],['dp.diffusion_step_embed_dim','step embed'],
+        ['dp.spatial_softmax_num_keypoints','keypoints / cam'],['dp.num_train_timesteps','train timesteps'],['dp.num_inference_steps','DDIM steps'],
+        ['dp.beta_schedule','β schedule','sel',['squaredcos_cap_v2','linear']],['dp.prediction_type','predict','sel',['epsilon','sample']],
+        ['dp.clip_sample_range','clip range (σ)'],['dp.lr','lr'],['dp.weight_decay','weight decay'],['dp.warmup','warmup steps'],['dp.grad_clip','grad clip']],
+  pi0: [['pi_batch_size','batch (CUDA)']], pi05: [['pi_batch_size','batch (CUDA)']],
+};
+function renderModel(){
+  const st = S.state;
+  let h = `<div class="h">Architecture</div>`;
+  for (const a of st.archs){
+    h += `<div class="card ${a.id===S.arch?'on':''}" data-arch="${a.id}"><div class="t"><span class="dot" style="background:${COL[a.id]}"></span>${a.name}
+      <span style="font-family:var(--mono);font-size:9.5px;color:var(--ash);font-weight:400">${a.family}</span></div>
+      <div class="b">${a.blurb}</div><div class="s">runs on: ${a.where}</div></div>`;
+  }
+  if (S.arch.startsWith('pi') && st.device.device !== 'cuda')
+    h += `<div class="warnbox">π models need a CUDA GPU and the PaliGemma weights. Without one, ▶ Train for π0 saves the exact
+      <span style="font-family:var(--mono)">lerobot-train</span> command in the run, to run on a CUDA host; π0.5 runs train.py (see README).</div>`;
+  if (S.cfg.pi_batch_size == null) S.cfg.pi_batch_size = 8;
+  h += `<div class="lab">Run</div><div class="grid2">
+      <div style="grid-column:1/3"><label>name</label><input id="runName" value="${esc(S.runName || suggestName())}"></div>
+      ${field('steps','steps')}${field('batch_size','batch size')}
+      ${field('eval_every','validate every')}${field('val_clips','val clips')}
+      ${field('num_workers','loader workers')}${field('device','device','sel',['mps','cpu','cuda'])}</div>
+    <div class="lab">${S.arch.toUpperCase()} hyperparameters</div><div class="grid2">
+      ${(HP[S.arch]||[]).map(([p,l,k,o])=>field(p,l,k||'num',o)).join('')}</div>
+    <div class="lab">Augmentation</div><div class="grid2">
+      ${field('aug_shift_px','shift (px)')}${field('aug_brightness','brightness ±')}${field('aug_contrast','contrast ±')}${field('state_noise','state noise σ (norm.)')}</div>
+    <div class="note" style="margin-top:10px">Every value is saved as the run's <span style="font-family:var(--mono)">config.json</span>; the
+      checkpoint carries the stats and the I/O contract (<span style="font-family:var(--mono)">nova_policy.json</span>).</div>
+    <button class="btn" id="resetCfg">reset to defaults</button>`;
+  $('#modelPane').innerHTML = h;
+  bindFields($('#modelPane'));
+  $('#modelPane').querySelectorAll('[data-arch]').forEach(c => c.onclick = () => { S.arch = c.dataset.arch; S.runName=null; saveCfg(); renderModel(); renderIO(); });
+  $('#runName').oninput = e => S.runName = e.target.value;
+  $('#resetCfg').onclick = () => { S.cfg = structuredClone(S.state.defaults); saveCfg(); renderAll(); loadReport(); };
+}
+function suggestName(){
+  const names = new Set((S.state?.runs||[]).map(r=>r.name));
+  for (let i=1;;i++){ const n=`${S.arch}_v${i}`; if (!names.has(n)) return n; }
+}
+
+/* ── INPUTS / OUTPUTS ── */
+function renderIO(){
+  const c = S.cfg, fps = 30;
+  const nh = Math.round(c.history_s / c.history_stride_s) + 1, chunk = Math.round(c.chunk_s*fps);
+  const ds = S.state.datasets.find(d=>d.name===c.dataset);
+  const cams = ds ? ds.cameras : ['head_left','head_right','wrist_left','wrist_right'];
+  let h = `<div class="h">Inputs</div><div class="lab">Cameras</div><div class="camlist">
+    ${cams.map(k=>`<label><input type="checkbox" data-cam="${k}" ${c.cameras.includes(k)?'checked':''}> ${k}</label>`).join('')}</div>
+    <div class="grid2">${field('image_size','image H,W','list')}</div>
+    <div class="lab">Proprioception history</div><div class="grid2">${field('history_s','history (s)')}${field('history_stride_s','sample every (s)')}</div>
+    <div class="h" style="margin-top:14px">Output</div><div class="grid2">${field('chunk_s','predicted chunk (s)')}${field('n_action_steps','executed steps / inference')}</div>
+    <div class="lab">Network I/O contract</div>
+    <table>
+      <tr><td>images</td><td>${c.cameras.length} × 3×${c.image_size[0]}×${c.image_size[1]}</td></tr>
+      <tr><td>state</td><td>${nh} × ${ds?.state_dim ?? 60} = ${nh*(ds?.state_dim ?? 60)}</td></tr>
+      <tr><td>action chunk</td><td>${chunk} × ${ds?.action_dim ?? 64}</td></tr>
+      <tr><td>executed</td><td>${c.n_action_steps} steps = ${(c.n_action_steps/fps).toFixed(2)} s, then re-plan</td></tr>
+    </table>
+    <div class="note">State = all measured joints (torso, lift, neck, arms, wrists, fingers, wheels), smoothed. Action = the desired
+      command the whole-body controller already takes (joint targets + base twist + lift rate), so a
+      deployed policy goes through the same gateway and safety gate as teleop. Wheels, lift and base are held
+      at their mean while the data never moves them.</div>`;
+  if (c.n_action_steps > chunk) h += `<div class="warnbox">Executed steps exceed the chunk (${chunk}).</div>`;
+  if (S.arch==='dp' && chunk % 4) h += `<div class="warnbox">Diffusion U-Net halves the horizon twice: chunk steps must be divisible by 4.</div>`;
+  $('#ioPane').innerHTML = h;
+  bindFields($('#ioPane'));
+  $('#ioPane').querySelectorAll('[data-cam]').forEach(b => b.onchange = () => {
+    const set = new Set(S.cfg.cameras); b.checked ? set.add(b.dataset.cam) : set.delete(b.dataset.cam);
+    S.cfg.cameras = cams.filter(k=>set.has(k)); saveCfg(); renderIO(); loadReport();
+  });
+}
+
+/* ── RUNS ── */
+function renderRuns(){
+  const rs = S.state.runs;
+  let h = `<div class="h">Runs</div><div class="note">Tick two or more to compare. Folder: <span style="font-family:var(--mono)">learning/runs/</span></div>`;
+  if (!rs.length) h += `<div class="note">No runs yet.</div>`;
+  for (const r of rs){
+    const pct = r.steps ? Math.min(100, 100*r.step/r.steps) : 0;
+    h += `<div class="card ${r.name===S.run?'on':''}" data-run="${esc(r.name)}">
+      <div class="t"><input type="checkbox" data-cmp="${esc(r.name)}" ${S.cmp.has(r.name)?'checked':''} onclick="event.stopPropagation()">
+        <span class="dot" style="background:${COL[r.policy]||'#888'}"></span>${esc(r.name)}<span class="spacer"></span><span class="chip ${r.state}" style="padding:2px 8px;font-size:9px">${r.state}</span></div>
+      <div class="s">${(r.policy||'?').toUpperCase()} · ${esc(r.dataset)} · step ${r.step}/${r.steps ?? '?'} (${pct.toFixed(0)} %)<br>
+        best val L1 ${fmt(r.best_val_l1)}${r.test ? ` · test L1 ${fmt(r.test.l1)}` : ''}</div></div>`;
+  }
+  $('#runsPane').innerHTML = h;
+  $('#runsPane').querySelectorAll('[data-run]').forEach(c => c.onclick = () => selectRun(c.dataset.run));
+  $('#runsPane').querySelectorAll('[data-cmp]').forEach(b => b.onchange = () => { b.checked ? S.cmp.add(b.dataset.cmp) : S.cmp.delete(b.dataset.cmp); });
+}
+async function selectRun(name){
+  S.run = name; S.metrics = []; S.mN = 0; S.detail = null; S.cmpView = null;
+  localStorage.setItem('nova-train-run', name);
+  renderRuns(); await pollRun(true);
+}
+
+/* ── CENTER: run view ── */
+async function pollRun(full){
+  if (!S.run) return;
+  try {
+    const m = await api(`/api/run/${S.run}/metrics?since=${S.mN}`);
+    S.metrics.push(...m.rows); S.mN = m.n;
+    if (full || !S.detail || S.tick++ % 3 === 0) S.detail = await api(`/api/run/${S.run}`);
+  } catch(e){ return; }
+  renderCenter();
+}
+S.tick = 0;
+function renderCenter(){
+  const d = S.detail; if (!d || S.cmpView) return;
+  const tr = S.metrics.filter(r=>r.event==='train'), va = S.metrics.filter(r=>r.event==='val');
+  const chip = $('#runChip'); chip.textContent = `${d.name} · ${d.state}`; chip.className = 'chip ' + (d.state==='training'?'running':d.state);
+  const t = d.test_full, b = d.best;
+  const grp = S.state.groups, bins = S.state.hbins;
+  const groupMean = g => t ? mean(Object.values(t.bins_deg[g])) : null;
+  const scroll = $('#center').scrollTop;
+  let h = `<div class="runhead"><span class="dot" style="width:12px;height:12px;background:${COL[d.policy]||'#888'}"></span>
+      <span class="name">${esc(d.name)}</span><span class="chip ${d.state==='training'?'running':d.state}">${d.state}</span>
+      <span class="dev">${(d.policy||'').toUpperCase()} · ${esc(d.dataset)} · ${d.params ? (d.params/1e6).toFixed(1)+' M params' : ''}</span></div>
+    <div class="tiles">
+      <div class="tile"><div class="k">step</div><div class="v">${d.step.toLocaleString()}</div><div class="u">of ${d.steps?.toLocaleString() ?? '?'} ${d.eta_s ? '· '+dur(d.eta_s)+' left' : ''}</div></div>
+      <div class="tile"><div class="k">train loss</div><div class="v">${fmt(tr.at(-1)?.loss)}</div><div class="u">${fmt(d.steps_per_s,2)} steps/s</div></div>
+      <div class="tile"><div class="k">val loss</div><div class="v">${fmt(va.at(-1)?.val_loss)}</div><div class="u">same objective</div></div>
+      <div class="tile"><div class="k">best val L1</div><div class="v">${fmt(d.best_val_l1)}</div><div class="u">${b ? 'step '+b.step : ''} · normalized</div></div>
+      <div class="tile"><div class="k">test L1</div><div class="v">${t ? fmt(t.val_l1) : '–'}</div><div class="u">${t ? t.clips+' clips' : 'not evaluated'}</div></div>
+      <div class="tile"><div class="k">inference</div><div class="v">${t?.latency_ms ? Math.round(t.latency_ms) : '–'}</div><div class="u">ms / 4 s chunk</div></div>
+    </div>
+    <div class="charts">
+      <div class="chart"><div class="ct"><span>training objective (log)</span><span><span style="color:#f0b68b">train</span> · <span style="color:#e57360">val</span></span></div><canvas id="c1"></canvas></div>
+      <div class="chart"><div class="ct"><span>val action error (L1, norm.)</span><span>inference</span></div><canvas id="c2"></canvas></div>
+      <div class="chart"><div class="ct"><span>learning rate · grad norm</span></div><canvas id="c3"></canvas></div>
+    </div>`;
+  if (t){
+    h += `<div class="sect"><div class="st">Test split · open-loop error (deg)</div><table><tr><th>group</th>${bins.map(x=>`<th>${x}</th>`).join('')}<th>mean</th></tr>
+      ${grp.map(g=>`<tr><td>${g}</td>${bins.map(x=>`<td>${t.bins_deg[g][x].toFixed(2)}</td>`).join('')}<td>${groupMean(g).toFixed(2)}</td></tr>`).join('')}</table>
+      <div class="note">${t.clips} test clips (anchors every ${t.stride_s} s) from the last checkpoint (step ${t.step}). Error of the predicted
+      desired command against the recorded one, by how far ahead the chunk looks.</div></div>`;
+  }
+  if (d.cmd) h += `<div class="sect"><div class="st">π command (run on a CUDA host)</div><div class="cmd" data-copy>${esc(d.cmd)}</div></div>`;
+  if (d.plots.length) h += `<div class="sect"><div class="st">Plots</div><div class="plots">${d.plots.map(p=>`<img src="/api/run/${d.name}/plot/${p}?v=${d.updated|0}" data-zoom>`).join('')}</div></div>`;
+  if (d.report) h += `<div class="sect"><div class="st">Data</div><table><tr><th></th><th>takes</th><th>episodes</th><th>clips</th></tr>
+      ${['train','val','test'].map(s=>`<tr><td>${s}</td><td>${d.report.split[s].takes}</td><td>${d.report.split[s].episodes}</td><td>${d.report.split[s].clips.toLocaleString()}</td></tr>`).join('')}</table></div>`;
+  h += `<div class="sect"><div class="st">Reproduce</div>
+      <div class="note">Recreate this exact training (config, split seed, cleaning):</div><div class="cmd" data-copy>${esc(d.reproduce)}</div></div>
+    <div class="sect"><div class="st">Config <button class="btn" id="useCfg">use as new config</button></div><pre>${esc(JSON.stringify(d.config, null, 1))}</pre></div>
+    <div class="sect"><div class="st">Log</div><pre>${esc(d.log)}</pre></div>`;
+  $('#center').innerHTML = h;
+  $('#center').scrollTop = scroll;
+  $('#center').querySelectorAll('[data-copy]').forEach(e => e.onclick = () => { navigator.clipboard.writeText(e.textContent); toast('Copied'); });
+  $('#center').querySelectorAll('[data-zoom]').forEach(e => e.onclick = () => { $('#zoomImg').src = e.src; $('#zoom').style.display='grid'; });
+  const u = $('#useCfg'); if (u) u.onclick = () => { S.cfg = structuredClone(d.config); S.arch = d.config.policy; S.runName=null; saveCfg(); renderAll(); loadReport(); toast('Loaded into Data / Model / Inputs'); };
+  const st = x => x.step;
+  line($('#c1'), [{x:tr.map(st), y:tr.map(r=>r.loss), c:'#f0b68b', w:1}, {x:va.map(st), y:va.map(r=>r.val_loss), c:'#e57360', dots:true}], true);
+  line($('#c2'), [{x:va.map(st), y:va.map(r=>r.val_l1), c:COL[d.policy]||'#ccc', dots:true}], false);
+  line($('#c3'), [{x:tr.map(st), y:tr.map(r=>r.lr), c:'#b48ce6'}, {x:tr.map(st), y:tr.map(r=>r.grad_norm), c:'#4fd1c5', own:true}], false);
+}
+$('#zoom').onclick = () => $('#zoom').style.display = 'none';
+
+/* tiny line chart: log or linear y, optional second series on its own scale */
+function line(cv, series, log){
+  if (!cv) return;
+  const dpr = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W*dpr; cv.height = H*dpr;
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const pad = {l:44, r:8, t:6, b:18};
+  const all = series.filter(s=>!s.own).flatMap(s=>s.y).filter(v=>v!=null && isFinite(v) && (!log || v>0));
+  const xs = series.flatMap(s=>s.x);
+  if (!all.length || !xs.length){ g.fillStyle='#6b655f'; g.font='11px -apple-system'; g.fillText('waiting for data…', 12, H/2); return; }
+  const f = v => log ? Math.log10(v) : v;
+  let y0 = Math.min(...all.map(f)), y1 = Math.max(...all.map(f)); if (y1-y0 < 1e-9){ y0-=1; y1+=1; }
+  const x0 = Math.min(...xs), x1 = Math.max(...xs, x0+1);
+  const X = x => pad.l + (x-x0)/(x1-x0)*(W-pad.l-pad.r), Y = v => pad.t + (1-(f(v)-y0)/(y1-y0))*(H-pad.t-pad.b);
+  g.strokeStyle='rgba(242,238,230,.08)'; g.fillStyle='#97908a'; g.font='9.5px Menlo'; g.lineWidth=1;
+  for (let i=0;i<=4;i++){ const yv=y0+(y1-y0)*i/4, yy=pad.t+(1-i/4)*(H-pad.t-pad.b);
+    g.beginPath(); g.moveTo(pad.l,yy); g.lineTo(W-pad.r,yy); g.stroke();
+    const val = log ? 10**yv : yv; g.fillText(Math.abs(val)<1e-3&&val!==0 ? val.toExponential(0) : val.toPrecision(3), 2, yy+3); }
+  g.fillText(x0.toLocaleString(), pad.l, H-4); g.fillText(x1.toLocaleString(), W-pad.r-40, H-4);
+  for (const s of series){
+    let Ys = Y;
+    if (s.own){ const v=s.y.filter(isFinite); const a=Math.min(...v), b=Math.max(...v, a+1e-9); Ys = q => pad.t+(1-(q-a)/(b-a))*(H-pad.t-pad.b); g.globalAlpha=.45; }
+    g.strokeStyle=s.c; g.fillStyle=s.c; g.lineWidth=s.w||1.4; g.beginPath();
+    s.x.forEach((x,i)=>{ const v=s.y[i]; if (v==null || !isFinite(v) || (log && !s.own && v<=0)) return; const px=X(x), py=Ys(v); i?g.lineTo(px,py):g.moveTo(px,py); });
+    g.stroke();
+    if (s.dots) s.x.forEach((x,i)=>{ const v=s.y[i]; if (v==null) return; g.beginPath(); g.arc(X(x),Ys(v),2.4,0,7); g.fill(); });
+    g.globalAlpha=1;
+  }
+}
+
+/* ── bottom bar: every active (or recently finished) run ── */
+function renderBar(){
+  const rs = S.state.runs.filter(r => r.alive || ['done','stopped','crashed','evaluating'].includes(r.state)).slice(0, 6);
+  $('#bar').innerHTML = rs.length ? rs.map(r => {
+    const pct = r.steps ? Math.min(100, 100*r.step/r.steps) : 0;
+    return `<div class="job" data-run="${esc(r.name)}"><div class="top"><span class="dot" style="background:${COL[r.policy]||'#888'}"></span>${esc(r.name)}
+      <span class="chip ${r.state==='training'?'running':r.state}" style="padding:1px 7px;font-size:9px">${r.state}</span><span class="eta">${r.eta_s ? dur(r.eta_s)+' left' : ''}</span></div>
+      <div class="prog"><div class="f" style="width:${pct}%"></div></div>
+      <div class="stats">step ${r.step.toLocaleString()} / ${r.steps?.toLocaleString() ?? '?'} · loss ${fmt(r.loss)} · best val ${fmt(r.best_val_l1)}${r.steps_per_s ? ' · '+fmt(r.steps_per_s,2)+' it/s' : ''}</div></div>`;
+  }).join('') : `<div class="note" style="margin:auto">No active training. Configure on the left and press ▶ Train.</div>`;
+  $('#bar').querySelectorAll('[data-run]').forEach(e => e.onclick = () => selectRun(e.dataset.run));
+}
+
+/* ── actions ── */
+$('#trainBtn').onclick = async () => {
+  const name = ($('#runName')?.value || S.runName || suggestName()).trim();
+  try {
+    const r = await api('/api/train', {policy:S.arch, name, config:S.cfg});
+    if (r.external) toast(r.message, true); else toast(`Started ${r.name}`);
+    S.runName = null; await refresh(); selectRun(r.name);
+  } catch(e){ toast(e.message, true); }
+};
+const runAct = (act, body) => async () => {
+  if (!S.run) return toast('Select a run first (Runs tab)', true);
+  try { await api(`/api/run/${S.run}/${act}`, body || {}); toast(`${act}: ${S.run}`); setTimeout(refresh, 800); } catch(e){ toast(e.message, true); }
+};
+$('#stopBtn').onclick = runAct('stop');
+$('#resumeBtn').onclick = runAct('resume');
+$('#evalBtn').onclick = runAct('eval');
+$('#cmpBtn').onclick = async () => {
+  const runs = [...S.cmp];
+  if (runs.length < 2) return toast('Tick two or more evaluated runs in the Runs tab', true);
+  try { const r = await api('/api/compare', {runs}); S.cmpView = r.dir; toast('Building the comparison…'); showCompare(r.dir, 0); } catch(e){ toast(e.message, true); }
+};
+async function showCompare(dir, n){
+  try {
+    const md = await api(`/api/compare/${dir}/summary.md`);
+    const rows = md.md.trim().split('\n').filter(l=>!/^\|-/.test(l)).map(l=>l.split('|').slice(1,-1).map(x=>x.trim()));
+    $('#center').innerHTML = `<div class="runhead"><span class="name">Comparison</span><button class="btn" onclick="S.cmpView=null;pollRun(true)">back to run</button></div>
+      <div class="sect"><div class="st">Test split</div><table>${rows.map((r,i)=>`<tr>${r.map(c=>i?`<td>${esc(c)}</td>`:`<th>${esc(c)}</th>`).join('')}</tr>`).join('')}</table></div>
+      <div class="sect"><div class="st">Figures</div><div class="plots"><img src="/api/compare/${dir}/summary.png?${Date.now()}" data-zoom><img src="/api/compare/${dir}/test_horizon.png?${Date.now()}" data-zoom></div></div>`;
+    $('#center').querySelectorAll('[data-zoom]').forEach(e => e.onclick = () => { $('#zoomImg').src = e.src; $('#zoom').style.display='grid'; });
+  } catch(e){ if (n < 40) setTimeout(()=>showCompare(dir, n+1), 1500); else toast('Comparison failed — are all runs evaluated?', true); }
+}
+document.addEventListener('keydown', e => { if (e.metaKey && e.key==='Enter') $('#trainBtn').click(); });
+
+/* ── boot / poll ── */
+function renderAll(){ renderData(); renderModel(); renderIO(); renderRuns(); renderBar(); }
+async function refresh(){
+  try { S.state = await api('/api/state'); } catch(e){ return; }
+  const st = S.state;
+  $('#dev').textContent = `${st.device.device.toUpperCase()} · ${st.device.name}`;
+  $('#disk').textContent = `${st.disk_free_gb.toFixed(0)} GB free`;
+  $('#disk').style.color = st.disk_free_gb < 5 ? 'var(--danger)' : '';
+  if (!S.cfg){
+    const saved = JSON.parse(localStorage.getItem('nova-train-cfg') || 'null');
+    S.cfg = saved ? Object.assign(structuredClone(st.defaults), saved.cfg) : structuredClone(st.defaults);
+    S.arch = saved?.arch || 'act';
+    renderAll(); loadReport();
+    const r = localStorage.getItem('nova-train-run') || st.runs[0]?.name;
+    if (r && st.runs.some(x=>x.name===r)) selectRun(r);
+  } else {
+    if (!document.activeElement || !document.activeElement.matches('input,select')) { renderRuns(); }
+    renderBar();
+    const cards = $('#dataPane'); if (cards && !cards.contains(document.activeElement)) renderData();
+  }
+}
+refresh();
+setInterval(refresh, 4000);
+setInterval(() => pollRun(false), 3000);
+</script>
+</body>
+</html>

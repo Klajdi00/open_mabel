@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.org.example.MABEL-Mobile-App</string>
+	</array>
+	<!-- Push (aps-environment) + Time-Sensitive notifications are ARCHIVED:
+	     a free/Personal Apple team can't provision them. Re-add both when on a
+	     paid Apple Developer account to enable remote push (alerts while the
+	     phone is asleep) and Focus-breaking time-sensitive delivery.
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.usernotifications.time-sensitive</key>
+	<true/>
+	-->
+</dict>
+</plist>

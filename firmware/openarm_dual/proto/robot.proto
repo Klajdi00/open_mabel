@@ -1,0 +1,124 @@
+// robot.proto — host <-> Teensy UDP control protocol for a generic robot.
+//
+// CANONICAL & SINGLE-SOURCE. Lives with the firmware, which owns the wire protocol.
+// Firmware compiles it with nanopb (../platformio.ini + robot.options); the host
+// (../../host) references THIS file directly via gen_proto.sh — no copy, no sync step.
+// Keep it portable: no `import "nanopb.proto"` — all nanopb field sizing lives in the
+// companion robot.options file beside this one.
+//
+// SELF-DESCRIBING: the robot is defined entirely by /robot.json on the Teensy SD card
+// (any set of actuators on CAN buses). On Hello the firmware replies with RobotInfo —
+// name, rates, and a per-actuator descriptor list — so ONE host client adapts to any
+// robot with no hard-coded layout. Every per-actuator repeated field is dynamic
+// (runtime count, max 32 = MAX_ACTUATORS in firmware).
+//
+// Transport: one UDP datagram per message, each prefixed with a 1-byte type tag
+// (NOT part of protobuf — see the Tag values below) followed by the encoded body.
+// Teensy server port from config (default 5800); it learns the host endpoint from
+// inbound packets and streams/replies there. Units on the wire are SI motor-side:
+// position rad, velocity rad/s, torque N·m — the same units DmActuator decodes.
+//
+// Actuator order: index i corresponds to actuators[i] in RobotInfo (and in
+// /robot.json). A disconnected actuator simply reads not-live (bit clear in live_mask).
+//
+// Datagram type tags (first byte of every UDP payload):
+//   host -> Teensy : 0x01 Command, 0x02 HealthRequest, 0x03 Hello
+//   Teensy -> host : 0x10 State,   0x11 Health,        0x12 RobotInfo
+
+syntax = "proto3";
+
+package robot;
+
+// ---- host -> Teensy ---------------------------------------------------------
+
+// MIT setpoints, one entry per actuator: T = kp*(pos - q) + kd*(vel - dq) + t_ff.
+// Cached on receipt and streamed to CAN at the control rate; resets the command
+// watchdog. If commands lapse while still connected, the firmware substitutes a
+// safe damping hold (kp=0, kd=per-actuator default, t_ff=0). kd MUST be > 0 whenever
+// commanding a position or the motor oscillates. Arrays are indexed like RobotInfo.
+message Command {
+  uint32 seq = 1;            // host sequence number; echoed in State.seq for RTT/loss tracking
+  repeated float pos  = 2;   // rad
+  repeated float vel  = 3;   // rad/s
+  repeated float kp   = 4;   // position gain
+  repeated float kd   = 5;   // velocity gain (damping)
+  repeated float t_ff = 6;   // feed-forward torque, N·m
+  // Command arbitration — read by the BRIDGE to decide which commander owns the channel.
+  // NOT forwarded to the Teensy (setCommand sends only motor fields), so the firmware ignores them
+  // and needs no rebuild. priority: higher wins, 0 = unset/lowest. commander_id: distinguishes
+  // commanders so one owner holds the channel exclusively.
+  uint32 priority     = 7;
+  uint32 commander_id = 8;
+}
+
+// Ask for a single Health reply (low-rate; keeps the hot State packet small).
+message HealthRequest {
+  uint32 seq = 1;
+}
+
+// Register the host endpoint and (re)start the State stream. Sent by connect();
+// the firmware answers with RobotInfo.
+message Hello {
+  uint32 stream_hz = 1;      // requested stream rate; 0 = firmware default
+}
+
+// ---- Teensy -> host ---------------------------------------------------------
+
+// Static description of one actuator. Identity/naming comes from /robot.json;
+// the p/v/t ranges are read back from the motor itself at boot.
+message ActuatorInfo {
+  string name       = 1;     // unique, e.g. "j1", "gripper"
+  string model      = 2;     // DAMIAO model, documentation only
+  uint32 bus        = 3;     // 1-based CAN bus index
+  uint32 can_id     = 4;
+  uint32 mst_id     = 5;
+  // MIT fixed-point ranges: p/v/t are the motor's own PMAX/VMAX/TMAX registers.
+  // kp_max/kd_max are MIT protocol constants, not motor registers.
+  float  p_max      = 6;
+  float  v_max      = 7;
+  float  t_max      = 8;
+  float  kp_max     = 9;
+  float  kd_max     = 10;
+  float  default_kp = 11;    // damping-hold gains used when no fresh command
+  float  default_kd = 12;
+}
+
+// Reply to Hello: the full robot layout, so the host builds itself dynamically.
+message RobotInfo {
+  string name              = 1;
+  uint32 stream_default_hz = 2;
+  uint32 stream_max_hz     = 3;
+  repeated ActuatorInfo actuators = 4;   // index == actuator index everywhere else
+}
+
+// Control-relevant state for one actuator.
+message ActuatorState {
+  float position = 1;        // rad
+  float velocity = 2;        // rad/s
+  float torque   = 3;        // N·m (estimated from MIT feedback)
+}
+
+// Streamed snapshot of all actuators.
+message State {
+  uint32 seq       = 1;      // echo of the last applied Command.seq
+  uint32 t_us      = 2;      // Teensy micros() at send -> host computes packet age
+  uint32 live_mask = 3;      // bit i set => actuator i returned feedback recently
+  repeated ActuatorState actuators = 4;
+}
+
+// Full health for one actuator.
+message ActuatorHealth {
+  uint32 err      = 1;       // DM error nibble: 1 = enabled OK, 8..E = fault (see the root README)
+  uint32 t_mos    = 2;       // °C, driver MOSFET
+  uint32 t_rotor  = 3;       // °C, motor coil
+  bool   enabled  = 4;       // err == 1
+  bool   live     = 5;       // feedback fresh within the firmware live window
+  uint32 stale_ms = 6;       // age of the newest feedback frame
+}
+
+// Reply to HealthRequest.
+message Health {
+  uint32 seq  = 1;
+  uint32 t_us = 2;
+  repeated ActuatorHealth actuators = 3;
+}

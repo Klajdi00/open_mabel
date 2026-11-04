@@ -1,0 +1,9 @@
+# Python build artifacts
+__pycache__/
+*.pyc
+
+# GUI virtualenv (built locally via ./setup_gui_venv.sh)
+.venv/
+
+# Persisted lift state is written on the Pico, but if a copy lands here ignore it
+lift_state.json

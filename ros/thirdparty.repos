@@ -1,0 +1,32 @@
+# MABEL ROS 2 workspace -- third-party SOURCE dependencies
+# =========================================================
+# These ROS packages are built from source because they must match a locally-
+# installed SDK exactly:
+#   * zed-ros2-*      -> pinned to the branch matching ZED SDK 4.2 in /usr/local/zed
+#   * cob_common      -> provides cob_srvs (a zed_components build dep)
+#
+#     vcs import src < thirdparty.repos
+#     ./scripts/build_sdk_cams.sh        # patches for Jazzy + builds ZED + cob_srvs
+#
+# RealSense is NOT built from source anymore: the prebuilt RoboStack conda package
+# `ros-jazzy-realsense2-camera` (with bundled librealsense) is installed into the
+# `mabel` env instead -- simpler and ABI-matched. The realsense-ros entry below is
+# kept (commented) only as a source fallback.
+
+repositories:
+  # realsense-ros:                         # superseded by conda ros-jazzy-realsense2-camera
+  #   type: git
+  #   url: https://github.com/IntelRealSense/realsense-ros.git
+  #   version: "4.57.6"
+  zed-ros2-wrapper:
+    type: git
+    url: https://github.com/stereolabs/zed-ros2-wrapper.git
+    version: humble-v4.2.5      # matches ZED SDK 4.2.5 in /usr/local/zed (Jazzy-patched by build_sdk_cams.sh)
+  zed-ros2-interfaces:
+    type: git
+    url: https://github.com/stereolabs/zed-ros2-interfaces.git
+    version: "4.2.5"            # provides zed_msgs; matches the wrapper tag
+  cob_common:
+    type: git
+    url: https://github.com/4am-robotics/cob_common.git
+    version: foxy               # ROS2 cob_srvs (SetInt) -- a zed_components build dep

@@ -1,0 +1,24 @@
+<mujoco model="swerve_scene">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <asset>
+    <material name="floor_mat" rgba="0.82 0.82 0.82 1"/>
+  </asset>
+
+  <include file="../models/swerve_module.xml"/>
+
+  <worldbody>
+    <light name="sun"    pos="0 0 4"    dir="0 0 -1"     diffuse="0.8 0.8 0.8" castshadow="true"/>
+    <light name="fill_f" pos=" 0.5 0 2" dir="-0.3 0 -1"  diffuse="0.3 0.3 0.4" castshadow="false"/>
+    <light name="fill_b" pos="-0.5 0 2" dir=" 0.3 0 -1"  diffuse="0.3 0.3 0.4" castshadow="false"/>
+
+    <geom name="floor" type="plane" size="2 2 0.1"
+          material="floor_mat" contype="1" conaffinity="1"
+          friction="0.9 0.01 0.001"/>
+  </worldbody>
+
+</mujoco>

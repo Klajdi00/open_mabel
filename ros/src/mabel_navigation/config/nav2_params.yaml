@@ -1,0 +1,340 @@
+# =============================================================================
+# Nav2 parameters for MABEL  --  HOLONOMIC swerve base, flat indoor floor.
+#
+# BACKEND-AGNOSTIC BY DESIGN.  Navigation consumes the SAME contract no matter
+# which SLAM is running underneath it, so this one file serves BOTH:
+#     * LiDAR 2D SLAM   (slam_toolbox)         -> /map, map->odom
+#     * Visual 3D SLAM  (cuVSLAM + nvblox)     -> /map (via slice_to_occupancy),
+#                                                 map->odom
+# The costmaps therefore read only the universal inputs every SLAM publishes:
+#     global_costmap : StaticLayer   <- /map   (nav_msgs/OccupancyGrid, frame map)
+#     local_costmap  : ObstacleLayer <- /scan  (sensor_msgs/LaserScan)
+#     both           : InflationLayer
+# Nothing here references nvblox/cuVSLAM/slam_toolbox topics directly, so swapping
+# the SLAM backend needs NO change to navigation -- see navigation.launch.py.
+#
+# odom->base_link is ALWAYS owned by the wheel odometry (swerve_odometry); SLAM
+# only corrects map->odom.  Localisation = TF (map->odom->base_link); odom_topic
+# is just the velocity feedback for the controller/smoother.
+#
+# This is a tuned STARTING POINT.  Items most likely to need adjustment on
+# hardware are marked  ### TUNE ###  (footprint, speed limits, sensor ranges).
+# =============================================================================
+
+bt_navigator:
+  ros__parameters:
+    global_frame: map
+    robot_base_frame: base_link_nav
+    odom_topic: /odom_nav
+    bt_loop_duration: 10
+    default_server_timeout: 20
+
+controller_server:
+  ros__parameters:
+    controller_frequency: 20.0
+    odom_topic: /odom_nav                # velocity feedback in the nav frame (front=+x)
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.001      # holonomic: y motion is real, keep low
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugins: ["progress_checker"]
+    goal_checker_plugins: ["goal_checker"]
+    controller_plugins: ["FollowPath"]
+
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      # Trip "no progress" sooner so the BT's unstick recovery fires while the base
+      # is wedged instead of grinding for 10 s. If the robot fails to move 0.25 m
+      # within 6 s, FollowPath aborts -> RecoveryFallback (clear/back-up/spin).
+      required_movement_radius: 0.25
+      movement_time_allowance: 6.0
+    goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      # Loose arrival gate: count the goal as reached once the base is within 0.70 m
+      # of it (the robot need not drive all the way onto the exact point). Raise/lower
+      # to trade arrival precision for not over-driving into tight goal spots.
+      xy_goal_tolerance: 0.70
+      # Loose final-heading gate: the robot faces its travel direction (front leads),
+      # so we accept arrival regardless of the goal's exact yaw (pi ~= ignore) instead
+      # of making it pirouette in place at the goal.
+      yaw_goal_tolerance: 3.14159
+      stateful: True
+
+    # MPPI controller -- the STOCK nav2 MPPI in FULL control of vx, vy AND wz.
+    #
+    # This is the configuration that reliably reached goals. MPPI plans coordinated
+    # vx/vy/omega trajectories and collision-checks the ROTATING footprint along each
+    # rollout, so it never sweeps a corner into a wall (an earlier "bridge owns yaw"
+    # split did, trapping the planner with a start-in-collision). FRONT-FACING is
+    # achieved WITHOUT crippling MPPI: the whole stack runs in `base_link_nav` (= base
+    # rotated 180 deg so +x is the robot's TRUE front, base_link -X), so MPPI's normal
+    # forward-preference (PreferForward + PathAngle mode 0) squares the FRONT to the
+    # path. cmd_vel_bridge negates the twist back to base_link for the swerve and feeds
+    # /odom_nav so MPPI's velocity matches this frame. vy_max small -> faces and goes
+    # (car-like) rather than crabbing. Speeds are capped by the bridge's lift-safe model.
+    FollowPath:
+      plugin: "nav2_mppi_controller::MPPIController"
+      time_steps: 56
+      model_dt: 0.05
+      batch_size: 2000
+      vx_std: 0.45               # sample the higher cruise speed
+      vy_std: 0.10               # narrow: strafe only for fine alignment, not travel
+      wz_std: 0.60               # sample turning-to-face the path
+      vx_max: 1.0                # bridge's lift-safe model is the true cap
+      vx_min: -0.35              # reverse only for un-sticking (PreferForward penalises it)
+      vy_max: 0.15               # near-zero strafe -> the body turns to face travel dir
+      wz_max: 2.0                # MPPI fully owns rotation again (match teleop MAX_ANG)
+      motion_model: "Omni"       # holonomic
+      visualize: true
+      TrajectoryVisualizer:
+        trajectory_step: 5
+        time_step: 3
+      # Forward-preference critics make the FRONT (= +x in base_link_nav) lead the path.
+      critics: ["ConstraintCritic", "CostCritic", "GoalCritic", "GoalAngleCritic",
+                "PathAlignCritic", "PathFollowCritic", "PathAngleCritic", "PreferForwardCritic"]
+      ConstraintCritic: {enabled: true, cost_power: 1, cost_weight: 4.0}
+      PreferForwardCritic: {enabled: true, cost_power: 1, cost_weight: 5.0, threshold_to_consider: 0.5}
+      GoalCritic: {enabled: true, cost_power: 1, cost_weight: 5.0, threshold_to_consider: 1.4}
+      GoalAngleCritic: {enabled: true, cost_power: 1, cost_weight: 3.0, threshold_to_consider: 0.5}
+      # LIVE collision check: consider_footprint:TRUE checks the ORIENTED SQUARE footprint
+      # polygon (URDF, set in the costmaps below) along each sampled, ROTATING rollout.
+      # collision_cost rejects footprint-in-obstacle samples; critical_cost discourages skimming.
+      CostCritic: {enabled: true, cost_power: 1, cost_weight: 5.0, critical_cost: 300.0, consider_footprint: true, collision_cost: 1000000.0}
+      PathAlignCritic: {enabled: true, cost_power: 1, cost_weight: 10.0, max_path_occupancy_ratio: 0.05, trajectory_point_step: 4, threshold_to_consider: 0.5, offset_from_furthest: 20, use_path_orientations: false}
+      PathFollowCritic: {enabled: true, cost_power: 1, cost_weight: 5.0, offset_from_furthest: 5, threshold_to_consider: 1.4}
+      # Heavy weight + mode 0 (FORWARD_PREFERENCE) rotates the body to point along the
+      # path -- in base_link_nav that points the FRONT where it's going.
+      PathAngleCritic: {enabled: true, cost_power: 1, cost_weight: 7.0, offset_from_furthest: 4, threshold_to_consider: 0.5, max_angle_to_furthest: 0.785, mode: 0}
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 20.0
+    # A* path planning (NavFn in A* mode -- use_astar:true). SmacPlanner2D is a
+    # stricter A* that REFUSES when the start/goal cell is within the inscribed
+    # radius; frontier goals sit right on the free/unknown boundary (next to walls),
+    # so it returned "no valid path found" every cycle and the robot never moved.
+    # NavFn's A* uses `tolerance` to snap the goal to the nearest reachable free cell,
+    # which is what exploration needs. Still A*, still 8-connected on the costmap.
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      use_astar: true              # A* (not Dijkstra)
+      tolerance: 0.5               # m; snap goal to nearest reachable free cell
+      allow_unknown: true          # plan through not-yet-mapped space (exploration)
+
+smoother_server:
+  ros__parameters:
+    smoother_plugins: ["simple_smoother"]
+    simple_smoother:
+      plugin: "nav2_smoother::SimpleSmoother"
+      tolerance: 1.0e-10
+      max_its: 1000
+      do_refinement: True
+
+behavior_server:
+  ros__parameters:
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_frame: odom
+    global_frame: map
+    robot_base_frame: base_link_nav
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
+    spin: {plugin: "nav2_behaviors::Spin"}
+    backup: {plugin: "nav2_behaviors::BackUp"}
+    drive_on_heading: {plugin: "nav2_behaviors::DriveOnHeading"}
+    wait: {plugin: "nav2_behaviors::Wait"}
+    # Recovery-motion tuning (read by Spin/BackUp/DriveOnHeading on this node).
+    # simulate_ahead_time is how far each recovery move is collision-checked before
+    # it's allowed to start: SHORTENED from the 2.0 s default so a base wedged next
+    # to a wall is still permitted to back up / spin a little to free itself instead
+    # of the recovery aborting because something is within 2 s of travel.
+    simulate_ahead_time: 1.0
+    max_rotational_vel: 1.5      # rad/s; brisk spin recovery (under MAX_ANG_SPEED 2.0)
+    min_rotational_vel: 0.4      # rad/s; don't crawl through the spin
+    rotational_acc_lim: 3.5      # rad/s^2
+
+velocity_smoother:
+  ros__parameters:
+    smoothing_frequency: 20.0
+    feedback: "OPEN_LOOP"
+    # SYMMETRIC in vx: the robot drives its FRONT (base_link -X) forward, i.e. with
+    # NEGATIVE vx, so the reverse limit must equal the forward one or front-first
+    # cruising gets throttled. The bridge's lift-safe model is the true cap anyway.
+    max_velocity: [0.8, 0.7, 2.0]      # [vx, vy, wz] holonomic
+    min_velocity: [-0.8, -0.7, -2.0]
+    max_accel: [2.5, 2.5, 4.0]
+    max_decel: [-3.0, -3.0, -5.0]
+    odom_topic: "/odom"
+    odom_duration: 0.1
+
+# ---------------------------------------------------------------------------
+# Collision monitor -- last-resort safety layer between the smoother and the base.
+# nav2's navigation_launch.py ALWAYS launches this node, so it MUST be configured
+# or lifecycle bringup aborts ("observation_sources is not initialized").
+# Chain: controller -> /cmd_vel_nav -> velocity_smoother -> /cmd_vel_smoothed
+#        -> collision_monitor -> /cmd_vel -> cmd_vel_bridge.
+# Obstacle source is the LiDAR /scan (present in BOTH SLAM modes). Circle polygons
+# avoid version-specific points formatting. min_points >1 so single LiDAR outliers
+# (the injected noise) do not trigger spurious stops. ### TUNE ### radii.
+# ---------------------------------------------------------------------------
+collision_monitor:
+  ros__parameters:
+    base_frame_id: "base_link_nav"
+    odom_frame_id: "odom"
+    cmd_vel_in_topic: "cmd_vel_smoothed"
+    cmd_vel_out_topic: "cmd_vel"
+    state_topic: "collision_monitor_state"
+    transform_tolerance: 0.2
+    source_timeout: 1.0
+    base_shift_correction: True
+    stop_pub_timeout: 2.0
+    # Tightened so the SAFETY layer doesn't veto tight-corner driving. The base is
+    # ~0.25 m half-width; the stop ring is just outside that (emergency only), and
+    # the slow ring is modest with a gentle ratio so the robot eases past walls
+    # instead of freezing. (The LiDAR self-filter already hides returns < ~0.4 m, so
+    # a wider stop ring mostly just stalled the robot near every wall.)
+    polygons: ["PolygonStop", "PolygonSlow"]
+    PolygonStop:
+      type: "circle"
+      radius: 0.30               # emergency hard stop (just outside the footprint)
+      action_type: "stop"
+      min_points: 5              # need a real cluster -> ignores beam outliers
+      visualize: True
+      polygon_pub_topic: "polygon_stop"
+      enabled: True
+    PolygonSlow:
+      type: "circle"
+      radius: 0.55               # ease off when a wall is close
+      action_type: "slowdown"
+      slowdown_ratio: 0.6        # 60% speed, not 30% -- keep moving through gaps
+      min_points: 5
+      visualize: True
+      polygon_pub_topic: "polygon_slowdown"
+      enabled: True
+    observation_sources: ["scan"]
+    scan:
+      type: "scan"
+      topic: "/scan"
+      min_height: 0.05
+      max_height: 0.5
+      enabled: True
+
+# ===========================================================================
+# Costmaps -- BACKEND-AGNOSTIC.
+#   global_costmap : StaticLayer subscribes /map (the SLAM occupancy grid, frame
+#                    map). Whichever SLAM is up (slam_toolbox directly, or nvblox
+#                    via slice_to_occupancy) publishes /map, so this is identical.
+#   local_costmap  : ObstacleLayer raytraces /scan into a rolling window for fast
+#                    reactive avoidance + the MPPI CostCritic.
+#   both           : InflationLayer for footprint clearance.
+#
+# FOOTPRINT (from the URDF): MABEL's mobile base is a SQUARE, not a circle. The
+# mabel_chassis collision mesh (base/mobile_base.stl) measures x[-0.244,+0.243]
+# y[-0.243,+0.243] about base_link, so we use a SQUARE footprint polygon of half-
+# extent ~0.244 m (re-derive with scripts/footprint_from_urdf.py whenever the model
+# changes). A square is the true shape and lets the base thread tighter gaps than the
+# worst-case circumscribed circle (0.328 m) would.
+#   * MPPI's CostCritic runs with consider_footprint:TRUE -> it collision-checks this
+#     ORIENTED square polygon along every sampled rollout against the rolling local
+#     costmap (the live collision check).
+#   * inflation_radius >= the 0.328 m circumscribed radius of the square so the costmap
+#     potential field still speeds up SE2 collision checking (clears the
+#     "inflation < circumscribed radius" controller warning).
+# ### TUNE ### grow/shrink the polygon or inflation if it clips / refuses gaps.
+# ===========================================================================
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom            # roll in the (drift-free over short range) odom frame
+      robot_base_frame: base_link_nav
+      rolling_window: true
+      width: 6
+      height: 6
+      resolution: 0.05
+      footprint: "[[0.244, 0.243], [0.244, -0.243], [-0.244, -0.243], [-0.244, 0.243]]"  # URDF square (see header)
+      footprint_padding: 0.0
+      plugins: ["obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          sensor_frame: lidar_link
+          data_type: "LaserScan"
+          clearing: true
+          marking: true
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          obstacle_max_range: 6.0
+          obstacle_min_range: 0.0
+          raytrace_max_range: 8.0
+          raytrace_min_range: 0.0
+          inf_is_valid: true        # treat +inf returns as max-range clearing rays
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        # Sharp, narrow halo: lethal only within the footprint's inscribed radius
+        # (~0.25 m), decaying fast so the rest of a corridor stays cheap and the
+        # controller drives at speed instead of crawling away from far walls.
+        cost_scaling_factor: 4.0
+        # Tightened toward the base's inscribed radius (~0.244 m half-width) so the
+        # inflated obstacle halo is just a thin safety skin -- the robot can thread
+        # gaps only slightly wider than itself. This is intentionally BELOW the 0.328 m
+        # circumscribed radius, so nav2 disables the SE2 potential-field collision
+        # shortcut and prints an "inflation < circumscribed" warning; that is fine here
+        # because MPPI's CostCritic (consider_footprint:true) does the real oriented-
+        # footprint collision check against the local costmap.
+        inflation_radius: 0.28      # ### TUNE ### (raise for more wall clearance)
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link_nav
+      footprint: "[[0.244, 0.243], [0.244, -0.243], [-0.244, -0.243], [-0.244, 0.243]]"  # URDF square (see header)
+      footprint_padding: 0.0
+      resolution: 0.05
+      track_unknown_space: true     # unknown stays unknown -> frontier exploration sees it
+      rolling_window: false         # follow the live SLAM map as it grows
+      # GLOBAL planning uses the STABLE SLAM map (static_layer) + inflation ONLY -- NO
+      # live obstacle_layer. A live /scan layer here marked transient cells around the
+      # robot and inflation engulfed its OWN cell, so NavFn refused to plan ("Failed to
+      # create plan" from the robot's location) and the robot got trapped despite having
+      # room. Reactive avoidance of live/unmapped obstacles is the LOCAL costmap's job
+      # (MPPI). The global planner only needs the persistent walls, which SLAM already maps.
+      plugins: ["static_layer", "inflation_layer"]
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_topic: /map
+        subscribe_to_updates: true
+        map_subscribe_transient_local: true   # SLAM latches /map (transient-local QoS)
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          sensor_frame: lidar_link
+          data_type: "LaserScan"
+          clearing: true
+          marking: true
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          obstacle_max_range: 6.0
+          raytrace_max_range: 8.0
+          inf_is_valid: true
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        # GLOBAL stays SHARP (8.0): a soft global gradient floods narrow gaps with cost
+        # so A* refuses to path through them (verified -- plan failures jumped). Keep the
+        # planner able to thread doorways; the LOCAL costmap is the one softened for MPPI.
+        cost_scaling_factor: 8.0
+        # Tightened toward the base's inscribed radius (~0.244 m) so A* will plan through
+        # narrower doorways/gaps instead of refusing them. The sharp cost_scaling (8.0)
+        # keeps the gradient from flooding those gaps with cost. ### TUNE ### raise back
+        # toward 0.36 if the planned path skims walls too closely on hardware.
+        inflation_radius: 0.28

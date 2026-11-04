@@ -1,0 +1,18 @@
+# Studio-private workspace: runs, derived datasets, SQLite store, env snapshots.
+workspace/runs/
+workspace/datasets/
+workspace/*.db
+workspace/*.db-wal
+workspace/*.db-shm
+workspace/env_snapshot_*.txt
+workspace/install_*.log
+__pycache__/
+*.pyc
+
+# LaTeX build artifacts
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.fdb_latexmk
+docs/*.fls
+docs/*.synctex.gz

@@ -1,0 +1,11 @@
+mujoco>=3.0
+numpy>=1.21
+scipy>=1.8
+matplotlib>=3.5
+
+# actuator calibration (mabel_actid): hardware collection only.
+# the simulator / identification / plotting / GUI all run without these.
+#   pyserial    -> serial backend (DM-USB2FDCAN; the macOS path + GUI auto-detect)
+#   python-can  -> SocketCAN backend (Linux can0)
+# pyserial>=3.5
+# python-can>=4.0

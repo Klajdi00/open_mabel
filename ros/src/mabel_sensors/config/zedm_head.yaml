@@ -1,0 +1,53 @@
+# ZED Mini (head) parameter OVERRIDE for MABEL -- the REAL drop-in for the sim's
+# head ZED stereo (mabel_sim sensor_config "zed_*").
+#
+# Loaded by mabel_sensors/launch/zed.launch.py via `ros_params_override_path`, so
+# the Stereolabs wrapper reads its stock zedm.yaml FIRST and these keys override
+# it. Only the deltas from stock live here -- everything else stays at the
+# wrapper's defaults.
+#
+# The node is launched as camera_name:=zed (node zed_node), so it publishes:
+#   /zed/zed_node/rgb/image_rect_color            (+ camera_info)   <- RGB
+#   /zed/zed_node/left|right/image_rect_color     (+ camera_info)
+#   /zed/zed_node/depth/depth_registered          (+ camera_info)
+#   /zed/zed_node/point_cloud/cloud_registered    (XYZRGB cloud)    <- POINTCLOUD
+# TF base frame is `zed_camera_link`; zed.launch.py statics head -> zed_camera_link.
+/**:
+    ros__parameters:
+        general:
+            camera_model: 'zedm'        # ZED Mini (must match the connected unit)
+            # ZED-M native grab; HD720@30 is the bandwidth/quality sweet spot over
+            # USB-3 and matches the sim head render. Drop to 'VGA' if the USB link
+            # is marginal, raise to 'HD1080' on a clean USB-3 port.
+            grab_resolution: 'HD720'
+            grab_frame_rate: 30
+            pub_resolution: 'CUSTOM'    # downscale before publishing to save bandwidth
+            pub_downscale_factor: 2.0   # HD720 -> 640x360 published (sim head parity)
+            pub_frame_rate: 15.0        # matches the sim head sensor_rate
+
+        depth:
+            # CLASSIC stereo depth: needs NO cuDNN / AI model. This unit's
+            # ZED_Diagnostic reports "Cannot find CUDNN", so the NEURAL* modes
+            # would fail (or block for minutes self-optimizing) on first run.
+            # 'ULTRA' is the best non-AI mode -> reliable depth + pointcloud out of
+            # the box. Switch to 'NEURAL'/'NEURAL_LIGHT' once cuDNN is installed.
+            depth_mode: 'ULTRA'
+            openni_depth_mode: false    # 32-bit float metres (REP-118), not mm
+            point_cloud_freq: 15.0      # cloud publish rate (<= pub_frame_rate)
+            point_cloud_res: 'COMPACT'  # optimise processing + bandwidth for viz
+
+        pos_tracking:
+            # The robot already owns odom/SLAM (cuVSLAM / wheel odom). The head ZED
+            # is a STATIC-mounted RGB-D sensor here, so disable its visual odometry
+            # entirely -- zed.launch.py provides a fixed head -> zed_camera_link TF.
+            # (publish_tf is also forced false from the launch file.)
+            pos_tracking_enabled: false
+
+        mapping:
+            mapping_enabled: false      # nvblox owns 3D mapping, not the ZED SDK
+
+        object_detection:
+            od_enabled: false           # not used; avoids the un-optimised AI load
+
+        body_tracking:
+            bt_enabled: false

@@ -1,0 +1,70 @@
+# Front Intel RealSense D435i for MABEL -- the REAL drop-in for the MuJoCo sim's
+# front camera (mabel_sim sensor_config.DEPTH_CAMERAS "front").
+#
+# Launched as node 'front' in namespace 'camera' with camera_name:=front, this
+# publishes EXACTLY the topics + optical frames the sim front D435i does, so the
+# SAME cuVSLAM + nvblox stack (mabel_slam) runs unchanged on real hardware:
+#   /camera/front/infra1|infra2/image_rect_raw (+camera_info)  -> cuVSLAM
+#   /camera/front/depth/image_rect_raw         (+camera_info)  -> nvblox
+#   /camera/front/color/image_raw              (+camera_info)  -> nvblox color
+#   frames: front_{infra1,infra2,depth,color}_optical_frame
+#
+# Verified on thor: with these names the topics/frames match sensor_config.py 1:1.
+/**:
+  ros__parameters:
+    camera_name: front          # -> front_*_optical_frame TF frames (sim contract)
+
+    # --- Streams (full match to the sim front camera) --------------------
+    enable_infra1: true         # left  IR  -> cuVSLAM left
+    enable_infra2: true         # right IR  -> cuVSLAM right
+    enable_depth: true          # depth     -> nvblox + pointcloud
+    enable_color: true          # color     -> nvblox coloured mesh / vision
+    enable_sync: true           # hardware-sync the frames (required for stereo VSLAM)
+
+    # --- Stream profiles (D435 native; 848x480@15 = SLAM sweet spot) -----
+    # 15 Hz matches the sim sensor_rate default and keeps the Jetson USB/GPU
+    # budget for cuVSLAM + nvblox. Bump to 848x480x30 for lower VO drift if the
+    # bus/CPU allow (halving inter-frame motion is the biggest drift reduction).
+    depth_module.profile: 848x480x15   # infra1/infra2 inherit this on the D435
+    # Color is for nvblox/viz only (cuVSLAM uses the IR pair), so keep it SMALL:
+    # the default 1280x720 raw is ~2.7 MB/frame and saturates the robot's WiFi when
+    # streamed to Foxglove. 640x360 matches the sim front color render. Always view
+    # color over the wire via the .../compressed topic, not raw.
+    rgb_camera.color_profile: 640x360x15
+
+    # --- IR emitter -----------------------------------------------------
+    # ON  -> dense depth for nvblox; the projected dots can slightly hurt
+    #        cuVSLAM feature tracking. If VO is unstable, set 0 (off) or 2
+    #        (on/off toggle: alternate emitter-free frames feed VSLAM).
+    depth_module.emitter_enabled: 1    # 0=off, 1=on, 2=on/off toggle
+
+    # --- IMU (D435i) -- enable_gyro/accel are OVERRIDDEN by the launch flag -
+    # This unit reports "HID Motion Sensor Failure" on the Jetson (a known
+    # D435i-on-Tegra quirk), so the launch defaults enable_imu:=false and these
+    # stay off for a reliable bring-up. The sim publishes /camera/front/imu; to
+    # match it once the hid_sensor issue is patched, launch with enable_imu:=true
+    # (sets enable_gyro/accel true + unite_imu_method) and flip
+    # enable_imu_fusion:=true in slam.launch.py.
+    enable_gyro: false
+    enable_accel: false
+    unite_imu_method: 2         # 0=none,1=copy,2=linear_interpolation (used iff IMU on)
+
+    # --- Point cloud (official realsense2_camera XYZ filter) -------------
+    # Publishes the depth->XYZRGB cloud on /camera/front/depth/color/points.
+    # NOTE: on this ARM/NEON build the filter is named "pointcloud__neon_"
+    # (verified via `ros2 param list /camera/front | grep point`), NOT the
+    # x86 "pointcloud". Decimation magnitude 2 quarters the point count so the
+    # cloud streams over the robot's WiFi to Foxglove (a full 848x480 XYZRGB
+    # cloud is ~6 MB/frame and saturates the link). cuVSLAM is unaffected -- it
+    # tracks the IR pair, not this filtered depth.
+    pointcloud__neon_.enable: true
+    pointcloud__neon_.ordered_pc: false
+    pointcloud__neon_.pointcloud_qos: SENSOR_DATA   # best-effort: drop, don't buffer
+    # Decimation magnitude 4 = 1/16 the points (848x480 -> ~212x120, ~25k pts):
+    # keeps the cloud light enough to stream to Foxglove over the robot's WiFi.
+    # Raise to 6-8 if still laggy; lower to 2 for a denser cloud on a wired link.
+    decimation_filter.enable: true
+    decimation_filter.filter_magnitude: 4
+
+    # --- misc -----------------------------------------------------------
+    initial_reset: true         # reset the device on start (avoids stale-firmware hangs)

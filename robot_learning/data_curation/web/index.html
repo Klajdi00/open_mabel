@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0d0c0b" />
+<title>MABEL · Data Curation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/studio.css" />
+<script type="importmap">
+{ "imports": {
+  "three": "/website-assets/three/three.module.js",
+  "three/addons/": "/website-assets/three/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="studio">
+  <!-- ░░ TOP BAR ░░ -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark">MABEL</span><span class="sub">Data&nbsp;Curation</span>
+    </div>
+    <div class="transport" id="transport">
+      <button class="tbtn" data-act="start" title="Start (Home)">⏮</button>
+      <button class="tbtn" data-act="back" title="Reverse (J)">◀◀</button>
+      <button class="tbtn play" data-act="play" title="Play / Pause (Space)">▶</button>
+      <button class="tbtn" data-act="fwd" title="Forward (L)">▶▶</button>
+      <button class="tbtn" data-act="end" title="End (End)">⏭</button>
+      <button class="tbtn" data-act="loop" title="Loop" id="loopBtn">↺</button>
+      <span class="speed" id="speedSel" title="Playback speed">1×</span>
+      <span class="tc" id="timecode">00:00:00 · 0/0</span>
+    </div>
+    <div class="topright">
+      <span class="conn" id="conn" title="server">●</span>
+      <div class="addwin-wrap">
+        <button class="gbtn" id="addWinBtn" title="Add a visualization window">+&nbsp;Window</button>
+        <div class="addwin-menu hidden" id="addWinMenu"></div>
+      </div>
+      <button class="gbtn" id="genBtn" title="Generate sample episodes">Generate&nbsp;Data</button>
+      <button class="gbtn" id="lerobotBtn" title="Aggregate the finished <dataset>_processed folder into one LeRobot v2.1 dataset (do this once every episode is done)">⇩&nbsp;LeRobot</button>
+      <button class="gbtn primary" id="saveBtn" title="Export each loaded demo individually into <dataset>_processed (⌘S)">Export&nbsp;Episodes</button>
+    </div>
+  </header>
+
+  <!-- ░░ LEFT — browser ░░ -->
+  <aside class="browser" id="browser">
+    <div class="panel-h">Library<button class="lib-refresh" id="libRefresh" title="Reload library (R)">↻</button></div>
+    <div class="browser-body" id="browserBody"></div>
+  </aside>
+  <div class="vsplit" data-split="browser"></div>
+
+  <!-- ░░ CENTER ░░ -->
+  <main class="center">
+    <section class="viewport3d" id="viewport3d">
+      <div class="vp-toggles" id="vpToggles"></div>
+      <div class="vp-camctl" id="vpCamCtl"></div>
+      <div class="vp-edge left" id="vpEdgeL"></div>
+      <div class="vp-edge right" id="vpEdgeR"></div>
+      <div class="vp-subtitle" id="vpSubtitle"></div>
+      <button class="cam-restore" id="camRestore" title="Open the camera view">▦&nbsp;Cameras</button>
+    </section>
+  </main>
+  <div class="vsplit" data-split="dock"></div>
+
+  <!-- ░░ RIGHT — dock ░░ -->
+  <aside class="dock" id="dock">
+    <div class="dock-tabs">
+      <button class="dock-tab on" data-tab="topics">Topics</button>
+      <button class="dock-tab" data-tab="inspector">Info</button>
+    </div>
+    <div class="dock-body">
+      <div class="dock-pane on" data-pane="topics" id="topicsPane"></div>
+      <div class="dock-pane" data-pane="inspector" id="inspectorPane"></div>
+    </div>
+  </aside>
+
+  <!-- ░░ PLOTS — dense bar-graph (resizable: drag the divider above) ░░ -->
+  <div class="hsplit" data-split="plots"></div>
+  <section class="plots" id="plots">
+    <div class="plots-head">
+      <button class="bar-back hidden" id="barBack" title="back to all joints (Esc)">‹ all joints</button>
+      <span class="plots-title" id="plotsTitle">Joint State</span>
+      <div class="seg" id="plotMode">
+        <button class="on" data-m="pos">pos</button>
+        <button data-m="vel">vel</button>
+        <button data-m="torque">torque</button>
+      </div>
+      <span class="plots-legend"><i class="meas"></i>measured&nbsp;&nbsp;<i class="tgt"></i>target</span>
+      <div class="strip-ctl hidden" id="stripCtl"></div>
+      <span class="plots-hint" id="plotsHint">click a bar → time strip</span>
+    </div>
+    <canvas id="barCanvas"></canvas>
+    <canvas id="stripCanvas" class="hidden"></canvas>
+  </section>
+
+  <!-- ░░ TIMELINE ░░ -->
+  <div class="hsplit" data-split="timeline"></div>
+  <section class="timeline" id="timeline">
+    <div class="tl-toolbar" id="tlToolbar">
+      <span class="tl-name" id="tlName">untitled sequence</span>
+      <div class="tl-tools">
+        <button data-tool="annotate" title="Add annotation at playhead (T)">＋&nbsp;Note</button>
+        <button data-tool="reject" title="Mark a reject range at playhead — excised on Save (X)">⚑&nbsp;Reject</button>
+        <button data-tool="autoseg" title="Auto-segment into phases from detected events">⎘&nbsp;Auto-seg</button>
+        <button data-tool="expand" id="expandBtn" title="Expand selected clip's modalities (E)" disabled>⤢&nbsp;Expand</button>
+        <button data-tool="blade" title="Blade / split at playhead (B)">⧚&nbsp;Blade</button>
+        <button data-tool="del" title="Ripple delete (⌫)">⌫&nbsp;Delete</button>
+        <button data-tool="merge" title="Merge adjacent (⌘J)">⋈&nbsp;Merge</button>
+        <button data-tool="snap" class="on" title="Snapping (S)">🧲&nbsp;Snap</button>
+        <select class="tl-wave" title="waveform under clips">
+          <option value="action">∿ action</option>
+          <option value="speed">∿ base speed</option>
+          <option value="jvel">∿ joint vel</option>
+          <option value="graspL">∿ grasp L</option>
+          <option value="graspR">∿ grasp R</option>
+          <option value="off">∿ off</option>
+        </select>
+        <span class="tl-zoom">
+          <button data-tool="zoomout">−</button><button data-tool="zoomfit" title="Fit (⇧Z)">fit</button><button data-tool="zoomin">+</button>
+        </span>
+      </div>
+    </div>
+    <div class="tl-scroll" id="tlScroll">
+      <canvas id="rulerCanvas" class="tl-ruler"></canvas>
+      <div class="tl-tracks" id="tlTracks"></div>
+      <div class="tl-playhead" id="tlPlayhead"><div class="tl-ph-grab" title="drag to scrub"></div></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

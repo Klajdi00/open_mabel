@@ -1,0 +1,138 @@
+{
+  "1": {
+    "joint": "index_pip",
+    "min": 1381,
+    "max": 2604,
+    "center": 1992,
+    "offset": 0,
+    "range": 1223
+  },
+  "2": {
+    "joint": "index_mcp",
+    "min": 1014,
+    "max": 2285,
+    "center": 1649,
+    "offset": 0,
+    "range": 1271
+  },
+  "3": {
+    "joint": "index_abd",
+    "min": 1763,
+    "max": 2402,
+    "center": 2082,
+    "offset": 0,
+    "range": 639
+  },
+  "4": {
+    "joint": "middle_abd",
+    "min": 1765,
+    "max": 2426,
+    "center": 2095,
+    "offset": 0,
+    "range": 661
+  },
+  "8": {
+    "joint": "middle_pip",
+    "min": 1168,
+    "max": 2429,
+    "center": 1798,
+    "offset": 0,
+    "range": 1261
+  },
+  "9": {
+    "joint": "middle_mcp",
+    "min": 1223,
+    "max": 2421,
+    "center": 1822,
+    "offset": 0,
+    "range": 1198
+  },
+  "5": {
+    "joint": "pinky_abd",
+    "min": 1761,
+    "max": 2407,
+    "center": 2084,
+    "offset": 0,
+    "range": 646
+  },
+  "6": {
+    "joint": "pinky_pip",
+    "min": 1352,
+    "max": 2586,
+    "center": 1969,
+    "offset": 0,
+    "range": 1234
+  },
+  "7": {
+    "joint": "pinky_mcp",
+    "min": 1198,
+    "max": 2401,
+    "center": 1799,
+    "offset": 0,
+    "range": 1203
+  },
+  "10": {
+    "joint": "ring_mcp",
+    "min": 1110,
+    "max": 2330,
+    "center": 1720,
+    "offset": 0,
+    "range": 1220
+  },
+  "11": {
+    "joint": "ring_pip",
+    "min": 1485,
+    "max": 2666,
+    "center": 2075,
+    "offset": 0,
+    "range": 1181
+  },
+  "12": {
+    "joint": "ring_abd",
+    "min": 1721,
+    "max": 2328,
+    "center": 2024,
+    "offset": 0,
+    "range": 607
+  },
+  "13": {
+    "joint": "thumb_cmc",
+    "min": 1442,
+    "max": 2439,
+    "center": 1940,
+    "offset": 0,
+    "range": 997
+  },
+  "14": {
+    "joint": "thumb_abd",
+    "min": 1673,
+    "max": 2276,
+    "center": 1974,
+    "offset": 0,
+    "range": 603
+  },
+  "15": {
+    "joint": "thumb_mp",
+    "min": 1930,
+    "max": 3039,
+    "center": 2484,
+    "offset": 0,
+    "range": 1109
+  },
+  "16": {
+    "joint": "thumb_ip",
+    "min": 1621,
+    "max": 2905,
+    "center": 2263,
+    "offset": 0,
+    "range": 1284
+  },
+  "17": {
+    "joint": "wrist",
+    "min": 1665,
+    "max": 2619,
+    "center": 2142,
+    "offset": 0,
+    "range": 954
+  }
+}

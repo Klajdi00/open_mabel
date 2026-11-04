@@ -1,0 +1,7 @@
+# recorded human data + evaluation outputs: local, possibly large, and EgoDex-derived
+# evaluations must not be redistributed (CC-by-NC-ND). Derived corpus metrics live in
+# experiments/results/ and ARE kept.
+data/
+
+# per-run replay arrays the experiments regenerate (6 MB each); the summary JSON + figures are kept
+experiments/results/*_npz/

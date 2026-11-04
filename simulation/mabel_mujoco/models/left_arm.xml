@@ -1,0 +1,107 @@
+<mujoco model="mabel_left_arm">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 0" timestep="0.002"/>
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    
+    <default class="la_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="la_collision">
+      <geom type="mesh" contype="1" conaffinity="0" group="1" rgba="1 1 1 0"/>
+    </default>
+    
+    <default class="motor_DM8009">
+      <joint frictionloss="0.5" damping="0.5" armature="0.10" limited="true" type="hinge" />
+    </default>
+    <default class="motor_DM4340">
+      <joint frictionloss="0.5" damping="0.5" armature="0.08" limited="true" type="hinge" />
+    </default>
+    <default class="motor_DM4310">
+      <joint frictionloss="0.5" damping="0.5" armature="0.05" limited="true" type="hinge" />
+    </default>
+  </default>
+
+  <asset>
+    <mesh file="../assets/meshes/arms/left/1_body_to_shoulder.stl"          name="m_l_1_mount"/>
+    <mesh file="../assets/meshes/arms/left/2_shoulder.stl"          name="m_l_2_shoulder"/>
+    <mesh file="../assets/meshes/arms/left/3_shoulder_to_elbow.stl" name="m_l_3_s_link"/>
+    <mesh file="../assets/meshes/arms/left/4_upper_arm.stl"         name="m_l_4_s_link"/>
+    <mesh file="../assets/meshes/arms/left/5_elbow.stl"             name="m_l_5_elbow"/>
+    <mesh file="../assets/meshes/arms/left/6_forearm.stl"           name="m_l_6_forearm"/>
+    <mesh file="../assets/meshes/arms/left/7_wrist.stl"             name="m_l_7_wrist"/>
+    <mesh file="../assets/meshes/arms/left/8_arm_to_hand.stl"       name="m_l_8_hand_mount"/>
+
+    <material name="mat_la_dark"  rgba="0.24 0.24 0.24 1"/>
+    <material name="mat_la_light" rgba="0.80 0.80 0.80 1"/>
+    <material name="mat_la_acc"   rgba="0.80 0.30 0.10 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.7 0.7 0.7 1"/>
+
+    <body name="l_arm_mount" pos="0.0 0.031 0.698" euler="1.570796 0 0">
+      <geom class="la_visual" mesh="m_l_1_mount" material="mat_la_dark" pos="0 0 0" euler="0 0 0"/>
+      <geom class="la_collision" mesh="m_l_1_mount"/>
+
+      <body name="l_shoulder_1" pos="0.0 0.0 0.062" euler="0 0 0">
+        <joint name="l_j1" class="motor_DM8009" axis="0 0 1" range="-1.396263 3.490659"/> 
+        <geom class="la_visual" mesh="m_l_2_shoulder" material="mat_la_light" pos="0 0 0" euler="0 0 0"/>
+        
+        <body name="l_shoulder_2" pos="-0.0301 0.0 0.06" euler="0 1.570796 0">
+          <joint name="l_j2" class="motor_DM8009" axis="0 0 1" range="-3.316125 0.174533"/>
+          <geom class="la_visual" mesh="m_l_3_s_link" material="mat_la_dark" pos="0 0 0" euler="0 0 0"/>
+          
+          <body name="l_shoulder_3" pos="0.0 -0.06625 0.0301" euler="-1.570796 3.1415926 3.1415926">
+            <joint name="l_j3" class="motor_DM4340" axis="0 0 1" range="-1.570796 1.570796"/>
+            <geom class="la_visual" mesh="m_l_4_s_link" material="mat_la_light" pos="0 0 0" euler="0 0 0"/>
+            
+            <body name="l_elbow" pos="0.033 0.0 0.15375" euler="0 1.570796 3.1415926">
+              <joint name="l_j4" class="motor_DM4340" axis="0 0 1" range="-1.67 0.773461"/>
+              <geom class="la_visual" mesh="m_l_5_elbow" material="mat_la_dark" pos="0 0 0" euler="0 0 0"/>
+              
+              <body name="l_forearm" pos="0.0 -0.0955 0.0315" euler="1.570796 1.570796 0"> 
+                <joint name="l_j5" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796"/>
+                <geom class="la_visual" mesh="m_l_6_forearm" material="mat_la_light" pos="0 0 0" euler="0 0 0"/>
+                
+                <body name="l_wrist" pos="0.0 0.0375 0.1205" euler="1.570796 3.14 0">
+                  <joint name="l_j6_wrist" class="motor_DM4310" axis="0 0 1" range="-0.785398 0.785398"/>
+                  <geom class="la_visual" mesh="m_l_7_wrist" material="mat_la_dark" pos="0 0 0" euler="0 0 0"/>
+                  
+                  <body name="l_hand_mount" pos="-0.02 0.0 0.035" euler="-1.570796 1.570796 1.570796">
+                    <joint name="l_j7_roll" class="motor_DM4310" axis="0 0 1" range="-1.570796 1.570796"/>
+                    <geom class="la_visual" mesh="m_l_8_hand_mount" material="mat_la_acc" pos="0 0 0" euler="0 0 0"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="l_arm_mount"  body2="l_shoulder_1"/>
+    <exclude body1="l_shoulder_1" body2="l_shoulder_2"/>
+    <exclude body1="l_shoulder_2" body2="l_shoulder_3"/>
+    <exclude body1="l_shoulder_3" body2="l_elbow"/>
+    <exclude body1="l_elbow"      body2="l_forearm"/>
+    <exclude body1="l_forearm"    body2="l_wrist"/>
+    <exclude body1="l_wrist"      body2="l_hand_mount"/>
+  </contact>
+
+  <actuator>
+    <position name="l_act_j1" joint="l_j1" kp="500" kv="45" ctrlrange="-1.396 3.491" ctrllimited="true" forcerange="-40 40"/>
+    <position name="l_act_j2" joint="l_j2" kp="500" kv="45" ctrlrange="-3.316 0.175" ctrllimited="true" forcerange="-40 40"/>
+    <position name="l_act_j3" joint="l_j3" kp="500" kv="45" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-27 27"/>
+    <position name="l_act_j4" joint="l_j4" kp="500" kv="45" ctrlrange="-1.670 0.773"  ctrllimited="true" forcerange="-27 27"/>
+    <position name="l_act_j5" joint="l_j5" kp="500" kv="45" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-7 7"/>
+    <position name="l_act_j6" joint="l_j6_wrist" kp="500" kv="45" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-7 7"/>
+    <position name="l_act_j7" joint="l_j7_roll"  kp="500" kv="45" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-7 7"/>
+  </actuator>
+
+</mujoco>

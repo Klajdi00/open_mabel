@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# mabel-arm — arm the REAL MABEL swerve robot for N minutes (default 60).
+#
+# Writes a future expiry epoch to ~/.mabel_armed; the bridge polls that file and
+# refuses ALL motion unless it exists and is unexpired. Running this requires a
+# shell on thor (SSH key / local console) — that is the "physical operator present"
+# gate: no remote client can arm the robot. `mabel-disarm` revokes immediately;
+# the window also auto-expires so a forgotten session can't leave it live forever.
+#
+# Usage:  mabel-arm [minutes]
+set -euo pipefail
+MIN="${1:-60}"
+EXP=$(python3 - "$MIN" <<'PY'
+import time, sys
+print(int(time.time() + float(sys.argv[1]) * 60))
+PY
+)
+echo "$EXP" > ~/.mabel_armed
+WHEN=$(date -d "@$EXP" 2>/dev/null || date -r "$EXP" 2>/dev/null || echo "+${MIN}min")
+echo "✅ Robot ARMED for ${MIN} min (until ${WHEN}). Run 'mabel-disarm' to stop."

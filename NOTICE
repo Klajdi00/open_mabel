@@ -1,0 +1,17 @@
+MABEL — Mobile Animated Bimanual Extensible Platform
+Copyright (c) 2026 The MABEL Authors
+
+This product includes software developed by The MABEL Authors, licensed under
+the Apache License, Version 2.0 (see LICENSE).
+
+Hardware design files (CAD, drawings, printed parts, sheet-metal and PCB
+sources) are licensed under the CERN Open Hardware Licence Version 2 —
+Strongly Reciprocal (see LICENSE-HARDWARE.txt). Documentation, photographs and
+illustrations are licensed under CC BY 4.0 (see LICENSE-DOCS.txt).
+
+MABEL's arms are derived from OpenArm (Enactic, Inc.) — hardware CERN-OHL-S-2.0,
+software Apache-2.0. MABEL's hands are derived from the ORCA Hand (ORCA
+Dexterity, Inc. / ETH Zurich Soft Robotics Lab) — CC BY 4.0. See
+THIRD_PARTY_NOTICES.md for every upstream component and its licence.
+
+The licences above do not grant trademark rights in the name "MABEL".

@@ -1,0 +1,290 @@
+<mujoco model="mabel_left_hand">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"/>
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    <default class="hand_base">
+      <joint armature="0.001" damping="0.1" frictionloss="0.001" limited="true" margin="0.01" type="hinge"/>
+      <position ctrllimited="true" forcelimited="true" forcerange="-1 1" kp="2.0"/>
+    </default>
+    <default class="hand_visual">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh"/>
+    </default>
+    <default class="hand_bone">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh" material="hand_black"/>
+    </default>
+    <default class="hand_skin">
+      <geom conaffinity="0" condim="1" contype="0" group="2" type="mesh" material="hand_white"/>
+    </default>
+    <default class="hand_collision">
+      <geom conaffinity="1" condim="3" contype="1" group="1" material="invisible" type="mesh"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="2d" name="tex_grid" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.1 0.15 0.2" width="512" height="512" mark="edge" markrgb="0.8 0.8 0.8"/>
+    <material name="mat_grid" texture="tex_grid" texuniform="true" texrepeat="5 5" reflectance="0.1"/>
+
+    <material name="hand_white" rgba="1.00 1.00 1.00 1" shininess="0.5" specular="0.1"/>
+    <material name="hand_black" rgba="0.25 0.25 0.25 1" shininess="0.2" specular="0.05"/>
+    <material name="invisible"  rgba="1 1 1 0" shininess="0" specular="0"/>
+
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_tower_main.stl"     name="l_v_tower_main"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_tower_hull.stl"     name="l_v_tower_hull"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_tower_text.stl"     name="l_v_tower_text"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_palm.stl"           name="l_v_palm"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_palm_skin.stl"      name="l_v_palm_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_mp.stl"       name="l_v_thumb_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_pp.stl"       name="l_v_thumb_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_ip.stl"       name="l_v_thumb_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_ip_skin.stl"  name="l_v_thumb_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_dp.stl"       name="l_v_thumb_dp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_thumb_dp_skin.stl"  name="l_v_thumb_dp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_mp.stl"       name="l_v_index_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_pp.stl"       name="l_v_index_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_pp_skin.stl"  name="l_v_index_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_ip.stl"       name="l_v_index_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_index_ip_skin.stl"  name="l_v_index_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_mp.stl"      name="l_v_middle_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_pp.stl"      name="l_v_middle_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_pp_skin.stl" name="l_v_middle_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_ip.stl"      name="l_v_middle_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_middle_ip_skin.stl" name="l_v_middle_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_mp.stl"        name="l_v_ring_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_pp.stl"        name="l_v_ring_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_pp_skin.stl"   name="l_v_ring_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_ip.stl"        name="l_v_ring_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_ring_ip_skin.stl"   name="l_v_ring_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_mp.stl"       name="l_v_pinky_mp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_pp.stl"       name="l_v_pinky_pp"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_pp_skin.stl"  name="l_v_pinky_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_ip.stl"       name="l_v_pinky_ip"/>
+    <mesh file="../assets/meshes/hands/left/visual/left_visual_pinky_ip_skin.stl"  name="l_v_pinky_ip_skin"/>
+
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_tower_main.stl"     name="l_c_tower_main"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_tower_hull.stl"     name="l_c_tower_hull"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_tower_text.stl"     name="l_c_tower_text"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_palm.stl"           name="l_c_palm"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_palm_skin.stl"      name="l_c_palm_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_mp.stl"       name="l_c_thumb_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_pp.stl"       name="l_c_thumb_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_ip.stl"       name="l_c_thumb_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_ip_skin.stl"  name="l_c_thumb_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_dp.stl"       name="l_c_thumb_dp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_thumb_dp_skin.stl"  name="l_c_thumb_dp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_mp.stl"       name="l_c_index_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_pp.stl"       name="l_c_index_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_pp_skin.stl"  name="l_c_index_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_ip.stl"       name="l_c_index_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_index_ip_skin.stl"  name="l_c_index_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_mp.stl"      name="l_c_middle_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_pp.stl"      name="l_c_middle_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_pp_skin.stl" name="l_c_middle_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_ip.stl"      name="l_c_middle_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_middle_ip_skin.stl" name="l_c_middle_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_mp.stl"        name="l_c_ring_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_pp.stl"        name="l_c_ring_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_pp_skin.stl"   name="l_c_ring_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_ip.stl"        name="l_c_ring_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_ring_ip_skin.stl"   name="l_c_ring_ip_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_mp.stl"       name="l_c_pinky_mp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_pp.stl"       name="l_c_pinky_pp"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_pp_skin.stl"  name="l_c_pinky_pp_skin"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_ip.stl"       name="l_c_pinky_ip"/>
+    <mesh file="../assets/meshes/hands/left/collision/left_collision_pinky_ip_skin.stl"  name="l_c_pinky_ip_skin"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" pos="0 0 3" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+    <geom name="floor" type="plane" size="5 5 0.1" material="mat_grid" contype="1" conaffinity="1"/>
+
+    <body name="arm_flange_stub" pos="0 0 0.30">
+      <geom type="cylinder" size="0.030 0.015" rgba="0.4 0.4 0.4 1" mass="0.5"/>
+
+      <body name="left_tower" euler="0.0 0.0 0.0" pos="-0.04 0.0 0.04575" childclass="hand_base">
+        <inertial diaginertia="0.00150422 0.00125262 0.0007962" euler="-0.00261 -0.00737 -0.04145" mass="0.9" pos="-0.04034 -0.00091 0.01912"/>
+        <geom class="hand_bone"      mesh="l_v_tower_main"/>
+        <geom class="hand_collision" mesh="l_c_tower_main"/>
+        <geom class="hand_bone"      mesh="l_v_tower_hull"/>
+        <geom class="hand_collision" mesh="l_c_tower_hull"/>
+        <geom class="hand_skin"      mesh="l_v_tower_text"/>
+        <geom class="hand_collision" mesh="l_c_tower_text"/>
+
+        <body name="left_palm" euler="0.0 0.0 0.0" pos="-0.03863 0.00144 0.14359">
+          <inertial diaginertia="1.612e-05 1.151e-05 6.72e-06" euler="1.67519 -0.0475 -1.55556" mass="0.0257" pos="-0.00193 -0.00052 -0.00664"/>
+          <joint axis="-1.0 0.0 0.0" name="Left Wrist" pos="-0.002 -0.00144 -0.03872" range="-0.8972 0.6736" ref="0.15"/>
+          <geom class="hand_bone"      mesh="l_v_palm"/>
+          <geom class="hand_collision" mesh="l_c_palm"/>
+          <geom class="hand_skin"      mesh="l_v_palm_skin"/>
+          <geom class="hand_collision" mesh="l_c_palm_skin"/>
+
+          <body euler="0.53857 0.05595 1.27047" name="left_thumb_mp" pos="0.02821 0.01777 -0.01321">
+            <inertial diaginertia="8.4e-07 6.6e-07 2.7e-07" euler="0.0 -0.01625 0.0" mass="0.00586" pos="-0.00247 0.0 0.004"/>
+            <joint axis="0.0 0.0 1.0" name="Left Thumb MCP" range="-0.87266 0.87266" ref="0.0"/>
+            <geom class="hand_bone"      mesh="l_v_thumb_mp"/>
+            <geom class="hand_collision" mesh="l_c_thumb_mp"/>
+            <body euler="-1.22173 0.0 0.0" name="left_thumb_pp" pos="0.03 0.0 0.0">
+              <inertial diaginertia="7.5e-07 7.1e-07 3e-07" euler="1.5708 -0.77392 -1.5708" mass="0.00655" pos="-0.01848 1e-05 2e-05"/>
+              <joint axis="0.0 -0.34202 -0.93969" name="Left Thumb Abd" pos="-0.03 0.0 0.0" range="-1.08211 0.0" ref="-0.73304"/>
+              <geom class="hand_bone"      mesh="l_v_thumb_pp"/>
+              <geom class="hand_collision" mesh="l_c_thumb_pp"/>
+              <body euler="3.14159 -1.5708 0.0" name="left_thumb_ip" pos="0.0 0.0 0.0">
+                <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 -0.03263 -0.00034" mass="0.01402" pos="-0.00135 2e-05 0.01383"/>
+                <joint axis="0.0 1.0 0.0" name="Left Thumb PIP" range="-0.7944 1.23" ref="-0.58496"/>
+                <geom class="hand_bone"      mesh="l_v_thumb_ip"/>
+                <geom class="hand_collision" mesh="l_c_thumb_ip"/>
+                <geom class="hand_skin"      mesh="l_v_thumb_ip_skin"/>
+                <geom class="hand_collision" mesh="l_c_thumb_ip_skin"/>
+                <body euler="0.0 0.0 0.0" name="left_thumb_dp" pos="-0.0005 0.0 0.033">
+                  <inertial diaginertia="1.4e-06 1.37e-06 4.4e-07" euler="0.00075 -0.08211 -0.00013" mass="0.0132" pos="-0.00233 1e-05 0.01133"/>
+                  <joint axis="0.0 1.0 0.0" name="Left Thumb DIP" range="-0.85384 1.45" ref="-0.50477"/>
+                  <geom class="hand_bone"      mesh="l_v_thumb_dp"/>
+                  <geom class="hand_collision" mesh="l_c_thumb_dp"/>
+                  <geom class="hand_skin"      mesh="l_v_thumb_dp_skin" euler="0.0 -0.52 0.0" pos="0.009 0 -0.011"/>
+                  <geom class="hand_collision" mesh="l_c_thumb_dp_skin" euler="0.0 -0.52 0.0" pos="0.009 0 -0.011"/>
+                </body>
+              </body>
+            </body>
+          </body>
+
+          <body euler="1.6067 -1.13552 0.05339" name="left_index_mp" pos="0.03251 0.00235 0.0433">
+            <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+            <joint axis="0.0 0.0 1.0" name="Left Index Abd" pos="-0.02 0.0 0.0" range="-1.04577 0.24577" ref="-0.4"/>
+            <geom class="hand_bone"      mesh="l_v_index_mp"/>
+            <geom class="hand_collision" mesh="l_c_index_mp"/>
+            <body euler="0.0 1.5708 0.0" name="left_index_pp" pos="0.0 0.0 0.0">
+              <inertial diaginertia="2.39e-06 2.31e-06 7.1e-07" euler="0.00034 -0.02055 -0.00038" mass="0.0165" pos="-0.00135 2e-05 0.01637"/>
+              <joint axis="0.0 1.0 0.0" name="Left Index MCP" range="-0.34907 1.65806"/>
+              <geom class="hand_bone"      mesh="l_v_index_pp"/>
+              <geom class="hand_collision" mesh="l_c_index_pp"/>
+              <geom class="hand_skin"      mesh="l_v_index_pp_skin"/>
+              <geom class="hand_collision" mesh="l_c_index_pp_skin"/>
+              <body euler="0.0 0.0 0.0" name="left_index_ip" pos="-0.0005 0.0 0.038">
+                <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                <joint axis="0.0 1.0 0.0" name="Left Index PIP" range="-0.34907 1.88496"/>
+                <geom class="hand_bone"      mesh="l_v_index_ip"/>
+                <geom class="hand_collision" mesh="l_c_index_ip"/>
+                <geom class="hand_skin"      mesh="l_v_index_ip_skin"/>
+                <geom class="hand_collision" mesh="l_c_index_ip_skin"/>
+              </body>
+            </body>
+          </body>
+
+          <body euler="1.5708 -1.5708 0.0" name="left_middle_mp" pos="0.0 0.0 0.05">
+            <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+            <joint axis="0.0 0.0 1.0" name="Left Middle Abd" pos="-0.02 0.0 0.0" range="-0.64577 0.64577"/>
+            <geom class="hand_bone"      mesh="l_v_middle_mp"/>
+            <geom class="hand_collision" mesh="l_c_middle_mp"/>
+            <body euler="0.0 1.5708 0.0" name="left_middle_pp" pos="0.0 0.0 0.0">
+              <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 -0.01386 -0.0006" mass="0.02006" pos="-0.00144 2e-05 0.02021"/>
+              <joint axis="0.0 1.0 0.0" name="Left Middle MCP" range="-0.34907 1.58825"/>
+              <geom class="hand_bone"      mesh="l_v_middle_pp"/>
+              <geom class="hand_collision" mesh="l_c_middle_pp"/>
+              <geom class="hand_skin"      mesh="l_v_middle_pp_skin"/>
+              <geom class="hand_collision" mesh="l_c_middle_pp_skin"/>
+              <body euler="0.0 0.0 0.0" name="left_middle_ip" pos="-0.0005 0.0 0.046">
+                <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                <joint axis="0.0 1.0 0.0" name="Left Middle PIP" range="-0.34907 1.8675"/>
+                <geom class="hand_bone"      mesh="l_v_middle_ip"/>
+                <geom class="hand_collision" mesh="l_c_middle_ip"/>
+                <geom class="hand_skin"      mesh="l_v_middle_ip_skin"/>
+                <geom class="hand_collision" mesh="l_c_middle_ip_skin"/>
+              </body>
+            </body>
+          </body>
+
+          <body euler="-1.53597 -1.30836 3.05441" name="left_ring_mp" pos="-0.02669 0.00199 0.04014">
+            <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+            <joint axis="0.0 0.0 1.0" name="Left Ring Abd" pos="-0.02 0.0 0.0" range="-0.47577 0.80577" ref="0.17"/>
+            <geom class="hand_bone"      mesh="l_v_ring_mp"/>
+            <geom class="hand_collision" mesh="l_c_ring_mp"/>
+            <body euler="0.0 1.5708 0.0" name="left_ring_pp" pos="0.0 0.0 0.0">
+              <inertial diaginertia="3.78e-06 3.69e-06 8.9e-07" euler="-3e-05 -0.01386 -0.0006" mass="0.02006" pos="-0.00144 2e-05 0.02021"/>
+              <joint axis="0.0 1.0 0.0" name="Left Ring MCP" range="-0.34907 1.58825"/>
+              <geom class="hand_bone"      mesh="l_v_ring_pp"/>
+              <geom class="hand_collision" mesh="l_c_ring_pp"/>
+              <geom class="hand_skin"      mesh="l_v_ring_pp_skin"/>
+              <geom class="hand_collision" mesh="l_c_ring_pp_skin"/>
+              <body euler="0.0 0.0 0.0" name="left_ring_ip" pos="-0.0005 0.0 0.046">
+                <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                <joint axis="0.0 1.0 0.0" name="Left Ring PIP" range="-0.34907 1.8675"/>
+                <geom class="hand_bone"      mesh="l_v_ring_ip"/>
+                <geom class="hand_collision" mesh="l_c_ring_ip"/>
+                <geom class="hand_skin"      mesh="l_v_ring_ip_skin"/>
+                <geom class="hand_collision" mesh="l_c_ring_ip_skin"/>
+              </body>
+            </body>
+          </body>
+
+          <body euler="-1.49694 -0.86149 2.88373" name="left_pinky_mp" pos="-0.05518 0.00831 0.02242">
+            <inertial diaginertia="3.4e-07 3.1e-07 2e-07" euler="3.14159 1.5708 0.0" mass="0.00498" pos="-0.01155 0.0 -4e-05"/>
+            <joint axis="0.0 0.0 1.0" name="Left Pinky Abd" pos="-0.02 0.0 0.0" range="-0.12244 1.1691" ref="0.52333"/>
+            <geom class="hand_bone"      mesh="l_v_pinky_mp"/>
+            <geom class="hand_collision" mesh="l_c_pinky_mp"/>
+            <body euler="0.0 1.5708 0.0" name="left_pinky_pp" pos="0.0 0.0 0.0">
+              <inertial diaginertia="1.7e-06 1.64e-06 5.9e-07" euler="0.00037 -0.03263 -0.00034" mass="0.01402" pos="-0.00135 2e-05 0.01383"/>
+              <joint axis="0.0 1.0 0.0" name="Left Pinky MCP" range="-0.34907 1.71042"/>
+              <geom class="hand_bone"      mesh="l_v_pinky_pp"/>
+              <geom class="hand_collision" mesh="l_c_pinky_pp"/>
+              <geom class="hand_skin"      mesh="l_v_pinky_pp_skin"/>
+              <geom class="hand_collision" mesh="l_c_pinky_pp_skin"/>
+              <body euler="0.0 0.0 0.0" name="left_pinky_ip" pos="-0.0005 0.0 0.033">
+                <inertial diaginertia="2.08e-06 2.06e-06 5.4e-07" euler="-0.00042 0.18549 -0.0044" mass="0.01521" pos="-0.00071 1e-05 0.01929"/>
+                <joint axis="0.0 1.0 0.0" name="Left Pinky PIP" range="-0.34907 1.88496"/>
+                <geom class="hand_bone"      mesh="l_v_pinky_ip"/>
+                <geom class="hand_collision" mesh="l_c_pinky_ip"/>
+                <geom class="hand_skin"      mesh="l_v_pinky_ip_skin"/>
+                <geom class="hand_collision" mesh="l_c_pinky_ip_skin"/>
+              </body>
+            </body>
+          </body>
+
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position joint="Left Wrist"      name="Left Wrist"      ctrlrange="-0.8972 0.6736"/>
+    <position joint="Left Thumb MCP"  name="Left Thumb MCP"  ctrlrange="-0.87266 0.87266"/>
+    <position joint="Left Thumb Abd"  name="Left Thumb Abd"  ctrlrange="-1.08211 0.0"/>
+    <position joint="Left Thumb PIP"  name="Left Thumb PIP"  ctrlrange="-0.7944 1.23"/>
+    <position joint="Left Thumb DIP"  name="Left Thumb DIP"  ctrlrange="-0.85384 1.45"/>
+    <position joint="Left Index Abd"  name="Left Index Abd"  ctrlrange="-1.04577 0.24577"/>
+    <position joint="Left Index MCP"  name="Left Index MCP"  ctrlrange="-0.34907 1.65806"/>
+    <position joint="Left Index PIP"  name="Left Index PIP"  ctrlrange="-0.34907 1.88496"/>
+    <position joint="Left Middle Abd" name="Left Middle Abd" ctrlrange="-0.64577 0.64577"/>
+    <position joint="Left Middle MCP" name="Left Middle MCP" ctrlrange="-0.34907 1.58825"/>
+    <position joint="Left Middle PIP" name="Left Middle PIP" ctrlrange="-0.34907 1.8675"/>
+    <position joint="Left Ring Abd"   name="Left Ring Abd"   ctrlrange="-0.47577 0.80577"/>
+    <position joint="Left Ring MCP"   name="Left Ring MCP"   ctrlrange="-0.34907 1.58825"/>
+    <position joint="Left Ring PIP"   name="Left Ring PIP"   ctrlrange="-0.34907 1.8675"/>
+    <position joint="Left Pinky Abd"  name="Left Pinky Abd"  ctrlrange="-0.12244 1.1691"/>
+    <position joint="Left Pinky MCP"  name="Left Pinky MCP"  ctrlrange="-0.34907 1.71042"/>
+    <position joint="Left Pinky PIP"  name="Left Pinky PIP"  ctrlrange="-0.34907 1.88496"/>
+  </actuator>
+
+  <contact>
+    <exclude body1="left_tower"    body2="left_palm"/>
+    <exclude body1="left_palm"     body2="left_thumb_mp"/>
+    <exclude body1="left_thumb_mp" body2="left_thumb_pp"/>
+    <exclude body1="left_thumb_pp" body2="left_thumb_ip"/>
+    <exclude body1="left_thumb_ip" body2="left_thumb_dp"/>
+    <exclude body1="left_palm"     body2="left_thumb_pp"/>
+    <exclude body1="left_palm"     body2="left_index_mp"/>
+    <exclude body1="left_index_mp" body2="left_index_pp"/>
+    <exclude body1="left_index_pp" body2="left_index_ip"/>
+    <exclude body1="left_palm"     body2="left_middle_mp"/>
+    <exclude body1="left_middle_mp" body2="left_middle_pp"/>
+    <exclude body1="left_middle_pp" body2="left_middle_ip"/>
+    <exclude body1="left_palm"     body2="left_ring_mp"/>
+    <exclude body1="left_ring_mp"  body2="left_ring_pp"/>
+    <exclude body1="left_ring_pp"  body2="left_ring_ip"/>
+    <exclude body1="left_palm"     body2="left_pinky_mp"/>
+    <exclude body1="left_pinky_mp" body2="left_pinky_pp"/>
+    <exclude body1="left_pinky_pp" body2="left_pinky_ip"/>
+  </contact>
+
+</mujoco>

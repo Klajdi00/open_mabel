@@ -1,0 +1,45 @@
+# nvblox -- MANIPULATION env (fine 3D reconstruction, detailed coloured mesh).
+#
+# Used by: visual_slam.launch.py env:=manipulation  (ZED Mini head camera, or the
+# MuJoCo-simulated ZED). Goal: a DETAILED coloured 3D mesh of the workspace on the
+# table for manipulation -- small voxels, short range, no nav slice. The volume is
+# small (an arm's reach), so the fine voxel size stays affordable on the GPU.
+#
+#   in:  /camera/zed/depth + color
+#   out: /nvblox_node/mesh   (dense, fine, coloured 3D mesh -> the tabletop scan)
+/**:
+  ros__parameters:
+    # --- Frames ----------------------------------------------------------
+    global_frame: odom
+    # --- Inputs ----------------------------------------------------------
+    use_depth: true
+    use_color: true             # coloured mesh is the whole point here
+    use_lidar: false
+    num_cameras: 1
+    integrate_color_rate_hz: 15.0   # keep colour fresh for a detailed scan
+    # Match the BEST_EFFORT (sensor data) QoS of the camera publishers; nvblox
+    # defaults to RELIABLE (input_qos = SYSTEM_DEFAULT), which is incompatible ->
+    # no depth/color -> no mesh. This nvblox version takes ONE `input_qos` for all
+    # sensor inputs (per-stream depth_qos/color_qos are driver-node keys nvblox
+    # ignores).
+    input_qos: "SENSOR_DATA"
+    # --- Mapping type ----------------------------------------------------
+    mapping_type: static_tsdf
+    # --- Resolution / range ---------------------------------------------
+    # FINE: 1 cm voxels for crisp object geometry. ~125x the voxels/m^3 of the
+    # base preset, but the integrated volume is tiny (a tabletop, capped at 1.5 m),
+    # so it stays GPU-affordable. Drop to 0.005 for very fine scans if you have GPU.
+    voxel_size: 0.01            # 1 cm voxels -- detailed
+    max_integration_distance_m: 1.5   # tabletop reach; reject distant noise
+    # --- ESDF: not used for the tabletop (no navigation here) ------------
+    # The 3D MESH publishes from the TSDF regardless; we just don't pay for an
+    # ESDF / 2D slice we won't navigate on.
+    esdf_mode: 3d
+    publish_esdf_distance_slice: false
+    # --- Rates -----------------------------------------------------------
+    integrator_max_integration_distance_m: 2.0
+    tsdf_integrator_max_weight: 100.0
+    # --- PERSISTENCE: keep the whole scan (static tabletop) --------------
+    decay_tsdf_rate_hz: 0.0
+    clear_map_outside_radius_rate_hz: 0.0
+    map_clearing_radius_m: -1.0

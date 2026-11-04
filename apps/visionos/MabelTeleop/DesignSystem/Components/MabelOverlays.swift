@@ -1,0 +1,694 @@
+//
+//  MabelOverlays.swift
+//  MabelTeleop
+//
+//  ONE presentation language for everything that floats above the page.
+//
+//  Before this file there were three: the system `.sheet` with its grabber and
+//  detents (timeline clip editing), the system `Menu` (the timeline's project
+//  switcher), and the hand-built Control-Center dropdown (StatusDetailPanel /
+//  the robot switcher). The first two are UIKit chrome — they carry their own
+//  corner radius, their own material, their own typography — so the app changed
+//  visual identity the moment you edited a clip.
+//
+//  The dropdown was already right, so it is the reference. Its geometry is the
+//  contract every overlay here keeps:
+//
+//      .regularMaterial, RoundedRectangle(cornerRadius: 20, .continuous)
+//      1 pt strokeBorder in Palette.hairlineSoft
+//      13 pt padding; inner rows on Palette.surface at Radius.md
+//
+//  Two shapes are provided:
+//
+//      MabelDropdown  — anchored to a control, for picking one of a few things.
+//                       Floats in a popover so it never pushes page content.
+//      MabelModal     — centred over a scrim, for editing. Replaces `.sheet`.
+//
+//  Both are plain SwiftUI containers: callers supply content, never chrome.
+//
+
+import SwiftUI
+
+// MARK: - Shared geometry
+
+/// The one place the overlay look is defined. Changing a number here changes
+/// every floating surface in the app, which is the point.
+enum MabelOverlay {
+    static let corner: CGFloat = 20          // matches StatusDetailPanel
+    static let pad: CGFloat = 13
+    static let rowCorner: CGFloat = Theme.Radius.md
+    static let dropdownWidth: CGFloat = 290  // matches StatusDetailPanel
+    static let modalMaxWidth: CGFloat = 520
+    /// Confirmations, renames, a note — a dialog, not a page (2026-10-25: these were
+    /// 520 pt Form slabs with an empty nav bar on top, "messed up and too big").
+    static let compactWidth: CGFloat = 380
+    /// The clip library — the one pop-up that SHOULD be big: it is a browser.
+    static let largeMaxWidth: CGFloat = 1040
+    static let scrimOpacity: Double = 0.28
+
+    /// The panel treatment itself — material, radius, hairline. Applied by both
+    /// shapes so they cannot drift apart.
+    struct Panel: ViewModifier {
+        var corner: CGFloat = MabelOverlay.corner
+        func body(content: Content) -> some View {
+            #if os(visionOS)
+            // The system glass, like the status bar and ornaments: a window over the
+            // operator's room needs the real glass, not a thin material that lets the
+            // wall behind read through the text (2026-10-25 screenshots).
+            content
+                .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+                .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: corner, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: corner, style: .continuous)
+                        .strokeBorder(Theme.Palette.hairlineSoft, lineWidth: 1)
+                }
+            #else
+            content
+                .background(.regularMaterial,
+                            in: RoundedRectangle(cornerRadius: corner, style: .continuous))
+                // CLIP, then border. Without the clip a hosted NavigationStack draws
+                // its own bar background right over the rounded corners and the panel
+                // reads as a square box with a rounded outline floating on top of it —
+                // which is exactly what a Form-based editor looked like in here.
+                .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: corner, style: .continuous)
+                        .strokeBorder(Theme.Palette.hairlineSoft, lineWidth: 1)
+                }
+            #endif
+        }
+    }
+}
+
+extension View {
+    /// The shared floating-surface treatment. Use for anything that sits above
+    /// the page: dropdowns, modals, inspectors.
+    func mabelPanel(corner: CGFloat = MabelOverlay.corner) -> some View {
+        modifier(MabelOverlay.Panel(corner: corner))
+    }
+}
+
+// MARK: - Dropdown
+
+/// A Control-Center-style dropdown, anchored to whatever opened it.
+///
+/// Use instead of `Menu`. `Menu` renders UIKit's own context menu — different
+/// radius, different material, different type — so a picker in the timeline
+/// looked nothing like the status dropdown two rows above it.
+struct MabelDropdown<Content: View>: View {
+    var width: CGFloat = MabelOverlay.dropdownWidth
+    var title: String? = nil
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let title {
+                Text(title.uppercased())
+                    .font(.system(size: 10, weight: .semibold))
+                    .kerning(0.6)
+                    .foregroundStyle(Theme.Palette.textTertiary)
+                    .padding(.horizontal, 2)
+            }
+            content()
+        }
+        .padding(MabelOverlay.pad)
+        .frame(width: width)
+        .mabelPanel()
+    }
+}
+
+/// One selectable line in a dropdown. Mirrors the tiles inside StatusDetailPanel:
+/// `Palette.surface` at `Radius.md`, hairline border, accent wash when active.
+struct MabelDropdownRow: View {
+    var icon: String? = nil
+    var title: String
+    var subtitle: String? = nil
+    var isActive: Bool = false
+    var isDestructive: Bool = false
+    var action: () -> Void
+
+    /// Icon tint. Named explicitly because `tint` alone resolves to SwiftUI's
+    /// `View.tint(_:)` and fails with a ShapeStyle conformance error.
+    private var iconTint: Color {
+        if isDestructive { return Theme.Palette.danger }
+        return isActive ? Theme.Palette.accent : Theme.Palette.textSecondary
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.system(size: 13, weight: .semibold))
+                        .frame(width: 18)
+                        .foregroundStyle(iconTint)
+                }
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(title)
+                        .font(.system(size: 13.5, weight: isActive ? .semibold : .medium))
+                        .foregroundStyle(isDestructive ? Theme.Palette.danger : Theme.Palette.textPrimary)
+                        .lineLimit(1)
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(Theme.Palette.textTertiary)
+                            .lineLimit(1)
+                    }
+                }
+                Spacer(minLength: 0)
+                if isActive {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(Theme.Palette.accent)
+                }
+            }
+            .padding(9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(isActive ? Theme.Palette.accent.opacity(0.10) : Theme.Palette.surface,
+                        in: RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous)
+                    .strokeBorder(isActive ? Theme.Palette.accent.opacity(0.45) : Theme.Palette.hairlineSoft,
+                                  lineWidth: 1)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PressableStyle())
+    }
+}
+
+/// A hairline divider sized for the inside of a dropdown.
+struct MabelDropdownDivider: View {
+    var body: some View {
+        Divider().overlay(Theme.Palette.hairlineSoft).padding(.horizontal, 2)
+    }
+}
+
+extension View {
+    /// Present a dropdown anchored to this view. Wraps `.popover` with the
+    /// compact adaptation, exactly as the status bar does, so it stays a
+    /// floating panel on iPhone rather than becoming a pull-up sheet.
+    func mabelDropdown<C: View>(isPresented: Binding<Bool>,
+                                arrowEdge: Edge = .top,
+                                @ViewBuilder content: @escaping () -> C) -> some View {
+        popover(isPresented: isPresented, arrowEdge: arrowEdge) {
+            content().presentationCompactAdaptation(.popover)
+        }
+    }
+}
+
+// MARK: - Dismissal
+
+/// `@Environment(\.dismiss)` only works inside a system presentation, so a view
+/// hosted in a MabelModal has to be handed its own way out. Swapping the key is a
+/// one-line change at each call site and leaves every `dismiss()` body untouched.
+private struct MabelDismissKey: EnvironmentKey {
+    static let defaultValue: () -> Void = {}
+}
+
+extension EnvironmentValues {
+    var mabelDismiss: () -> Void {
+        get { self[MabelDismissKey.self] }
+        set { self[MabelDismissKey.self] = newValue }
+    }
+}
+
+// MARK: - Modal
+
+/// A centred editing surface over a dimmed scrim.
+///
+/// Replaces `.sheet` for clip / note / library editing. The system sheet brought
+/// a grab handle, detents and a navigation bar that matched nothing else in the
+/// app, and on a short screen the medium detent clipped the very controls it was
+/// opened for. This keeps the dropdown's material and radius, puts the title and
+/// the close affordance in a header the app styles itself, and scrolls its body
+/// rather than resizing the window.
+struct MabelModal<Content: View>: View {
+    var title: String
+    var subtitle: String? = nil
+    /// Set false when the hosted view already carries its own bar. Forms that use
+    /// `List`/`.searchable` need their NavigationStack, and its bar holds the
+    /// Save/Cancel actions — so the modal steps back rather than stacking a second
+    /// header on top of it.
+    var showsHeader: Bool = true
+    /// Scrolling belongs to the content when it is a Form or List; a ScrollView
+    /// wrapped around one of those breaks its own scrolling.
+    var scrolls: Bool = true
+    /// Short content (a note editor) should hug its height instead of padding out to
+    /// the cap; a Form must not, or it collapses.
+    var shrinkToFit: Bool = false
+    /// `.compact` dialogs hug their content at `compactWidth`; `.large` is a browser.
+    var size: MabelModalSize = .regular
+    var onClose: () -> Void
+    @ViewBuilder var content: () -> Content
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if showsHeader {
+                header
+                Divider().overlay(Theme.Palette.hairlineSoft)
+            }
+            if scrolls {
+                ScrollView { content().padding(MabelOverlay.pad) }
+            } else {
+                content()
+            }
+        }
+        // Sized, not stretched. A Form or List will happily grow to fill whatever it
+        // is given, so without an explicit cap the "modal" became a full-height slab
+        // and stopped reading as a centred window at all.
+        .frame(maxWidth: maxWidth)
+        .frame(maxHeight: maxHeight)
+        .fixedSize(horizontal: false, vertical: shrinkToFit || size == .compact)
+        .mabelPanel()
+        .mabelShadow(Theme.Shadow.card)
+        .padding(.horizontal, Theme.Space.lg)
+    }
+
+    /// Cap the panel well inside the screen so it always reads as a window floating
+    /// over the timeline rather than a page that replaced it.
+    private var maxHeight: CGFloat {
+        #if os(visionOS)
+        return size == .large ? 820 : 640
+        #else
+        let screen = UIScreen.main.bounds.height
+        return size == .large ? screen * 0.9 : min(640, screen * 0.74)
+        #endif
+    }
+
+    private var maxWidth: CGFloat {
+        switch size {
+        case .compact: return MabelOverlay.compactWidth
+        case .regular: return MabelOverlay.modalMaxWidth
+        case .large:   return MabelOverlay.largeMaxWidth
+        }
+    }
+
+    private var header: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.textPrimary)
+                    .lineLimit(1)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.system(size: 11))
+                        .foregroundStyle(Theme.Palette.textTertiary)
+                        .lineLimit(1)
+                }
+            }
+            Spacer(minLength: 0)
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(Theme.Palette.textSecondary)
+                    .padding(7)
+                    .background(Theme.Palette.surface, in: Circle())
+                    .overlay { Circle().strokeBorder(Theme.Palette.hairlineSoft, lineWidth: 1) }
+            }
+            .buttonStyle(PressableStyle())
+            .accessibilityLabel("Close")
+            .accessibilityIdentifier("modal.close")
+        }
+        .padding(.horizontal, MabelOverlay.pad)
+        .padding(.vertical, 11)
+    }
+}
+
+/// Hosts a `MabelModal` over a dimmed, tappable scrim.
+private struct MabelModalHost<Item: Identifiable, C: View>: ViewModifier {
+    @Binding var item: Item?
+    @ViewBuilder var sheet: (Item) -> C
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        content.overlay {
+            ZStack {
+                if item != nil {
+                    // Scrim fades on its own track. Animating it WITH the panel made
+                    // the whole thing feel like one flat cross-fade; separating them
+                    // reads as a window arriving over a page that dims behind it.
+                    Rectangle()
+                        .fill(.black.opacity(MabelOverlay.scrimOpacity))
+                        .ignoresSafeArea()
+                        .contentShape(Rectangle())
+                        .onTapGesture { dismiss() }
+                        .transition(.opacity)
+                        .accessibilityIdentifier("modal.scrim")
+                        .accessibilityLabel("Dismiss")
+                        .accessibilityAddTraits(.isButton)
+                }
+                if let value = item {
+                    sheet(value)
+                        .environment(\.mabelDismiss) { dismiss() }
+                        // In from slightly small and slightly low, out straight down.
+                        // Asymmetric because a dismissal that merely un-scales looks
+                        // like a glitch, where a small drop reads as "put away".
+                        .transition(reduceMotion
+                                    ? .opacity
+                                    : .asymmetric(
+                                        insertion: .opacity
+                                            .combined(with: .scale(scale: 0.92))
+                                            .combined(with: .offset(y: 14)),
+                                        removal: .opacity
+                                            .combined(with: .scale(scale: 0.96))
+                                            .combined(with: .offset(y: 10))))
+                }
+            }
+            // Fills the window, so the panel is centred on the SCREEN rather than on
+            // whatever slice of it the timeline happened to occupy. `.container` only:
+            // the KEYBOARD safe area still applies, so a dialog with a text field rises
+            // above the keyboard instead of being covered by it (the note editor was).
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea(.container)
+            // SCOPED TO THE OVERLAY. This used to sit on the modified view, i.e. on
+            // `content` as well — so the animation applied to the whole timeline
+            // canvas and every edit underneath sprang. Adding a clip visibly juddered
+            // the canvas. An implicit .animation covers the entire subtree it is
+            // attached to, which here has to be the overlay and nothing else.
+            .animation(reduceMotion ? Theme.Motion.gentle : Self.pop, value: item?.id)
+            .zIndex(10)
+        }
+    }
+
+    /// A touch looser than Theme.Motion.sheet: enough overshoot to feel alive,
+    /// short enough that it never delays the edit you opened it for.
+    /// Computed, not stored: this type is generic, and Swift allows no stored
+    /// static in a generic type (it would need one instance per specialisation).
+    private static var pop: Animation { .spring(response: 0.34, dampingFraction: 0.78) }
+
+    private func dismiss() { item = nil }
+}
+
+extension View {
+    /// Drop-in replacement for `.sheet(item:)` that presents a `MabelModal`
+    /// instead of the system pull-up sheet. The closure supplies the modal.
+    func mabelModal<Item: Identifiable, C: View>(
+        item: Binding<Item?>,
+        @ViewBuilder content: @escaping (Item) -> C
+    ) -> some View {
+        modifier(MabelModalHost(item: item, sheet: content))
+    }
+}
+
+// MARK: - Form pieces
+
+/// A titled group inside a modal — the flat equivalent of `Form`'s `Section`,
+/// without the inset-grouped list background that fights the panel material.
+struct MabelModalSection<Content: View>: View {
+    var title: String? = nil
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let title {
+                Text(title.uppercased())
+                    .font(.system(size: 10, weight: .semibold))
+                    .kerning(0.6)
+                    .foregroundStyle(Theme.Palette.textTertiary)
+                    .padding(.horizontal, 2)
+            }
+            VStack(spacing: 8) { content() }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// One row inside a modal section, on the same tile treatment as a dropdown row.
+struct MabelModalRow<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        content()
+            .padding(9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.Palette.surface,
+                        in: RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous)
+                    .strokeBorder(Theme.Palette.hairlineSoft, lineWidth: 1)
+            }
+    }
+}
+
+enum MabelModalSize { case compact, regular, large }
+
+// MARK: - Footer, dialogs, prompts (2026-10-25)
+//
+// ONE confirmation pattern for both apps, replacing the system `.alert`s (Execute,
+// Rename, Delete): same panel as every other overlay, a tinted glyph, a title, one
+// sentence, and two buttons — Cancel on the left, the verb on the right, red when
+// it destroys something. Presented through `.mabelModal(item:)` like the editors.
+
+/// The two-button row at the foot of a dialog / editor.
+struct MabelModalFooter: View {
+    var cancelTitle: String = "Cancel"
+    var confirmTitle: String
+    var destructive: Bool = false
+    var confirmEnabled: Bool = true
+    var onCancel: () -> Void
+    var onConfirm: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Button(action: onCancel) {
+                Text(cancelTitle)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.textPrimary)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background(Theme.Palette.surface,
+                                in: RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous)
+                            .strokeBorder(Theme.Palette.hairlineSoft, lineWidth: 1)
+                    }
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PressableStyle())
+            .accessibilityIdentifier("dialog.cancel")
+            Button(action: onConfirm) {
+                Text(confirmTitle)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(.white)
+                    .lineLimit(1).minimumScaleFactor(0.8)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background(destructive ? Theme.Palette.danger : Theme.Palette.accent,
+                                in: RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous))
+                    .opacity(confirmEnabled ? 1 : 0.4)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PressableStyle())
+            .disabled(!confirmEnabled)
+            .accessibilityIdentifier("dialog.confirm")
+        }
+    }
+}
+
+/// "Are you sure?" — compact, centred, same material as the dropdowns.
+struct MabelConfirmDialog: View {
+    var icon: String
+    var tint: Color = Theme.Palette.accent
+    var title: String
+    var message: String
+    var confirmTitle: String
+    var destructive: Bool = false
+    var onConfirm: () -> Void
+    @Environment(\.mabelDismiss) private var dismiss
+
+    var body: some View {
+        MabelModal(title: title, showsHeader: false, scrolls: false, size: .compact, onClose: dismiss) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: icon)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(destructive ? Theme.Palette.danger : tint)
+                        .frame(width: 38, height: 38)
+                        .background((destructive ? Theme.Palette.danger : tint).opacity(0.14),
+                                    in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Theme.Palette.textPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(message)
+                            .font(.system(size: 12.5))
+                            .foregroundStyle(Theme.Palette.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                MabelModalFooter(confirmTitle: confirmTitle, destructive: destructive,
+                                 onCancel: dismiss,
+                                 onConfirm: { Haptics.rigid(); onConfirm(); dismiss() })
+            }
+            .padding(16)
+        }
+        .accessibilityIdentifier("dialog.confirm.panel")
+    }
+}
+
+/// A one-field prompt (rename, name a pose). Validates before it lets you confirm.
+struct MabelPromptDialog: View {
+    var title: String
+    var message: String? = nil
+    var placeholder: String = "Name"
+    var initial: String = ""
+    var confirmTitle: String = "Save"
+    /// Returns the problem with the text, or nil when it is acceptable.
+    var validate: (String) -> String? = { $0.trimmingCharacters(in: .whitespaces).isEmpty ? "Enter a name." : nil }
+    var onConfirm: (String) -> Void
+    @Environment(\.mabelDismiss) private var dismiss
+    @State private var text = ""
+    @State private var problem: String?
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        MabelModal(title: title, showsHeader: false, scrolls: false, size: .compact, onClose: dismiss) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.textPrimary)
+                if let message {
+                    Text(message).font(.system(size: 12.5))
+                        .foregroundStyle(Theme.Palette.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                MabelTextField(placeholder: placeholder, text: $text, focused: $focused,
+                               onSubmit: submit)
+                if let problem {
+                    Label(problem, systemImage: "exclamationmark.circle.fill")
+                        .font(.system(size: 11.5, weight: .medium))
+                        .foregroundStyle(Theme.Palette.danger)
+                }
+                MabelModalFooter(confirmTitle: confirmTitle,
+                                 confirmEnabled: !text.trimmingCharacters(in: .whitespaces).isEmpty,
+                                 onCancel: dismiss, onConfirm: submit)
+            }
+            .padding(16)
+        }
+        .onAppear {
+            text = initial
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { focused = true }
+        }
+        .onChange(of: text) { _, _ in problem = nil }
+    }
+
+    private func submit() {
+        if let p = validate(text) { problem = p; Haptics.warning(); return }
+        onConfirm(text.trimmingCharacters(in: .whitespacesAndNewlines))
+        dismiss()
+    }
+}
+
+/// The app's text field: a surface tile with a hairline, not the system's rounded box.
+struct MabelTextField: View {
+    var placeholder: String
+    @Binding var text: String
+    var focused: FocusState<Bool>.Binding
+    var axis: Axis = .horizontal
+    var onSubmit: () -> Void = {}
+
+    var body: some View {
+        TextField(placeholder, text: $text, axis: axis)
+            .font(.system(size: 14, weight: .medium))
+            .foregroundStyle(Theme.Palette.textPrimary)
+            .lineLimit(axis == .vertical ? 1...4 : 1...1)
+            .focused(focused)
+            .submitLabel(.done)
+            .onSubmit(onSubmit)
+            .textFieldStyle(.plain)
+            .padding(.horizontal, 11).padding(.vertical, 10)
+            .background(Theme.Palette.surface,
+                        in: RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: MabelOverlay.rowCorner, style: .continuous)
+                    .strokeBorder(Theme.Palette.accent.opacity(0.35), lineWidth: 1)
+            }
+            .accessibilityIdentifier("dialog.field")
+    }
+}
+
+// MARK: - Dropdown menu rows (the connection-picker look, shared)
+//
+// The status-bar connection picker set the dropdown look: caps section headers,
+// 22 pt glyph column, 13 pt semibold title over a 9 pt detail, live = green check on
+// an accent wash, 272 pt wide on ultra-thin material. The map-source dropdown now
+// uses these so all three top-bar dropdowns match (2026-10-25).
+
+enum MabelMenu {
+    static let width: CGFloat = 272
+}
+
+struct MabelMenuSection: View {
+    var title: String
+    var body: some View {
+        Text(title.uppercased()).font(.system(size: 9, weight: .heavy)).tracking(1.2)
+            .foregroundStyle(Theme.Palette.textTertiary)
+            .padding(.horizontal, 12).padding(.top, 10).padding(.bottom, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct MabelMenuRow: View {
+    var icon: String
+    var title: String
+    var detail: String = ""
+    var live: Bool = false
+    var enabled: Bool = true
+    var tint: Color? = nil
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: { Haptics.tap(); action() }) {
+            HStack(spacing: 10) {
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(tint ?? (live ? Theme.Palette.live : Theme.Palette.textSecondary))
+                    .frame(width: 22)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(title).font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Theme.Palette.textPrimary).lineLimit(1)
+                    if !detail.isEmpty {
+                        Text(detail).font(.system(size: 9, weight: .medium))
+                            .foregroundStyle(Theme.Palette.textTertiary).lineLimit(1)
+                    }
+                }
+                Spacer(minLength: 4)
+                if live { Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.Palette.live) }
+            }
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .background(live ? Theme.Palette.accent.opacity(0.10) : .clear)
+            .contentShape(Rectangle())
+            .opacity(enabled || live ? 1 : 0.45)
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+    }
+}
+
+struct MabelMenuNote: View {
+    var text: String
+    var body: some View {
+        Text(text).font(.system(size: 11, weight: .medium))
+            .foregroundStyle(Theme.Palette.textTertiary)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 12).padding(.vertical, 6)
+    }
+}
+
+struct MabelMenuDivider: View {
+    var body: some View {
+        Divider().overlay(Theme.Palette.hairlineSoft).padding(.horizontal, 8).padding(.vertical, 4)
+    }
+}
+
+extension View {
+    /// The dropdown body treatment (width + material) the connection picker uses.
+    func mabelMenuPanel(width: CGFloat = MabelMenu.width) -> some View {
+        self.frame(width: width)
+            .padding(.bottom, 8)
+            .presentationBackground(.ultraThinMaterial)
+    }
+}

@@ -1,0 +1,7 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "Teensy41") (type "KiCad") (uri "${KIPRJMOD}/parts/Teensy") (options "") (descr ""))
+	(lib (name "Teensy_RJ45") (type "KiCad") (uri "${KIPRJMOD}/parts/J1B1211CCD") (options "") (descr ""))
+	(lib (name "IMU") (type "KiCad") (uri "${KIPRJMOD}/parts/BNO085") (options "") (descr ""))
+	(lib (name "buck") (type "KiCad") (uri "${KIPRJMOD}/parts/MP1584EN") (options "") (descr ""))
+)

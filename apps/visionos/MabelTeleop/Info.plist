@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ANTHROPIC_DEFAULT_KEY</key>
+	<string>$(ANTHROPIC_DEFAULT_KEY)</string>
+	<key>CFBundleDisplayName</key>
+	<string>MABEL V2</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>MABEL uses Bluetooth to find your robot when you are near it and to drive it directly — so teleoperation keeps working with no Wi-Fi and no internet.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_http._tcp</string>
+		<string>_mabel-teleop._tcp</string>
+	</array>
+	<key>NSHandsTrackingUsageDescription</key>
+	<string>MABEL uses hand tracking to teleoperate the robot's arms and fingers.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>MABEL connects to the robot controller on your local Wi-Fi network for live video and telemetry.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>MABEL uses the microphone so you can talk to the robot — dictate commands and chat with it hands-free.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>MABEL transcribes your speech on-device so you can command and chat with the robot by voice.</string>
+	<key>NSWorldSensingUsageDescription</key>
+	<string>MABEL uses world sensing to track your head position for robot camera alignment.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationPreferredDefaultSceneSessionRole</key>
+		<string>UIWindowSceneSessionRoleApplication</string>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
+</dict>
+</plist>

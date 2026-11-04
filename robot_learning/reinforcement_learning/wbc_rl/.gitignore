@@ -1,0 +1,16 @@
+# generated or non-redistributable: never commit
+data/raw/
+data/motions*.npz
+data/avp_takes.npz
+data/clips.npz
+data/collision_sdf_*.npz
+data/usd_*/
+data/mesh_alias/
+checkpoints/
+logs/
+runs/
+outputs/
+site/
+*.pt
+*policy.npz
+__pycache__/

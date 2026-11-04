@@ -1,0 +1,21 @@
+<mujoco model="mabel_bare_floor">
+  <!-- Minimal scene for base motion-model system identification: the full robot on
+       a large flat floor, NOTHING else (no furniture to collide with, no table to pin
+       the arms). Used by controller/experiments to measure the true commanded->actual
+       base twist relationship. Floor friction matches mabel_sim.xml. -->
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+
+  <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"
+          cone="elliptic" noslip_iterations="3"/>
+
+  <include file="../models/mabel_full.xml"/>
+
+  <worldbody>
+    <light name="sun"    pos="0 0 4"    dir="0 0 -1"    diffuse="0.8 0.8 0.8" castshadow="true"/>
+    <light name="fill_f" pos=" 2 0 2"   dir="-1 0 -0.5" diffuse="0.3 0.3 0.4" castshadow="false"/>
+    <light name="fill_b" pos="-2 0 2"   dir=" 1 0 -0.5" diffuse="0.3 0.3 0.4" castshadow="false"/>
+    <geom name="floor" type="plane" size="10 10 0.1" material="mat_grid"
+          contype="1" conaffinity="1" friction="1.5 0.05 0.001"/>
+  </worldbody>
+</mujoco>

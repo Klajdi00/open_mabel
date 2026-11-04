@@ -1,0 +1,14 @@
+# MABEL wrist cameras — stable /dev names by physical USB hub port.
+#
+# The two Arducam Global-Shutter wrist cams are electronically identical (same USB
+# VID:PID 32e4:0144 AND the same serial 01.00.00), so by-id / by-serial CANNOT tell them
+# apart — only the physical hub PORT can. Convention (decided):
+#     hub port 1-4.1.1 = RIGHT wrist cam   -> /dev/wrist_right
+#     hub port 1-4.1.2 = LEFT  wrist cam   -> /dev/wrist_left
+# ATTR{index}=="0" pins the symlink to the capture node (index1 is the metadata node).
+#
+# As long as each labelled cam stays in its labelled hub port, these names are permanent.
+# Install: sudo cp 99-mabel-wrist-cams.rules /etc/udev/rules.d/ && sudo udevadm control
+#          --reload-rules && sudo udevadm trigger
+SUBSYSTEM=="video4linux", KERNELS=="1-4.1.1", ATTR{index}=="0", SYMLINK+="wrist_right"
+SUBSYSTEM=="video4linux", KERNELS=="1-4.1.2", ATTR{index}=="0", SYMLINK+="wrist_left"

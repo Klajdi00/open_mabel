@@ -1,0 +1,1048 @@
+{
+  "_comment": "Example/default MABEL parameter file (as-deployed truth; see the upstream calibration notes). Copy per-robot, edit, optionally commit. Served by the calib service over Zenoh at mabel/calib/<path>. JSON tree is addressed by key path: e.g. a node gets 'mabel/calib/arm/openarm-dual' to receive its whole slice, or '.../teensy_ip' for one value.",
+  "arm": {
+    "openarm-dual": {
+      "_doc": "Network identity for the arm Teensy (was hardcoded in arm_bridge). Calibration zero-offsets etc. will join this slice later (written by scc; delta-vs-absolute still a parked fork).",
+      "teensy_ip": "192.168.124.11",
+      "port": 5800,
+      "stream_hz": 1000,
+      "calib": {
+        "l_j1": {
+          "raw_min": -1.3735027313232422,
+          "raw_max": 3.528839111328125,
+          "dir": 1,
+          "model_mid": -1.047198,
+          "reliability": 1.003
+        },
+        "l_j2": {
+          "raw_min": -1.9865341186523438,
+          "raw_max": 1.515411376953125,
+          "dir": -1,
+          "model_mid": 1.570796,
+          "reliability": 1.003
+        },
+        "l_j3": {
+          "raw_min": -3.310635566711426,
+          "raw_max": -0.051308631896972656,
+          "dir": 1,
+          "model_mid": 0.0,
+          "reliability": 1.037,
+          "_dir_note": "2026-07-28 sysid (exp_arm_gravity_sysid): replacement motor is mirror-wound \u2014 dir=-1 fits measured gravity torque (RMS min)."
+        },
+        "l_j4": {
+          "raw_min": -1.4845123291015625,
+          "raw_max": 1.0320825576782227,
+          "dir": -1,
+          "model_mid": 0.2995,
+          "reliability": 1.013,
+          "_note": "Window in the motor's NATURAL frame (l_j4 rests at ~+9.36 rad / 536 deg, the only joint outside (-pi,pi]; near the +12.5 p_max encoder ceiling). model_mid is the MJCF 'Left Arm 4' anchor (-0.943..1.542 -> 0.2995): 2026-07-28 a fresh studio capture was mis-anchored to 0.448269 because upstream model/mujoco/models/mabel_full.xml still carried the pre-correction 1.67 range (now synced to canonical) -> real_run clamped/fought ~8.5 deg at the flex stop. Keep this file byte-identical to the studio's the upstream arm stack; guard: hardware_bridge/tests/test_arm_j4_boot_controllable.py.",
+          "_dir_note": "2026-07-28 sysid (exp_arm_gravity_sysid): replacement motor is mirror-wound \u2014 dir=-1 fits measured gravity torque (RMS min)."
+        },
+        "l_j5": {
+          "raw_min": 0.8909358978271484,
+          "raw_max": 4.060615539550781,
+          "dir": 1,
+          "model_mid": 0.0,
+          "reliability": 1.009,
+          "_note": "adopted from upstream (the studio is the calibration source of truth): window [+0.89,+4.06] sits IN the single-turn band and CONTAINS the motor's live raw (+2.40), unlike the previous [-5.34,-2.19] \u2014 the very window whose to_raw inverse ordered a -356deg move and cooked l_j5's rotor to 80C in 13s. Keep this file identical to the upstream the upstream arm stack: the studio mirrors every save into here, so any divergence is silently reverted on the next save."
+        },
+        "l_j6": {
+          "raw_min": 0.9275579452514648,
+          "raw_max": 2.5335702896118164,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 1.022
+        },
+        "l_j7": {
+          "raw_min": -4.366178512573242,
+          "raw_max": -0.9554052352905273,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 1.086
+        },
+        "r_j1": {
+          "raw_min": -1.47802734375,
+          "raw_max": 3.4151601791381836,
+          "dir": 1,
+          "model_mid": 1.047198,
+          "reliability": 1.001
+        },
+        "r_j2": {
+          "raw_min": -0.17795848846435547,
+          "raw_max": 3.322079658508301,
+          "dir": -1,
+          "model_mid": -1.570796,
+          "reliability": 1.003
+        },
+        "r_j3": {
+          "raw_min": -1.6237506866455078,
+          "raw_max": 1.5802621841430664,
+          "dir": 1,
+          "model_mid": 0.0,
+          "reliability": 1.02
+        },
+        "r_j4": {
+          "raw_min": 0.10280799865722656,
+          "raw_max": 2.628175735473633,
+          "dir": 1,
+          "model_mid": -0.448269,
+          "reliability": 1.034
+        },
+        "r_j5": {
+          "raw_min": -1.6126880645751953,
+          "raw_max": 1.549363136291504,
+          "dir": 1,
+          "model_mid": 0.0,
+          "reliability": 1.007
+        },
+        "r_j6": {
+          "raw_min": -0.8459224700927734,
+          "raw_max": 0.7085905075073242,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 0.99
+        },
+        "r_j7": {
+          "raw_min": -3.555161476135254,
+          "raw_max": -0.3759441375732422,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 1.012
+        },
+        "neck_pitch": {
+          "raw_min": 0.05982525274157524,
+          "raw_max": 3.133922815322876,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 0.979
+        },
+        "neck_roll": {
+          "raw_min": -1.58920419216156,
+          "raw_max": 1.6183497905731201,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 1.021
+        }
+      },
+      "gains": {
+        "l_j1": {
+          "kp": 14.9,
+          "kd": 5.0,
+          "vmax": 0.8,
+          "tau_g_max": 16.7,
+          "M_jj": 0.8546
+        },
+        "l_j2": {
+          "kp": 14.9,
+          "kd": 5.0,
+          "vmax": 0.8,
+          "tau_g_max": 16.81,
+          "M_jj": 0.8577
+        },
+        "l_j3": {
+          "kp": 30.4,
+          "kd": 4.26,
+          "vmax": 0.8,
+          "tau_g_max": 7.08,
+          "M_jj": 0.3056
+        },
+        "l_j4": {
+          "kp": 30.5,
+          "kd": 4.27,
+          "vmax": 0.8,
+          "tau_g_max": 7.12,
+          "M_jj": 0.305
+        },
+        "l_j5": {
+          "kp": 8.3,
+          "kd": 1.21,
+          "vmax": 0.8,
+          "tau_g_max": 1.94,
+          "M_jj": 0.0895
+        },
+        "l_j6": {
+          "kp": 8.1,
+          "kd": 1.18,
+          "vmax": 0.8,
+          "tau_g_max": 1.9,
+          "M_jj": 0.0876
+        },
+        "l_j7": {
+          "kp": 8.1,
+          "kd": 1.18,
+          "vmax": 0.8,
+          "tau_g_max": 1.9,
+          "M_jj": 0.0874
+        },
+        "r_j1": {
+          "kp": 14.9,
+          "kd": 5.0,
+          "vmax": 0.8,
+          "tau_g_max": 16.58,
+          "M_jj": 0.8565
+        },
+        "r_j2": {
+          "kp": 14.9,
+          "kd": 5.0,
+          "vmax": 0.8,
+          "tau_g_max": 16.79,
+          "M_jj": 0.8587
+        },
+        "r_j3": {
+          "kp": 30.0,
+          "kd": 4.24,
+          "vmax": 0.8,
+          "tau_g_max": 7.0,
+          "M_jj": 0.3063
+        },
+        "r_j4": {
+          "kp": 30.7,
+          "kd": 4.28,
+          "vmax": 0.8,
+          "tau_g_max": 7.16,
+          "M_jj": 0.3052
+        },
+        "r_j5": {
+          "kp": 8.2,
+          "kd": 1.2,
+          "vmax": 0.8,
+          "tau_g_max": 1.92,
+          "M_jj": 0.0895
+        },
+        "r_j6": {
+          "kp": 8.1,
+          "kd": 1.18,
+          "vmax": 0.8,
+          "tau_g_max": 1.89,
+          "M_jj": 0.0876
+        },
+        "r_j7": {
+          "kp": 8.1,
+          "kd": 1.18,
+          "vmax": 0.8,
+          "tau_g_max": 1.9,
+          "M_jj": 0.0874
+        }
+      }
+    }
+  },
+  "base": {
+    "maxswerve": {
+      "_doc": "Network identity for the base MAXSwerve Teensy (was hardcoded 192.168.124.10 across the upstream arm stack). Steer zero-offsets + drive kF feedforward calibration will join this slice later (written by scc; ADR 0005).",
+      "teensy_ip": "192.168.124.10",
+      "port": 5800,
+      "stream_hz": 200
+    }
+  },
+  "hand": {
+    "orca-left": {
+      "_doc": "Serial identity for the left ORCA hand (Feetech HLS x17 @ 1 Mbaud TTL, CH343 USB adapter on the dev Mac). The bridge resolves device/baud/model/stream_hz from here (hand_bridge.resolve_conn); scc's wizard writes the per-joint calib map below (ADR 0005). With TWO hands attached, set device explicitly per hand \u2014 autodetect cannot tell identical adapters apart.",
+      "device": "/dev/cu.usbmodem00000000011",
+      "baud": 1000000,
+      "model": "left",
+      "stream_hz": 30,
+      "calib": {
+        "index_abd": {
+          "raw_min": 0.9863496422767639,
+          "raw_max": 2.0754759311676025,
+          "dir": -1,
+          "model_mid": -0.4,
+          "reliability": 0.843
+        },
+        "index_mcp": {
+          "raw_min": 2.512660503387451,
+          "raw_max": 4.313553810119629,
+          "dir": 1,
+          "model_mid": 0.654495,
+          "reliability": 0.897
+        },
+        "index_pip": {
+          "raw_min": 1.3943885564804077,
+          "raw_max": 3.5005440711975098,
+          "dir": 1,
+          "model_mid": 0.767945,
+          "reliability": 0.943
+        },
+        "middle_abd": {
+          "raw_min": 0.9679418802261353,
+          "raw_max": 2.0233206748962402,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 0.817
+        },
+        "middle_mcp": {
+          "raw_min": 1.3744467496871948,
+          "raw_max": 3.1431267261505127,
+          "dir": 1,
+          "model_mid": 0.61959,
+          "reliability": 0.913
+        },
+        "middle_pip": {
+          "raw_min": 1.3453011512756348,
+          "raw_max": 3.357883930206299,
+          "dir": 1,
+          "model_mid": 0.759215,
+          "reliability": 0.908
+        },
+        "ring_abd": {
+          "raw_min": 0,
+          "raw_max": 0.7271068692207336,
+          "dir": 1,
+          "model_mid": 0.165,
+          "reliability": 0.567
+        },
+        "ring_mcp": {
+          "raw_min": 1.165825366973877,
+          "raw_max": 2.946777105331421,
+          "dir": 1,
+          "model_mid": 0.61959,
+          "reliability": 0.919
+        },
+        "ring_pip": {
+          "raw_min": 3.6048548221588135,
+          "raw_max": 5.58062219619751,
+          "dir": 1,
+          "model_mid": 0.759215,
+          "reliability": 0.891
+        },
+        "pinky_abd": {
+          "raw_min": 2.0141167640686035,
+          "raw_max": 3.052621841430664,
+          "dir": -1,
+          "model_mid": 0.52333,
+          "reliability": 0.804
+        },
+        "pinky_mcp": {
+          "raw_min": 2.412951707839966,
+          "raw_max": 4.313553810119629,
+          "dir": 1,
+          "model_mid": 0.680675,
+          "reliability": 0.923
+        },
+        "pinky_pip": {
+          "raw_min": -1.5677285194396973,
+          "raw_max": 0.016873836517333984,
+          "dir": 1,
+          "model_mid": 0.767945,
+          "reliability": 0.709
+        },
+        "thumb_cmc": {
+          "raw_min": 1.1228739023208618,
+          "raw_max": 2.68906831741333,
+          "dir": 1,
+          "model_mid": 0.0,
+          "reliability": 0.897
+        },
+        "thumb_abd": {
+          "raw_min": 0,
+          "raw_max": 0.8728350400924683,
+          "dir": 1,
+          "model_mid": -0.541055,
+          "reliability": 0.807
+        },
+        "thumb_mp": {
+          "raw_min": 1.1213399171829224,
+          "raw_max": 3.100175142288208,
+          "dir": 1,
+          "model_mid": 0.2178,
+          "reliability": 0.977
+        },
+        "thumb_ip": {
+          "raw_min": 0.09357282519340515,
+          "raw_max": 2.0033788681030273,
+          "dir": -1,
+          "model_mid": 0.29808,
+          "reliability": 0.829
+        },
+        "wrist": {
+          "raw_min": 4.514505386352539,
+          "raw_max": 6.270913600921631,
+          "dir": -1,
+          "model_mid": -0.1118,
+          "reliability": 1.118
+        }
+      }
+    },
+    "orca-right": {
+      "_doc": "Serial identity for the right ORCA hand (CH343 adapter SN 0000000002 on the dev Mac's USB expansion board). Left/right are separate adapters \u2014 device paths pinned per hand; autodetect cannot tell identical adapters apart.",
+      "device": "/dev/cu.usbmodem00000000021",
+      "baud": 1000000,
+      "model": "right",
+      "stream_hz": 30,
+      "calib": {
+        "index_abd": {
+          "raw_min": 2.185922622680664,
+          "raw_max": 3.5097479820251465,
+          "dir": 1,
+          "model_mid": -0.4,
+          "reliability": 1.025
+        },
+        "index_mcp": {
+          "raw_min": 1.0369709730148315,
+          "raw_max": 3.077165365219116,
+          "dir": -1,
+          "model_mid": 0.654495,
+          "reliability": 1.016
+        },
+        "index_pip": {
+          "raw_min": 1.8515148162841797,
+          "raw_max": 3.8763694763183594,
+          "dir": -1,
+          "model_mid": 0.767945,
+          "reliability": 0.906
+        },
+        "middle_abd": {
+          "raw_min": 2.4758450984954834,
+          "raw_max": 3.58644700050354,
+          "dir": 1,
+          "model_mid": 0.0,
+          "reliability": 0.86
+        },
+        "middle_mcp": {
+          "raw_min": 1.6413594484329224,
+          "raw_max": 3.399301528930664,
+          "dir": -1,
+          "model_mid": 0.61959,
+          "reliability": 0.907
+        },
+        "middle_pip": {
+          "raw_min": 1.2916117906570435,
+          "raw_max": 3.284252882003784,
+          "dir": -1,
+          "model_mid": 0.759215,
+          "reliability": 0.899
+        },
+        "ring_abd": {
+          "raw_min": 1.93741774559021,
+          "raw_max": 3.357883930206299,
+          "dir": -1,
+          "model_mid": 0.165,
+          "reliability": 1.108
+        },
+        "ring_mcp": {
+          "raw_min": 1.2241166830062866,
+          "raw_max": 3.35481595993042,
+          "dir": -1,
+          "model_mid": 0.61959,
+          "reliability": 1.1
+        },
+        "ring_pip": {
+          "raw_min": 1.9573594331741333,
+          "raw_max": 4.01902961730957,
+          "dir": -1,
+          "model_mid": 0.759215,
+          "reliability": 0.93
+        },
+        "pinky_abd": {
+          "raw_min": 2.4559032917022705,
+          "raw_max": 3.5941169261932373,
+          "dir": 1,
+          "model_mid": 0.52333,
+          "reliability": 0.881
+        },
+        "pinky_mcp": {
+          "raw_min": 1.3268933296203613,
+          "raw_max": 3.5128159523010254,
+          "dir": -1,
+          "model_mid": 0.680675,
+          "reliability": 1.061
+        },
+        "pinky_pip": {
+          "raw_min": 1.6244856119155884,
+          "raw_max": 3.6109907627105713,
+          "dir": -1,
+          "model_mid": 0.767945,
+          "reliability": 0.889
+        },
+        "thumb_cmc": {
+          "raw_min": 1.8821943998336792,
+          "raw_max": 3.4990100860595703,
+          "dir": -1,
+          "model_mid": 0.0,
+          "reliability": 0.926
+        },
+        "thumb_abd": {
+          "raw_min": 2.1598448753356934,
+          "raw_max": 3.2474372386932373,
+          "dir": -1,
+          "model_mid": -0.541055,
+          "reliability": 1.005
+        },
+        "thumb_mp": {
+          "raw_min": 2.31477689743042,
+          "raw_max": 4.420932769775391,
+          "dir": 1,
+          "model_mid": 0.2178,
+          "reliability": 1.04
+        },
+        "thumb_ip": {
+          "raw_min": 2.2012624740600586,
+          "raw_max": 4.400990962982178,
+          "dir": 1,
+          "model_mid": 0.29808,
+          "reliability": 0.955
+        },
+        "wrist": {
+          "raw_min": 1.5017671585083008,
+          "raw_max": 3.331806182861328,
+          "dir": -1,
+          "model_mid": 0.1118,
+          "reliability": 1.165
+        }
+      }
+    },
+    "orca-v2-left": {
+      "_doc": "ORCA hand v2 (NOVA's left hand) \u2014 exported by NOVA servos/orca_hands.py export-v2 from nova.json. Chosen at bring-up when its adapter is plugged in (mabel_hw config HANDS.profiles).",
+      "generation": "v2",
+      "adapter": "0000000003",
+      "baud": 1000000,
+      "model": "left",
+      "stream_hz": 30,
+      "joint_motors": {
+        "wrist": 17,
+        "thumb_cmc": 8,
+        "thumb_abd": 5,
+        "thumb_ip": 6,
+        "thumb_mp": 7,
+        "index_abd": 11,
+        "index_mcp": 10,
+        "index_pip": 9,
+        "middle_abd": 12,
+        "middle_mcp": 1,
+        "middle_pip": 16,
+        "ring_abd": 13,
+        "ring_mcp": 14,
+        "ring_pip": 15,
+        "pinky_abd": 4,
+        "pinky_mcp": 3,
+        "pinky_pip": 2
+      },
+      "model_ranges": {
+        "wrist": [
+          -1.134464,
+          0.610865
+        ],
+        "thumb_cmc": [
+          -0.785398,
+          0.575959
+        ],
+        "thumb_abd": [
+          -0.314159,
+          0.959931
+        ],
+        "thumb_ip": [
+          -0.436332,
+          1.745329
+        ],
+        "thumb_mp": [
+          -0.261799,
+          1.867502
+        ],
+        "index_abd": [
+          -0.436332,
+          0.523599
+        ],
+        "index_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "index_pip": [
+          -0.261799,
+          1.867502
+        ],
+        "middle_abd": [
+          -0.471239,
+          0.471239
+        ],
+        "middle_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "middle_pip": [
+          -0.261799,
+          1.867502
+        ],
+        "ring_abd": [
+          -0.471239,
+          0.471239
+        ],
+        "ring_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "ring_pip": [
+          -0.261799,
+          1.867502
+        ],
+        "pinky_abd": [
+          -0.523599,
+          0.523599
+        ],
+        "pinky_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "pinky_pip": [
+          -0.261799,
+          1.867502
+        ]
+      },
+      "calib": {
+        "wrist": {
+          "raw_min": 4.50591,
+          "raw_max": 6.07671,
+          "dir": 1,
+          "reliability": 0.9,
+          "model_mid": -0.23561999999999994
+        },
+        "thumb_cmc": {
+          "raw_min": 1.79322,
+          "raw_max": 2.53874,
+          "dir": -1,
+          "reliability": 0.548,
+          "model_mid": -0.10472
+        },
+        "thumb_abd": {
+          "raw_min": 1.78862,
+          "raw_max": 2.65992,
+          "dir": -1,
+          "reliability": 0.684,
+          "model_mid": 0.322886
+        },
+        "thumb_mp": {
+          "raw_min": 1.61528,
+          "raw_max": 3.53736,
+          "dir": 1,
+          "reliability": 0.903,
+          "model_mid": 0.802852
+        },
+        "index_mcp": {
+          "raw_min": 1.24559,
+          "raw_max": 3.42845,
+          "dir": -1,
+          "reliability": 1.001,
+          "model_mid": 0.654498
+        },
+        "ring_abd": {
+          "raw_min": 1.69658,
+          "raw_max": 2.55715,
+          "dir": 1,
+          "reliability": 0.913,
+          "model_mid": 0.0
+        },
+        "ring_mcp": {
+          "raw_min": 1.73953,
+          "raw_max": 4.04051,
+          "dir": 1,
+          "reliability": 1.055,
+          "model_mid": 0.654498
+        },
+        "pinky_abd": {
+          "raw_min": 2.41142,
+          "raw_max": 3.36862,
+          "dir": -1,
+          "reliability": 0.914,
+          "model_mid": 0.0
+        },
+        "pinky_mcp": {
+          "raw_min": 1.20724,
+          "raw_max": 3.29652,
+          "dir": -1,
+          "reliability": 0.958,
+          "model_mid": 0.654498
+        },
+        "pinky_pip": {
+          "raw_min": 1.47109,
+          "raw_max": 3.22443,
+          "dir": 1,
+          "reliability": 0.823,
+          "model_mid": 0.802852
+        },
+        "thumb_ip": {
+          "raw_min": 1.74107,
+          "raw_max": 3.77206,
+          "dir": 1,
+          "reliability": 0.931,
+          "model_mid": 0.654498
+        },
+        "index_abd": {
+          "raw_min": 2.13684,
+          "raw_max": 2.98819,
+          "dir": 1,
+          "reliability": 0.887,
+          "model_mid": 0.043634
+        },
+        "index_pip": {
+          "raw_min": 1.43887,
+          "raw_max": 3.37322,
+          "dir": -1,
+          "reliability": 0.908,
+          "model_mid": 0.802852
+        },
+        "middle_abd": {
+          "raw_min": 2.19359,
+          "raw_max": 3.03421,
+          "dir": 1,
+          "reliability": 0.892,
+          "model_mid": 0.0
+        },
+        "middle_mcp": {
+          "raw_min": 1.99571,
+          "raw_max": 4.30128,
+          "dir": 1,
+          "reliability": 1.057,
+          "model_mid": 0.654498
+        },
+        "middle_pip": {
+          "raw_min": 1.5892,
+          "raw_max": 3.42231,
+          "dir": -1,
+          "reliability": 0.861,
+          "model_mid": 0.802852
+        },
+        "ring_pip": {
+          "raw_min": 1.32076,
+          "raw_max": 3.17534,
+          "dir": -1,
+          "reliability": 0.871,
+          "model_mid": 0.802852
+        }
+      }
+    },
+    "orca-v2-right": {
+      "_doc": "ORCA hand v2 (NOVA's right hand) \u2014 exported by NOVA servos/orca_hands.py export-v2 from nova.json. Chosen at bring-up when its adapter is plugged in (mabel_hw config HANDS.profiles).",
+      "generation": "v2",
+      "adapter": "0000000004",
+      "baud": 1000000,
+      "model": "right",
+      "stream_hz": 30,
+      "joint_motors": {
+        "wrist": 17,
+        "thumb_cmc": 9,
+        "thumb_abd": 12,
+        "thumb_ip": 11,
+        "thumb_mp": 10,
+        "index_abd": 6,
+        "index_mcp": 7,
+        "index_pip": 8,
+        "middle_abd": 5,
+        "middle_mcp": 16,
+        "middle_pip": 1,
+        "ring_abd": 4,
+        "ring_mcp": 3,
+        "ring_pip": 2,
+        "pinky_abd": 13,
+        "pinky_mcp": 14,
+        "pinky_pip": 15
+      },
+      "model_ranges": {
+        "wrist": [
+          -1.134464,
+          0.610865
+        ],
+        "thumb_cmc": [
+          -0.785398,
+          0.575959
+        ],
+        "thumb_abd": [
+          -0.314159,
+          0.959931
+        ],
+        "thumb_ip": [
+          -0.436332,
+          1.745329
+        ],
+        "thumb_mp": [
+          -0.261799,
+          1.867502
+        ],
+        "index_abd": [
+          -0.436332,
+          0.523599
+        ],
+        "index_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "index_pip": [
+          -0.261799,
+          1.867502
+        ],
+        "middle_abd": [
+          -0.471239,
+          0.471239
+        ],
+        "middle_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "middle_pip": [
+          -0.261799,
+          1.867502
+        ],
+        "ring_abd": [
+          -0.471239,
+          0.471239
+        ],
+        "ring_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "ring_pip": [
+          -0.261799,
+          1.867502
+        ],
+        "pinky_abd": [
+          -0.523599,
+          0.523599
+        ],
+        "pinky_mcp": [
+          -0.436332,
+          1.745329
+        ],
+        "pinky_pip": [
+          -0.261799,
+          1.867502
+        ]
+      },
+      "calib": {
+        "wrist": {
+          "raw_min": 3.16522,
+          "raw_max": 4.73601,
+          "dir": 1,
+          "reliability": 0.9,
+          "model_mid": -0.23561500000000013
+        },
+        "thumb_cmc": {
+          "raw_min": 2.98973,
+          "raw_max": 3.792,
+          "dir": 1,
+          "reliability": 0.589,
+          "model_mid": -0.10472
+        },
+        "thumb_abd": {
+          "raw_min": 2.66452,
+          "raw_max": 3.62633,
+          "dir": 1,
+          "reliability": 0.755,
+          "model_mid": 0.322886
+        },
+        "thumb_ip": {
+          "raw_min": 1.84998,
+          "raw_max": 3.88557,
+          "dir": 1,
+          "reliability": 0.933,
+          "model_mid": 0.654498
+        },
+        "thumb_mp": {
+          "raw_min": 2.0632,
+          "raw_max": 3.90398,
+          "dir": 1,
+          "reliability": 0.864,
+          "model_mid": 0.802852
+        },
+        "index_abd": {
+          "raw_min": 2.29177,
+          "raw_max": 3.13699,
+          "dir": 1,
+          "reliability": 0.881,
+          "model_mid": 0.043634
+        },
+        "index_mcp": {
+          "raw_min": 2.29023,
+          "raw_max": 4.52524,
+          "dir": 1,
+          "reliability": 1.024,
+          "model_mid": 0.654498
+        },
+        "index_pip": {
+          "raw_min": 2.30711,
+          "raw_max": 4.11567,
+          "dir": 1,
+          "reliability": 0.849,
+          "model_mid": 0.802852
+        },
+        "middle_abd": {
+          "raw_min": 2.51726,
+          "raw_max": 3.35942,
+          "dir": 1,
+          "reliability": 0.894,
+          "model_mid": 0.0
+        },
+        "middle_pip": {
+          "raw_min": 1.95276,
+          "raw_max": 3.8687,
+          "dir": 1,
+          "reliability": 0.9,
+          "model_mid": 0.802852
+        },
+        "ring_abd": {
+          "raw_min": 2.73202,
+          "raw_max": 3.5619,
+          "dir": 1,
+          "reliability": 0.881,
+          "model_mid": 0.0
+        },
+        "ring_mcp": {
+          "raw_min": 1.59074,
+          "raw_max": 3.89018,
+          "dir": -1,
+          "reliability": 1.054,
+          "model_mid": 0.654498
+        },
+        "ring_pip": {
+          "raw_min": 2.16445,
+          "raw_max": 3.96227,
+          "dir": 1,
+          "reliability": 0.844,
+          "model_mid": 0.802852
+        },
+        "pinky_abd": {
+          "raw_min": 1.87299,
+          "raw_max": 2.89769,
+          "dir": -1,
+          "reliability": 0.979,
+          "model_mid": 0.0
+        },
+        "pinky_mcp": {
+          "raw_min": 2.16138,
+          "raw_max": 4.12948,
+          "dir": 1,
+          "reliability": 0.902,
+          "model_mid": 0.654498
+        },
+        "middle_mcp": {
+          "raw_min": 2.30097,
+          "raw_max": 4.8934,
+          "dir": 1,
+          "reliability": 1.188,
+          "model_mid": 0.654498
+        },
+        "pinky_pip": {
+          "raw_min": 1.85305,
+          "raw_max": 3.64934,
+          "dir": -1,
+          "reliability": 0.844,
+          "model_mid": 0.802852
+        }
+      }
+    }
+  },
+  "neck": {
+    "rssr": {
+      "calib": {
+        "motor_L1": {
+          "raw_min": -1.45721,
+          "raw_max": 0.96039,
+          "dir": 1,
+          "raw_neutral": -0.16194
+        },
+        "motor_L2": {
+          "raw_neutral": -1.65045,
+          "dir": -1,
+          "raw_min": -2.77278,
+          "raw_max": -0.35518
+        },
+        "motor_head": {
+          "raw_neutral": 0.42782,
+          "dir": 1,
+          "raw_min": -0.96844,
+          "raw_max": 1.82409
+        },
+        "_task": {
+          "pitch_min": -0.69813,
+          "pitch_max": 0.64141,
+          "roll_min": -0.17017,
+          "roll_max": 0.17017,
+          "yaw_min": -1.39626,
+          "yaw_max": 1.39626
+        }
+      }
+    },
+    "serial": {
+      "calib": {
+        "neck_yaw": {
+          "raw_neutral": 2.40272,
+          "dir": 1,
+          "raw_min": 0.83192,
+          "raw_max": 3.97352
+        },
+        "_task": {
+          "pitch_min": -0.7854,
+          "pitch_max": 0.7854,
+          "roll_min": -0.7854,
+          "roll_max": 0.7854,
+          "yaw_min": -1.5708,
+          "yaw_max": 1.5708
+        },
+        "neck_pitch": {
+          "raw_neutral": 4.73386,
+          "dir": 1,
+          "raw_min": 3.94846,
+          "raw_max": 5.51926
+        },
+        "neck_roll": {
+          "raw_neutral": 3.17687,
+          "dir": 1,
+          "raw_min": 2.39147,
+          "raw_max": 3.96227
+        }
+      }
+    },
+    "teensy": {
+      "calib": {
+        "_doc": "Neck on the ARMS TEENSY (backend openarm, since 2026-09-30): yaw = DM-J4310 on the torso CAN bus; pitch/roll = one 2XL430-W250-T on the Teensy's Serial3 (ids 1/2), reported as RAW servo radians with tick 2048 = 0. CENTER-anchored (model = model_mid + dir*(raw - raw_mid)). Values seeded from the upstream calib/mabel.json capture of this robot on 2026-08-26 (reliability yaw 1.037, pitch 0.979, roll 1.021) \u2014 VERIFY with Setup Studio > Neck > Set Level before trusting 'level head = 0'.",
+        "neck_yaw": {
+          "raw_min": -0.2687492370605469,
+          "raw_max": 2.9879074096679688,
+          "dir": 1,
+          "model_mid": 0.0
+        },
+        "neck_pitch": {
+          "raw_min": 0.05982525274157524,
+          "raw_max": 3.133922815322876,
+          "dir": -1,
+          "model_mid": 0.0
+        },
+        "neck_roll": {
+          "raw_min": -1.58920419216156,
+          "raw_max": 1.6183497905731201,
+          "dir": -1,
+          "model_mid": 0.0
+        },
+        "_task": {
+          "pitch_min": -0.7854,
+          "pitch_max": 0.7854,
+          "roll_min": -0.7854,
+          "roll_max": 0.7854,
+          "yaw_min": -1.5708,
+          "yaw_max": 1.5708
+        }
+      }
+    }
+  },
+  "torso": {
+    "damiao": {
+      "calib": {
+        "torso": {
+          "raw_min": -1.06514,
+          "raw_max": 0.24524,
+          "dir": 1,
+          "model_mid": -0.40995
+        }
+      }
+    }
+  },
+  "lift": {
+    "pico": {
+      "calib": {
+        "_travel": {
+          "min_pos": 0.3175,
+          "max_pos": 0.9525,
+          "span": 0.635,
+          "homed": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+<mujoco model="mabel_head">
+
+  <compiler angle="radian" eulerseq="XYZ"/>
+  <option gravity="0 0 0" timestep="0.002"/>
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    
+    <default class="h_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    
+    <default class="h_collision">
+      <geom type="mesh" contype="1" conaffinity="0" group="1" rgba="1 1 1 0"/>
+    </default>
+    
+    <default class="motor_dynamixel">
+      <joint frictionloss="0.2" damping="0.5" armature="0.02" limited="true" type="hinge" />
+    </default>
+  </default>
+
+  <asset>
+    <mesh file="../assets/meshes/head/1_body_to_head.stl" name="m_h_1_mount"/>
+    <mesh file="../assets/meshes/head/2_neck_1.stl"       name="m_h_2_neck1"/>
+    <mesh file="../assets/meshes/head/3_neck_2.stl"       name="m_h_3_neck2"/>
+    <mesh file="../assets/meshes/head/4_head.stl"         name="m_h_4_head"/>
+
+    <material name="mat_h_dark"  rgba="0.24 0.24 0.24 1"/>
+    <material name="mat_h_light" rgba="0.80 0.80 0.80 1"/>
+    <material name="mat_h_acc"   rgba="0.80 0.30 0.10 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.7 0.7 0.7 1"/>
+
+    <body name="head_mount" pos="0 0 0.8" euler="0 0 0">
+      <geom class="h_visual" mesh="m_h_1_mount" material="mat_h_dark" pos="0 0 0" euler="0 0 0"/>
+      <geom class="h_collision" mesh="m_h_1_mount"/>
+
+      <body name="neck_1" pos="0.0 0.0 0.045" euler="0 0 0">
+        <joint name="h_j1_yaw" class="motor_dynamixel" axis="0 0 1" range="-1.570796 1.570796"/> 
+        <geom class="h_visual" mesh="m_h_2_neck1" material="mat_h_light" pos="0 0 0" euler="0 0 0"/>
+        
+        <body name="neck_2" pos="-0.02 0.0 0.035" euler="0 1.570796 0">
+          <joint name="h_j2_pitch" class="motor_dynamixel" axis="0 0 1" range="-0.785398 0.785398"/>
+          <geom class="h_visual" mesh="m_h_3_neck2" material="mat_h_dark" pos="0 0 0" euler="0 0 -1.570796"/>
+          
+          <body name="head" pos="-0.025 0.02 0.019" euler="0 1.57 1.57">
+            <joint name="h_j3_roll" class="motor_dynamixel" axis="0 0 1" range="-0.785398 0.785398"/>
+            <geom class="h_visual" mesh="m_h_4_head" material="mat_h_light" pos="0 0 -0.043712" euler="0 3.141593 0"/>
+            <geom class="h_collision" mesh="m_h_4_head" pos="0 0 -0.043712" euler="0 3.141593 0"/>
+          </body>
+
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="head_mount" body2="neck_1"/>
+    <exclude body1="neck_1"     body2="neck_2"/>
+    <exclude body1="neck_2"     body2="head"/>
+  </contact>
+
+  <actuator>
+    <position name="h_act_yaw"   joint="h_j1_yaw"   kp="50" kv="5" ctrlrange="-1.571 1.571" ctrllimited="true" forcerange="-10 10"/>
+    <position name="h_act_pitch" joint="h_j2_pitch" kp="50" kv="5" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-10 10"/>
+    <position name="h_act_roll"  joint="h_j3_roll"  kp="50" kv="5" ctrlrange="-0.785 0.785" ctrllimited="true" forcerange="-10 10"/>
+  </actuator>
+
+</mujoco>

@@ -1,0 +1,40 @@
+{
+  "name": "openarm-dual",
+  "net": {
+    "ip": "192.168.124.11",
+    "netmask": "255.255.255.0",
+    "gateway": "192.168.124.1",
+    "port": 5800
+  },
+  "stream": { "default_hz": 400, "max_hz": 500 },
+  "watchdog": { "conn_ms": 250, "cmd_ms": 150 },
+
+  "_comment_dxl": "Line rate for each half-duplex DYNAMIXEL port. Omit `baud` (or set 0) to auto-detect at bring-up; a wrong value also falls back to a sweep. The two axes of a 2XL430 share one comm module, so one baud covers both.",
+  "dxl_ports": [ { "port": 1, "baud": 1000000 } ],
+
+  "actuators": [
+    { "name": "l_j1",      "bus": 3, "can_id": 1, "mst_id": 17, "model": "DM8009",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_j2",      "bus": 3, "can_id": 2, "mst_id": 18, "model": "DM8009",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_j3",      "bus": 3, "can_id": 3, "mst_id": 19, "model": "DM4340",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_j4",      "bus": 3, "can_id": 4, "mst_id": 20, "model": "DM4340",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_j5",      "bus": 3, "can_id": 5, "mst_id": 21, "model": "DM4310",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_j6",      "bus": 3, "can_id": 6, "mst_id": 22, "model": "DM4310",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_j7",      "bus": 3, "can_id": 7, "mst_id": 23, "model": "DM4310",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "l_gripper", "bus": 3, "can_id": 8, "mst_id": 24, "model": "DM4310",  "default_kp": 0.0, "default_kd": 0.5 },
+
+    { "name": "r_j1",      "bus": 1, "can_id": 1, "mst_id": 17, "model": "DM8009",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_j2",      "bus": 1, "can_id": 2, "mst_id": 18, "model": "DM8009",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_j3",      "bus": 1, "can_id": 3, "mst_id": 19, "model": "DM4340",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_j4",      "bus": 1, "can_id": 4, "mst_id": 20, "model": "DM4340",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_j5",      "bus": 1, "can_id": 5, "mst_id": 21, "model": "DM4310",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_j6",      "bus": 1, "can_id": 6, "mst_id": 22, "model": "DM4310",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_j7",      "bus": 1, "can_id": 7, "mst_id": 23, "model": "DM4310",  "default_kp": 0.0, "default_kd": 1.0 },
+    { "name": "r_gripper", "bus": 1, "can_id": 8, "mst_id": 24, "model": "DM4310",  "default_kp": 0.0, "default_kd": 0.5 },
+
+    { "name": "torso",     "bus": 2, "can_id": 1, "mst_id": 17, "model": "DM10422", "default_kp": 0.0, "default_kd": 0.5 },
+    { "name": "neck_yaw",  "bus": 2, "can_id": 2, "mst_id": 18, "model": "DM4310",  "default_kp": 0.0, "default_kd": 0.5 },
+
+    { "name": "neck_pitch", "transport": "dynamixel", "port": 1, "dxl_id": 1, "model": "2XL430-W250-T" },
+    { "name": "neck_roll",  "transport": "dynamixel", "port": 1, "dxl_id": 2, "model": "2XL430-W250-T" }
+  ]
+}

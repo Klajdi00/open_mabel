@@ -1,0 +1,844 @@
+{
+ "joints": [
+  {
+   "name": "fl_steer",
+   "type": "continuous",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.141592653589793,
+   "upper": 3.141592653589793,
+   "node": "fl_steer_body",
+   "group": "base",
+   "ref": 0.0
+  },
+  {
+   "name": "fl_drive",
+   "type": "continuous",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.141592653589793,
+   "upper": 3.141592653589793,
+   "node": "fl_wheel",
+   "group": "base",
+   "ref": 0.0
+  },
+  {
+   "name": "fr_steer",
+   "type": "continuous",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.141592653589793,
+   "upper": 3.141592653589793,
+   "node": "fr_steer_body",
+   "group": "base",
+   "ref": 0.0
+  },
+  {
+   "name": "fr_drive",
+   "type": "continuous",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.141592653589793,
+   "upper": 3.141592653589793,
+   "node": "fr_wheel",
+   "group": "base",
+   "ref": 0.0
+  },
+  {
+   "name": "b_steer",
+   "type": "continuous",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.141592653589793,
+   "upper": 3.141592653589793,
+   "node": "b_steer_body",
+   "group": "base",
+   "ref": 0.0
+  },
+  {
+   "name": "b_drive",
+   "type": "continuous",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.141592653589793,
+   "upper": 3.141592653589793,
+   "node": "b_wheel",
+   "group": "base",
+   "ref": 0.0
+  },
+  {
+   "name": "lift_lower",
+   "type": "prismatic",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.15875,
+   "upper": 0.15875,
+   "node": "lift_mid",
+   "group": "body",
+   "ref": 0.15875
+  },
+  {
+   "name": "lift_upper",
+   "type": "prismatic",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.15875,
+   "upper": 0.15875,
+   "node": "lift_top",
+   "group": "body",
+   "ref": 0.15875
+  },
+  {
+   "name": "torso",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.0472,
+   "upper": 0.2618,
+   "node": "torso",
+   "group": "body",
+   "ref": 0.0
+  },
+  {
+   "name": "neck_yaw",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "neck_1",
+   "group": "body",
+   "ref": 0.0
+  },
+  {
+   "name": "neck_pitch",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.785398,
+   "upper": 0.785398,
+   "node": "neck_2",
+   "group": "body",
+   "ref": 0.0
+  },
+  {
+   "name": "neck_roll",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.785398,
+   "upper": 0.785398,
+   "node": "head",
+   "group": "body",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_1",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.49066,
+   "upper": 1.39626,
+   "node": "l_shoulder_1",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_2",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.174533,
+   "upper": 3.31612,
+   "node": "l_shoulder_2",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_3",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "l_shoulder_3",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_4",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.943,
+   "upper": 1.542,
+   "node": "l_elbow",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_5",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "l_forearm",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_6",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.785398,
+   "upper": 0.785398,
+   "node": "l_wrist",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_arm_7",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "l_hand_mount",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "left_wrist",
+   "type": "revolute",
+   "axis": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "lower": -1.0472,
+   "upper": 0.5236,
+   "node": "left_palm__anchor",
+   "group": "hands",
+   "ref": 0.15
+  },
+  {
+   "name": "left_thumb_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.87266,
+   "upper": 0.87266,
+   "node": "left_thumb_mp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_thumb_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -0.34202086,
+    -0.93969236
+   ],
+   "lower": -0.34907,
+   "upper": 0.73304,
+   "node": "left_thumb_pp__anchor",
+   "group": "hands",
+   "ref": -0.73304
+  },
+  {
+   "name": "left_thumb_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.20944,
+   "upper": 1.81496,
+   "node": "left_thumb_ip",
+   "group": "hands",
+   "ref": -0.58496
+  },
+  {
+   "name": "left_thumb_dip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.95477,
+   "node": "left_thumb_dp",
+   "group": "hands",
+   "ref": -0.50477
+  },
+  {
+   "name": "left_index_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.64577,
+   "node": "left_index_mp__anchor",
+   "group": "hands",
+   "ref": -0.4
+  },
+  {
+   "name": "left_index_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.65806,
+   "node": "left_index_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_index_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.88496,
+   "node": "left_index_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_middle_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.64577,
+   "node": "left_middle_mp__anchor",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_middle_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.58825,
+   "node": "left_middle_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_middle_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.8675,
+   "node": "left_middle_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_ring_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.63577,
+   "node": "left_ring_mp__anchor",
+   "group": "hands",
+   "ref": 0.17
+  },
+  {
+   "name": "left_ring_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.58825,
+   "node": "left_ring_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_ring_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.8675,
+   "node": "left_ring_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_pinky_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.64577,
+   "node": "left_pinky_mp__anchor",
+   "group": "hands",
+   "ref": 0.52333
+  },
+  {
+   "name": "left_pinky_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.71042,
+   "node": "left_pinky_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "left_pinky_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.88496,
+   "node": "left_pinky_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_1",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.39626,
+   "upper": 3.49066,
+   "node": "r_shoulder_1",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_2",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -3.31612,
+   "upper": 0.174533,
+   "node": "r_shoulder_2",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_3",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "r_shoulder_3",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_4",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.67,
+   "upper": 0.773461,
+   "node": "r_elbow",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_5",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "r_forearm",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_6",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -0.785398,
+   "upper": 0.785398,
+   "node": "r_wrist",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_arm_7",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lower": -1.5708,
+   "upper": 1.5708,
+   "node": "r_hand_mount",
+   "group": "arms",
+   "ref": 0.0
+  },
+  {
+   "name": "right_wrist",
+   "type": "revolute",
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lower": -0.5236,
+   "upper": 1.0472,
+   "node": "right_palm__anchor",
+   "group": "hands",
+   "ref": -0.15
+  },
+  {
+   "name": "right_thumb_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "lower": -0.87266,
+   "upper": 0.87266,
+   "node": "right_thumb_mp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_thumb_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.34202086,
+    0.93969236
+   ],
+   "lower": -0.34907,
+   "upper": 0.73304,
+   "node": "right_thumb_pp__anchor",
+   "group": "hands",
+   "ref": -0.73304
+  },
+  {
+   "name": "right_thumb_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.20944,
+   "upper": 1.81496,
+   "node": "right_thumb_ip",
+   "group": "hands",
+   "ref": -0.58496
+  },
+  {
+   "name": "right_thumb_dip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.95477,
+   "node": "right_thumb_dp",
+   "group": "hands",
+   "ref": -0.50477
+  },
+  {
+   "name": "right_index_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.64577,
+   "node": "right_index_mp__anchor",
+   "group": "hands",
+   "ref": -0.4
+  },
+  {
+   "name": "right_index_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.65806,
+   "node": "right_index_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_index_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.88496,
+   "node": "right_index_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_middle_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.64577,
+   "node": "right_middle_mp__anchor",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_middle_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.58825,
+   "node": "right_middle_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_middle_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.8675,
+   "node": "right_middle_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_ring_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.63577,
+   "node": "right_ring_mp__anchor",
+   "group": "hands",
+   "ref": 0.17
+  },
+  {
+   "name": "right_ring_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.58825,
+   "node": "right_ring_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_ring_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.8675,
+   "node": "right_ring_ip",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_pinky_abd",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "lower": -0.64577,
+   "upper": 0.64577,
+   "node": "right_pinky_mp__anchor",
+   "group": "hands",
+   "ref": 0.52333
+  },
+  {
+   "name": "right_pinky_mcp",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.71042,
+   "node": "right_pinky_pp",
+   "group": "hands",
+   "ref": 0.0
+  },
+  {
+   "name": "right_pinky_pip",
+   "type": "revolute",
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "lower": -0.34907,
+   "upper": 1.88496,
+   "node": "right_pinky_ip",
+   "group": "hands",
+   "ref": 0.0
+  }
+ ]
+}

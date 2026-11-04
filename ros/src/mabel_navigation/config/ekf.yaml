@@ -1,0 +1,51 @@
+# robot_localization EKF: FUSED localization for MABEL.
+#
+# Tuned from a ground-truth benchmark (controller/experiments + /tmp/analyze_loc.py):
+# the swerve wheels over-read ~3x from slip (wheel path 3.0x ground truth, ATE 0.67 m),
+# while cuVSLAM tracks at 1.10x scale (ATE 0.21 m, heading 3.4 deg). So the EKF:
+#   * trusts cuVSLAM for ABSOLUTE pose (x, y, yaw)  -- the drift-free anchor
+#   * uses the wheels only for high-rate VELOCITY (vx, vy, vyaw), HEAVILY down-weighted
+#     (loose twist covariance in swerve_odometry) -- they smooth between visual frames
+#     and bridge brief cuVSLAM dropouts, but never dominate the position.
+# Net: fused ~= cuVSLAM accuracy, with the wheels as a cheap high-rate fallback.
+# To weight the wheels even less, raise swerve_odometry twist_cov_vxy / twist_cov_vyaw.
+ekf_filter_node:
+  ros__parameters:
+    frequency: 30.0
+    sensor_timeout: 0.2
+    two_d_mode: true                 # planar robot: zero out z/roll/pitch
+    publish_tf: true
+    print_diagnostics: false
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom                # EKF owns odom->base_link
+
+    # --- wheel odometry: VELOCITY only, down-weighted (slip) ------------------
+    odom0: /odom
+    # [x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az]
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  true,  false,
+                   false, false, true,
+                   false, false, false]
+    odom0_differential: false
+    odom0_relative: false
+    odom0_queue_size: 10
+
+    # --- cuVSLAM: ABSOLUTE pose (x, y, yaw), trusted -------------------------
+    odom1: /visual_slam/tracking/odometry
+    odom1_config: [true,  true,  false,
+                   false, false, true,
+                   false, false, false,
+                   false, false, false,
+                   false, false, false]
+    odom1_differential: false
+    odom1_relative: false
+    odom1_queue_size: 10
+
+    # process_noise_covariance / initial_estimate_covariance: use robot_localization's
+    # built-in defaults (a sane 15x15). The wheel-vs-visual trust is set by the MESSAGE
+    # covariances -- loose wheel twist (swerve_odometry twist_cov_*) vs cuVSLAM's own
+    # tight pose covariance -- which is the right lever to "weight the wheels less".

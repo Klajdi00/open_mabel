@@ -1,0 +1,44 @@
+# ORCA LEFT hand — joint -> actuator ID map + joint angle ranges.
+#
+# `id`        : Feetech motor ID on the bus (matches firmware hand_config.py).
+# `angle_min` : joint angle [rad] at the calibrated raw MIN tick.
+# `angle_max` : joint angle [rad] at the calibrated raw MAX tick.
+# `invert`    : set true if the motor drives the joint the opposite way
+#               (i.e. raw MIN tick = joint MAX angle). Flip this if a joint
+#               moves the wrong way in RViz.
+#
+# angle_min/max are taken from the mabel_description URDF joint limits
+# (urdf/mabel_full.urdf), which are the orca_core v1 joint_roms in radians.
+# This makes a full calibrated motor sweep map onto the joint's full URDF
+# range, so the RViz model tracks the real hand. They do NOT affect the hard
+# raw-tick safety clamp (that always comes from calibration_file).
+#
+# Raw tick limits (open/closed hardware stops) come from `calibration_file`.
+
+side: left
+calibration_file: left_calibration.json   # resolved against share/config/
+
+joints:
+  # ---- index ----
+  index_abd:  { id: 6,  angle_min: -0.6458, angle_max: 0.6458, invert: false }
+  index_mcp:  { id: 7,  angle_min: -0.3491, angle_max: 1.6581, invert: false }
+  index_pip:  { id: 8,  angle_min: -0.3491, angle_max: 1.8850, invert: false }
+  # ---- middle ----
+  middle_abd: { id: 5,  angle_min: -0.6458, angle_max: 0.6458, invert: false }
+  middle_mcp: { id: 16, angle_min: -0.3491, angle_max: 1.5882, invert: false }
+  middle_pip: { id: 1,  angle_min: -0.3491, angle_max: 1.8675, invert: false }
+  # ---- ring ----
+  ring_abd:   { id: 13, angle_min: -0.6458, angle_max: 0.6358, invert: false }
+  ring_mcp:   { id: 15, angle_min: -0.3491, angle_max: 1.5882, invert: false }
+  ring_pip:   { id: 14, angle_min: -0.3491, angle_max: 1.8675, invert: false }
+  # ---- pinky ----
+  pinky_abd:  { id: 4,  angle_min: -0.6458, angle_max: 0.6458, invert: false }
+  pinky_mcp:  { id: 2,  angle_min: -0.3491, angle_max: 1.7104, invert: false }
+  pinky_pip:  { id: 3,  angle_min: -0.3491, angle_max: 1.8850, invert: false }
+  # ---- thumb (ORCA cmc/mp/ip == URDF mcp/pip/dip) ----
+  thumb_cmc:  { id: 12, angle_min: -0.8727, angle_max: 0.8727, invert: false }
+  thumb_abd:  { id: 11, angle_min: -0.3491, angle_max: 0.7330, invert: false }
+  thumb_mp:   { id: 9,  angle_min: -0.2094, angle_max: 1.8150, invert: false }
+  thumb_ip:   { id: 10, angle_min: -0.3491, angle_max: 1.9548, invert: true }
+  # ---- wrist ----
+  wrist:      { id: 17, angle_min: -1.0472, angle_max: 0.5236, invert: false }

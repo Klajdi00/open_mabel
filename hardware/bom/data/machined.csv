@@ -1,0 +1,8 @@
+ref,part,operations,qty,p1,p2,p10,p50,p100,p1000
+1.02,"Base sheet metal, lower",Laser cutting only - no secondary operations,1,51.75,38.05,27.59,26.39,25.98,24.54
+1.03,"Base sheet metal, upper",4 bends + dimple forming + hardware insertion + tapping,1,195.36,156.42,112.94,97.49,88.30,85.82
+2.02,Lift-to-torso adapter,2 bends + dimple forming + hardware insertion + tapping,1,59.26,40.69,28.93,25.15,22.42,17.99
+2.03,Torso output plate,1 bend + hardware insertion + tapping,1,55.16,36.62,25.70,22.77,21.87,19.29
+2.04,Body bottom plate,2 bends + hardware insertion + tapping,1,33.55,22.29,15.73,12.81,11.44,8.97
+2.06,Neck mounting plate,2 bends only,1,29.05,19.21,13.86,10.93,9.74,7.60
+2.05,Arm mounting plate,Hardware insertion + tapping,2,13.17,13.17,9.42,7.56,6.64,5.26

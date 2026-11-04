@@ -1,0 +1,106 @@
+{
+ "version": 1,
+ "actors": [
+  {
+   "kind": "walker",
+   "root": "waiter_root",
+   "z": 0.94,
+   "path": [
+    [
+     4.6,
+     -0.5
+    ],
+    [
+     1.6,
+     -1.25
+    ],
+    [
+     -1.7,
+     -1.25
+    ],
+    [
+     -1.7,
+     1.25
+    ],
+    [
+     1.6,
+     1.25
+    ],
+    [
+     4.6,
+     0.5
+    ]
+   ],
+   "closed": true,
+   "speed": 0.95,
+   "accel": 1.6,
+   "s0": 0.0,
+   "bob": 0.022,
+   "stride": 0.66,
+   "gait": {
+    "joints": [
+     "waiter_hipL",
+     "waiter_hipR",
+     "waiter_kneeL",
+     "waiter_kneeR",
+     "waiter_shL",
+     "waiter_shR",
+     "waiter_elL",
+     "waiter_elR"
+    ],
+    "amp": [
+     0.46,
+     -0.46,
+     0.4,
+     0.4,
+     -0.34,
+     0.34,
+     0.14,
+     0.14
+    ],
+    "poff": [
+     0.0,
+     0.0,
+     1.6,
+     4.742,
+     0.0,
+     0.0,
+     0.0,
+     3.142
+    ],
+    "bias": [
+     0.0,
+     0.0,
+     0.4,
+     0.4,
+     0.0,
+     0.0,
+     -0.55,
+     -0.55
+    ]
+   },
+   "stops": [
+    {
+     "s": 6.5,
+     "period": 22.0,
+     "dur": 4.0,
+     "offset": 6.0
+    },
+    {
+     "s": 14.0,
+     "period": 22.0,
+     "dur": 4.0,
+     "offset": 14.0
+    }
+   ],
+   "yield_dist": 1.1,
+   "yield_width": 0.9,
+   "patience": 8.0,
+   "hit_box": [
+    0.32,
+    0.32
+   ]
+  }
+ ],
+ "conveyors": []
+}

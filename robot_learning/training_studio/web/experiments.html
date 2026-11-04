@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MABEL · Experiments</title>
+<style>
+  :root{--bg:#0e1116;--panel:#161b22;--line:#232a34;--fg:#e6edf3;--dim:#8b949e;
+        --accent:#4c9aff;--good:#3fb950;--bad:#f85149;--warn:#d29922;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+  header{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center}
+  header h1{font-size:16px;margin:0;font-weight:600}
+  header .sub{color:var(--dim);font-size:12px}
+  header a{color:var(--accent);text-decoration:none;font-size:13px;margin-left:auto}
+  .wrap{display:grid;grid-template-columns:minmax(340px,420px) 1fr;height:calc(100vh - 51px)}
+  .list{overflow:auto;border-right:1px solid var(--line);padding:10px}
+  .detail{overflow:auto;padding:18px 22px}
+  .arch{margin-bottom:14px}
+  .arch h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);
+           margin:8px 4px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  .ds{color:var(--dim);font-size:11px;margin:8px 4px 4px}
+  .run{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 11px;
+       margin:5px 0;cursor:pointer;transition:border-color .12s}
+  .run:hover{border-color:var(--accent)}
+  .run.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .run .id{font-family:ui-monospace,monospace;font-size:12px}
+  .run .meta{color:var(--dim);font-size:11px;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+  .badge{padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600}
+  .b-done{background:rgba(63,185,80,.15);color:var(--good)}
+  .b-running{background:rgba(210,153,34,.15);color:var(--warn)}
+  .b-failed{background:rgba(248,81,73,.15);color:var(--bad)}
+  .b-created{background:rgba(139,148,158,.15);color:var(--dim)}
+  h3{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin:20px 0 8px}
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  td,th{border:1px solid var(--line);padding:5px 8px;text-align:left}
+  th{color:var(--dim);font-weight:600}
+  .kv{display:grid;grid-template-columns:170px 1fr;gap:2px 12px;font-size:12px}
+  .kv div:nth-child(odd){color:var(--dim)}
+  .plots{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .plots img{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff}
+  code{background:#0b0e13;padding:1px 5px;border-radius:4px;font-size:11px}
+  button{background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;
+         padding:6px 12px;cursor:pointer;font-size:12px;margin-right:8px}
+  button:hover{border-color:var(--accent)}
+  .empty{color:var(--dim);padding:40px;text-align:center}
+  .note{color:var(--warn);font-size:12px;margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>MABEL · Experiments</h1>
+  <span class="sub" id="counts">loading…</span>
+  <a href="/">← Training Studio</a>
+</header>
+<div class="wrap">
+  <div class="list" id="list"><div class="empty">loading…</div></div>
+  <div class="detail" id="detail"><div class="empty">Select a run to inspect its config, checkpoints, plots and evaluations.</div></div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const badge = st => `<span class="badge b-${st||'created'}">${st||'created'}</span>`;
+let SEL = null;
+
+async function load(){
+  const r = await fetch('/api/experiments'); const {groups} = await r.json();
+  const archs = Object.keys(groups).sort();
+  let nRuns = 0; const list = $('#list'); list.innerHTML='';
+  if(!archs.length){ list.innerHTML='<div class="empty">No runs yet. Launch training from the studio or CLI.</div>'; }
+  for(const a of archs){
+    const runs = groups[a]; nRuns += runs.length;
+    const byDs = {}; runs.forEach(x=>{(byDs[x.dataset]=byDs[x.dataset]||[]).push(x)});
+    const sec = document.createElement('div'); sec.className='arch';
+    sec.innerHTML = `<h2>${a} · ${runs.length}</h2>`;
+    for(const ds of Object.keys(byDs).sort()){
+      const dv = document.createElement('div'); dv.innerHTML=`<div class="ds">▚ ${ds}</div>`;
+      byDs[ds].forEach(run=>{
+        const el = document.createElement('div'); el.className='run'; el.dataset.id=run.run_id;
+        const imp = run.metrics_summary && run.metrics_summary.loss_improvement_pct;
+        el.innerHTML = `<div class="id">${run.run_id} ${badge(run.status)}</div>
+          <div class="meta"><span>${run.n_checkpoints||0} ckpts</span>
+          ${imp!=null?`<span>↓loss ${imp}%</span>`:''}
+          <span>${run.device||''}</span><span>${(run.created||'').replace('T',' ')}</span></div>`;
+        el.onclick=()=>select(run.run_id, el);
+        dv.appendChild(el);
+      });
+      sec.appendChild(dv);
+    }
+    list.appendChild(sec);
+  }
+  $('#counts').textContent = `${archs.length} architectures · ${nRuns} runs`;
+}
+
+async function select(id, el){
+  document.querySelectorAll('.run').forEach(x=>x.classList.remove('sel'));
+  if(el) el.classList.add('sel'); SEL=id;
+  const d = await (await fetch('/api/experiments/'+id)).json();
+  const hp = d.hyperparams||{}; const ms = d.metrics_summary||{};
+  const cks = d.checkpoints||[]; const evs = d.evals||[];
+  const plots = d.plots||[];
+  $('#detail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px">
+      <h2 style="margin:0;font-family:ui-monospace,monospace">${d.run_id}</h2>${badge(d.status)}
+    </div>
+    <div style="margin:6px 0 14px">
+      <button onclick="act('resume')">▶ Resume from last</button>
+      <button onclick="act('eval')">◆ Eval latest checkpoint</button>
+      <span id="actmsg" class="note"></span>
+    </div>
+    <h3>Run</h3>
+    <div class="kv">
+      <div>arch</div><div>${d.arch} → <code>${d.arch_slug}</code></div>
+      <div>dataset</div><div>${d.dataset}</div>
+      <div>backend / device</div><div>${d.backend} · ${d.device||'?'}</div>
+      <div>git</div><div><code>${d.git_sha||'?'}</code></div>
+      <div>path</div><div><code>${d.path}</code></div>
+      <div>loss</div><div>${ms.first_loss!=null?`${ms.first_loss} → ${ms.last_loss} (↓${ms.loss_improvement_pct}%)`:'—'}</div>
+      <div>hyperparams</div><div><code>${JSON.stringify(hp)}</code></div>
+    </div>
+    <h3>Checkpoints (${cks.length})</h3>
+    ${cks.length?`<table><tr><th>step</th><th>kind</th><th>path</th></tr>
+      ${cks.map(c=>`<tr><td>${c.step}</td><td>${c.kind}</td><td><code>${c.path}</code></td></tr>`).join('')}</table>`:'<div class="empty">none yet</div>'}
+    <h3>Plots</h3>
+    ${plots.length?`<div class="plots">${plots.map(p=>`<img src="/api/experiments/${id}/plot/${p}" title="${p}"/>`).join('')}</div>`:'<div class="empty">no plots</div>'}
+    <h3>Evaluations (${evs.length})</h3>
+    ${evs.length?`<table><tr><th>eval</th><th>kind</th><th>action L1</th><th>frames</th><th>checkpoint</th></tr>
+      ${evs.map(e=>{const r=e.results||{};return `<tr><td>${e.eval_id}</td><td>${e.kind}</td>
+        <td>${r.action_l1_mean!=null?r.action_l1_mean.toFixed(4):'—'}</td>
+        <td>${r.frames||'—'}</td><td><code>${(e.checkpoint||'').split('/').slice(-2)[0]||''}</code></td></tr>`}).join('')}</table>`
+      :'<div class="empty">no evals yet</div>'}
+  `;
+}
+
+async function act(kind){
+  const msg = $('#actmsg'); msg.textContent = kind==='resume'?'resuming…':'evaluating…';
+  try{
+    const url = `/api/experiments/${SEL}/${kind}`;
+    const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
+    if(r.status===401){ msg.textContent='auth required — log in via the Training Studio first.'; return; }
+    const j = await r.json();
+    msg.textContent = kind==='resume' ? 'resume launched' : `eval: L1 ${(j.results&&j.results.action_l1_mean!=null)?j.results.action_l1_mean.toFixed(4):'(see tree)'}`;
+    setTimeout(()=>select(SEL, document.querySelector('.run.sel')), kind==='resume'?1500:300);
+  }catch(e){ msg.textContent='error: '+e; }
+}
+
+load(); setInterval(()=>{ if(!SEL) load(); }, 5000);
+</script>
+</body>
+</html>

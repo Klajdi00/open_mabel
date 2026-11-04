@@ -1,0 +1,24 @@
+# udev rules for the MABEL ORCA hand Feetech USB-serial adapters.
+#
+# The adapters use a QinHeng/CH340-family chip (idVendor 1a86) that enumerates
+# as a USB CDC device, so it shows up as /dev/ttyACM* (not /dev/ttyUSB*).
+#
+# Install:
+#   sudo cp 99-mabel-hand.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+#   # then unplug/replug the adapter(s)
+#
+# Effect:
+#   * MODE 0666  -> any user can open the port (no dialout/group/logout dance)
+#   * ID_MM_DEVICE_IGNORE -> ModemManager won't probe/grab the CDC port
+#   * stable /dev/orca_hand-<serial> symlink alongside /dev/serial/by-id/...
+
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", \
+    MODE="0666", GROUP="dialout", ENV{ID_MM_DEVICE_IGNORE}="1", \
+    SYMLINK+="orca_hand-$attr{serial}"
+
+# If you later want fixed left/right device names for two adapters, pin them by
+# their unique serial (find it with: udevadm info -q property -n /dev/ttyACM0 |
+# grep ID_SERIAL_SHORT), e.g.:
+#   ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", ATTRS{serial}=="0000000002", SYMLINK+="orca_left"
+#   ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", ATTRS{serial}=="<other>",    SYMLINK+="orca_right"

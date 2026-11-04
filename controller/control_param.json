@@ -1,0 +1,781 @@
+{
+  "_doc": "MABEL master control-law parameter registry \u2014 the single, human-editable surface for every controller hyperparameter in the `mabel` package (controller/mabel/). Gains, barriers, admittance masses, workspace boxes and safety limits ARE the control law; the hardware bridge only executes the motor commands that fall out of them, so they live here in controller/ (not in hardware_bridge/). Read by controller/mabel/control_params.py and consumers listed per block.",
+  "_source_legend": {
+    "LIVE": "This block is READ by running code today \u2014 editing the numbers here changes the robot's behaviour with no code change. Consumers are named in each block's `_consumers`.",
+    "MIRROR": "Documentation copy of a value that is currently authoritative in controller/mabel/config.py or controller/mabel/motion_model/tip_over.py. Editing here does NOT yet change behaviour \u2014 edit the cited `_authoritative` source too (or wire the block up). Kept here so this file is the one place to READ every tunable; the migration to make these LIVE is tracked in docs/mabel_controller.tex (Config registry section).",
+    "PLACEHOLDER": "The subsystem is not yet fully configured on the real robot; the numbers are conservative starting points or hardware defaults. Tune before relying on them."
+  },
+  "arm": {
+    "_source": "LIVE",
+    "_doc": "The real-robot arm control law: DaMiao MIT torque law T = kp*(q*-q) + kd*(q\u0307*-q\u0307) + t_ff. Per-joint kp (N.m/rad) / kd (N.m.s/rad) / vmax (rad/s). kd is HARD-capped at the DaMiao MIT wire limit (kd_max ~5); kp is derived per-joint from the MJCF inertia so a heavy shoulder and a light wrist are not forced to share one gain \u2014 regenerate with the upstream arm stack --ff.",
+    "_consumers": [
+      "controller/mabel/control_params.py (arm_gains, arm_gravity_ff)",
+      "hardware_bridge/mabel_hw/config.py (_arm_gains -> LEFT_ARM/RIGHT_ARM kp/kd)",
+      "controller/mabel/arm_control/gravity.py (FF envelope)",
+      "upstream setup studio armctl.py"
+    ],
+    "stream_hz": 200,
+    "deadman_s": 0.5,
+    "system_id": {
+      "_doc": "Joint system identity \u2014 the firmware joint IDs, their MJCF joint names, the backend that speaks to them, and the per-side motor limits. This is the map every torque quantity is expressed against: q_model = model_mid + dir*(q_raw - raw_mid), and torque transforms the same way (tau_raw = dir*tau_model). The calibration `dir` and raw window are NOT duplicated here \u2014 they are measured by the setup studio and live in the CalibrationStore (calib_slice below) to avoid two diverging copies; this block is the naming + limit registry only.",
+      "joints_left": [
+        "l_j1",
+        "l_j2",
+        "l_j3",
+        "l_j4",
+        "l_j5",
+        "l_j6",
+        "l_j7"
+      ],
+      "joints_right": [
+        "r_j1",
+        "r_j2",
+        "r_j3",
+        "r_j4",
+        "r_j5",
+        "r_j6",
+        "r_j7"
+      ],
+      "mjcf_joint_map": {
+        "l_j1": "Left Arm 1",
+        "l_j2": "Left Arm 2",
+        "l_j3": "Left Arm 3",
+        "l_j4": "Left Arm 4",
+        "l_j5": "Left Arm 5",
+        "l_j6": "Left Arm 6",
+        "l_j7": "Left Arm 7",
+        "r_j1": "Right Arm 1",
+        "r_j2": "Right Arm 2",
+        "r_j3": "Right Arm 3",
+        "r_j4": "Right Arm 4",
+        "r_j5": "Right Arm 5",
+        "r_j6": "Right Arm 6",
+        "r_j7": "Right Arm 7"
+      },
+      "backend": "openarm",
+      "link": "arms_openarm",
+      "calib_slice": "arm/openarm-dual",
+      "p_max": 12.5,
+      "v_max": 30.0,
+      "t_max": 10.0,
+      "end_stop_margin": 0.05
+    },
+    "gains_default": {
+      "kp": 12.0,
+      "kd": 2.0,
+      "vmax": 0.5
+    },
+    "gains": {
+      "l_j1": {
+        "kp": 25.0,
+        "kd": 2.5,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          14.9,
+          5.0
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca.",
+        "_j1_kd_note": "kd 4.0\u21922.5 (2026-07-29): J1's friction is far above model (~10 deg settle at kp 25) and high kd amplifies stick-slip re-grab; softer slip damping = smoother. If still notchy, the fix is mechanical (bearing/harness drag)."
+      },
+      "l_j2": {
+        "kp": 25.0,
+        "kd": 4.0,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "compliant set; J2 raised 12\u219218 after the all-controls test: the shoulder carries the whole arm, and at kp 12 its PD authority (~2.4 N*m per 11\u00b0) sat inside gravity-error+stiction \u2014 12% tracking. 18/2.0 is still ~2.5x softer than the stiff set (_prev). RE-TUNE with hands refitted.",
+        "_prev": [
+          14.9,
+          5.0
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "l_j3": {
+        "kp": 15.0,
+        "kd": 1.5,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          30.4,
+          4.26
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "l_j4": {
+        "kp": 18.0,
+        "kd": 1.5,
+        "vmax": 0.5,
+        "_tuned_2026_07_28": "no-hands step-grid tune (exp_j4_pd_tune.py): kp45/kd2.5 = settle 0.38-0.8s, overshoot 0%, rings 0, final err 0.4-0.8 deg. The derived kd 4.27 (computed WITH hand inertia) was mushy without the hands and amplified gateway vel-FF noise into the reported oscillation. RE-TUNE when the ORCA hands are refitted.",
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          45.0,
+          2.5
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "l_j5": {
+        "kp": 6.0,
+        "kd": 0.8,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          8.3,
+          1.21
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "l_j6": {
+        "kp": 6.0,
+        "kd": 0.8,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          8.1,
+          1.18
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "l_j7": {
+        "kp": 5.0,
+        "kd": 0.6,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          8.1,
+          1.18
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "r_j1": {
+        "kp": 25.0,
+        "kd": 2.5,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          14.9,
+          5.0
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca.",
+        "_j1_kd_note": "kd 4.0\u21922.5 (2026-07-29): J1's friction is far above model (~10 deg settle at kp 25) and high kd amplifies stick-slip re-grab; softer slip damping = smoother. If still notchy, the fix is mechanical (bearing/harness drag)."
+      },
+      "r_j2": {
+        "kp": 25.0,
+        "kd": 4.0,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "compliant set; J2 raised 12\u219218 after the all-controls test: the shoulder carries the whole arm, and at kp 12 its PD authority (~2.4 N*m per 11\u00b0) sat inside gravity-error+stiction \u2014 12% tracking. 18/2.0 is still ~2.5x softer than the stiff set (_prev). RE-TUNE with hands refitted.",
+        "_prev": [
+          14.9,
+          5.0
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "r_j3": {
+        "kp": 15.0,
+        "kd": 1.5,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          30.0,
+          4.24
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "r_j4": {
+        "kp": 18.0,
+        "kd": 1.5,
+        "vmax": 0.5,
+        "_tuned_2026_07_28": "no-hands step-grid tune (exp_j4_pd_tune.py): kp45/kd2.5 = settle 0.38-0.8s, overshoot 0%, rings 0, final err 0.4-0.8 deg. The derived kd 4.27 (computed WITH hand inertia) was mushy without the hands and amplified gateway vel-FF noise into the reported oscillation. RE-TUNE when the ORCA hands are refitted.",
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          45.0,
+          2.5
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "r_j5": {
+        "kp": 6.0,
+        "kd": 0.8,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          8.2,
+          1.2
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "r_j6": {
+        "kp": 6.0,
+        "kd": 0.8,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          8.1,
+          1.18
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      },
+      "r_j7": {
+        "kp": 5.0,
+        "kd": 0.6,
+        "vmax": 0.5,
+        "_compliance_2026_07_29": "whole-body COMPLIANT set (operator request: 'as compliant as possible', no hands): gravity FF carries the load, PD only tracks. Previous stiff set is recorded in _prev; restore per joint if a task needs stiffness. RE-TUNE with hands refitted.",
+        "_prev": [
+          8.1,
+          1.18
+        ],
+        "_revised_2026_07_29": "shoulders-highest compliant set (operator: 'J1/J2 carry the load \u2014 why are elbow gains higher?'): per-joint kp is bounded by the kd<=5 damping ceiling kp<=(kd/2z)^2/J_eff \u2014 no-hands MJCF inertias give J1 0.31 / J2 0.35 / J3 0.12 / J4 0.14 kg*m^2, ceilings ~31/28/80/71. Deployed: shoulders at 25/4.0 (z~0.7, ~80% of ceiling \u2014 the most authority on the arm), distal joints need-limited and softer. Gravity FF (sysid trims) carries the static load everywhere. RE-DERIVE with hands=orca."
+      }
+    },
+    "gravity_feedforward": {
+      "_doc": "t_ff = gravity torque g(q) from the MJCF (ORCA hand + wrist mount, ~1.74 kg per wrist when hands=orca). kd<=5 caps kp below what gravity needs, so t_ff is what HOLDS the arm up while kp only tracks. There is no per-joint FF gain \u2014 the feedforward IS the model gravity term; the tunables are the safety envelope + the hand-mass choice below.",
+      "enabled": true,
+      "clamp": 0.6,
+      "scale": 1.0,
+      "ramp_s": 1.5,
+      "pose_pad": 0.12,
+      "hands": "none",
+      "mount_tilt_deg": 0.0,
+      "_hands_note": "'none' (default) strips the ORCA hand subtree mass so the FF lifts the arm only \u2014 a phantom 1.12 kg/side makes the arm SHAKE if the hands are not bolted on. Set 'orca' once the hands are fitted.",
+      "_env_overrides": "MABEL_ARMS_HANDS, MABEL_ARMS_FF_SCALE, MABEL_ARMS_MOUNT_TILT_DEG still override at runtime.",
+      "scale_by_joint": {
+        "l_j1": 0.42,
+        "l_j2": 0.88,
+        "l_j4": 0.98,
+        "r_j1": 0.42,
+        "r_j2": 0.88,
+        "r_j4": 0.98
+      },
+      "_sysid_2026_07_28": "NO-HANDS sysid (exp_arm_gravity_sysid.py, 25 poses, PD holds): measured/model scale l_j4 +0.96, l_j2 +0.72, l_j1 +0.40 (J1 signal ~stiction, trimmed conservatively to 0.5); RMS 1.1-1.7 N*m = the stiction band; ALSO fixed dir(l_j3/l_j4) = -1 (replacement motors mirror-wound). Right-arm trims mirrored from left (same mechanics, unmeasured). hands:'none' = ORCA mass STRIPPED; set 'orca' when hands are refitted and RE-RUN the sysid with hands on before trusting these trims.",
+      "_sysid_2026_07_29": "LIFT-ARC sysid v2 (27 poses through center height, stiff-identify + safe-lowering): MJCF(hands=none, mount_tilt 0) fits meas at scales l_j1 0.42 / l_j2 0.88 / l_j4 0.98, residual RMS 0.4-1.0 N*m (= stiction band). URDF independent theory agrees exactly (same |scales|, same residuals). tilt 0 CONFIRMED over +/-10 by the J2 fit \u2014 the MJCF's drawn -10 deg is corrected in-code and the metal is 0. Right arm mirrored, unmeasured. NO-HANDS variant; re-run with hands=orca when refitted."
+    },
+    "soft_drag": {
+      "_source": "LIVE",
+      "_doc": "SOFT mode = POSITION-based drag-and-hold (operator design 2026-07-30, replacing the tau-observer admittance that went erratic live): nonzero P; while the user pushes (|q - target| > band AND |qd| > qd_min) the target follows the measured position, stopping band short; when the push stops the target FREEZES. No torque feedback in the loop = cannot self-excite; quasi-static gravity-residual sag stays below qd_min and is arrested by the kp*band spring. Read LIVE by controller/mabel/arm_control/drag_follow.py via control_params.arm_soft_drag().",
+      "_consumers": [
+        "controller/mabel/arm_control/drag_follow.py (DragFollow)",
+        "server/plant.py ROSPlant (soft-mode host)"
+      ],
+      "band": 0.06,
+      "qd_min": 0.1,
+      "follow_rate": 3.0,
+      "follow_hold_s": 0.15,
+      "range_margin": 0.06
+    },
+    "soft_gains": {
+      "_source": "LIVE",
+      "_doc": "How the app's stiffness slider (control_mode.stiffness, 0..1) maps onto SOFT-mode PD gains, applied over the STIFF arm.gains set and shipped to the HAL on /arms/gains: kp_soft = kp_stiff * (kp_scale_min + (kp_scale_max - kp_scale_min) * stiffness); kd_soft = kd_stiff * kd_scale. STIFF mode always runs the arm.gains set unscaled.",
+      "_consumers": [
+        "server/plant.py ROSPlant (publish_arm_gains)",
+        "hardware_bridge/mabel_hw/ros/arms_node.py (gain overrides)"
+      ],
+      "_scale_note_2026_07_30": "Floor raised 0.25 -> 0.5 (operator: sim-soft holds perfectly because it is a TORQUE controller with a perfect model; real soft must HOLD with PD against the imperfect FF - sag = residual/kp, so kp 6 sagged ~14 deg on the worst joint). Softness on real comes from the drag-follow BEHAVIOR, not weak holding gains.",
+      "kp_scale_min": 0.5,
+      "kp_scale_max": 1.0,
+      "kd_scale": 1.0
+    },
+    "soft_float": {
+      "_source": "LIVE",
+      "_doc": "FLOATING soft mode (admittance): tau_ext = tau_g_model(q) - tau_meas -> per-joint virtual mass-damper -> streamed position targets, so a dragged arm FLOATS and parks where released instead of rubber-banding against kp. The AUTO-TARE bias absorbs the gravity-model residual at every rest pose (entry tare + rate-limited re-tare while quiet), which is what keeps floating honest despite the imperfect real-robot mass/CoM sysid; the deadbands then only cover residual VARIATION (measured band RMS 0.4-1.0 N*m, sysid v2 2026-07-29) and stay small enough to feel floaty. Read LIVE by controller/mabel/arm_control/admittance.py via control_params.arm_soft_float(); keys mirror FLOAT_DEFAULTS (per-class j1..j7).",
+      "_consumers": [
+        "controller/mabel/arm_control/admittance.py (SoftArmAdmittance)",
+        "server/plant.py ROSPlant (soft-mode host)"
+      ],
+      "deadband_nm": {
+        "j1": 0.7,
+        "j2": 0.7,
+        "j3": 0.5,
+        "j4": 0.5,
+        "j5": 0.25,
+        "j6": 0.25,
+        "j7": 0.2
+      },
+      "virtual_damping": {
+        "j1": 2.5,
+        "j2": 2.5,
+        "j3": 1.8,
+        "j4": 1.8,
+        "j5": 0.8,
+        "j6": 0.8,
+        "j7": 0.6
+      },
+      "virtual_mass": {
+        "j1": 0.35,
+        "j2": 0.35,
+        "j3": 0.15,
+        "j4": 0.15,
+        "j5": 0.05,
+        "j6": 0.05,
+        "j7": 0.04
+      },
+      "drive_gain": 2.5,
+      "vmax": 1.2,
+      "err_max": 0.45,
+      "range_margin": 0.06,
+      "tau_lp": 0.15,
+      "engage_ramp_s": 0.4,
+      "bias_rate": 0.15,
+      "bias_holdoff_s": 1.0,
+      "bias_max": 5.0,
+      "still_qd": 0.06,
+      "still_v": 0.03,
+      "episode_budget_rad": 1.5
+    },
+    "impedance": {
+      "_source": "MIRROR",
+      "_authoritative": "controller/mabel/arm_control/impedance.py (ComplianceTuning, ArmImpedance)",
+      "_doc": "Soft/compliant arm mode: scales the stiff PD gains down and floors the damping so the arm yields to contact.",
+      "kp_scale": 0.3,
+      "kd_scale": 0.6,
+      "kd_floor": 0.4,
+      "v_move": 0.08,
+      "gain_scale": 1.0
+    },
+    "rate_limit": {
+      "_source": "MIRROR",
+      "_authoritative": "controller/mabel/arm_control/rate_limit.py (JointRateLimiter)",
+      "_doc": "Real-only per-joint velocity slew limit (sim poses instantly). Caps how fast a commanded joint target may move so a slider slam does not become a 99 N.m step.",
+      "max_speed": 4.0,
+      "max_dt": 0.1
+    },
+    "gains_pd_candidate": {
+      "_source": "PLACEHOLDER",
+      "_doc": "DERIVED candidate PD gains for the real arm, 2026-08-23. NOT LIVE and NOT APPLIED: arm.gains above is the deliberately COMPLIANT set from 2026-07-29 ('as compliant as possible', gravity FF carries the load), and changing real-arm stiffness is a hardware decision that needs an on-robot ramp with the operator present. This block records what the same derivation used for the sim (kp_j = M_j w^2, kd_j = 2 zeta M_j w, M_j measured off the MJCF) asks for on hardware, and what the CURRENT gains actually give, so the trade is visible without re-deriving it. See controller/docs/arm_pd_tuning.tex and experiments/exp_pd_tuning.py.",
+      "_constraint": "The DaMiao MIT wire caps kd at ~5 N.m.s/rad. With kd capped, tracking lag (kd/kp) and damping ratio (kd / 2 sqrt(kp M)) trade DIRECTLY: zeta = 0.5*sqrt(kd*L/M) for a target lag L. That is why the real arm cannot reach the sim's 32 ms lag at zeta = 1, and why the velocity feedforward already on the wire (ros_plant._js -> _arm_target_velocity) matters more than the gains: it cancels the kd*(0 - dq) term that the lag comes from.",
+      "_design": {
+        "zeta_target": 0.8,
+        "kd_max": 5.0,
+        "inertia_source": "MJCF median reflected inertia, exp_pd_tuning.py P1"
+      },
+      "joints": {
+        "j1": {
+          "M_jj": 0.3346,
+          "current": {
+            "kp": 25.0,
+            "kd": 2.5,
+            "zeta": 0.432,
+            "lag_ms": 100.0
+          },
+          "candidate": {
+            "kp": 29.2,
+            "kd": 5.0,
+            "zeta": 0.8,
+            "lag_ms": 171.3
+          }
+        },
+        "j2": {
+          "M_jj": 0.5222,
+          "current": {
+            "kp": 25.0,
+            "kd": 4.0,
+            "zeta": 0.554,
+            "lag_ms": 160.0
+          },
+          "candidate": {
+            "kp": 18.7,
+            "kd": 5.0,
+            "zeta": 0.8,
+            "lag_ms": 267.4
+          }
+        },
+        "j3": {
+          "M_jj": 0.2111,
+          "current": {
+            "kp": 15.0,
+            "kd": 1.5,
+            "zeta": 0.421,
+            "lag_ms": 100.0
+          },
+          "candidate": {
+            "kp": 46.3,
+            "kd": 5.0,
+            "zeta": 0.8,
+            "lag_ms": 108.1
+          }
+        },
+        "j4": {
+          "M_jj": 0.261,
+          "current": {
+            "kp": 18.0,
+            "kd": 1.5,
+            "zeta": 0.346,
+            "lag_ms": 83.3
+          },
+          "candidate": {
+            "kp": 37.4,
+            "kd": 5.0,
+            "zeta": 0.8,
+            "lag_ms": 133.7
+          }
+        },
+        "j5": {
+          "M_jj": 0.0748,
+          "current": {
+            "kp": 6.0,
+            "kd": 0.8,
+            "zeta": 0.597,
+            "lag_ms": 133.3
+          },
+          "candidate": {
+            "kp": 24.0,
+            "kd": 2.14,
+            "zeta": 0.8,
+            "lag_ms": 89.3
+          }
+        },
+        "j6": {
+          "M_jj": 0.0691,
+          "current": {
+            "kp": 6.0,
+            "kd": 0.8,
+            "zeta": 0.621,
+            "lag_ms": 133.3
+          },
+          "candidate": {
+            "kp": 24.0,
+            "kd": 2.06,
+            "zeta": 0.8,
+            "lag_ms": 85.9
+          }
+        },
+        "j7": {
+          "M_jj": 0.0874,
+          "current": {
+            "kp": 5.0,
+            "kd": 0.6,
+            "zeta": 0.454,
+            "lag_ms": 120.0
+          },
+          "candidate": {
+            "kp": 20.0,
+            "kd": 2.11,
+            "zeta": 0.8,
+            "lag_ms": 105.7
+          }
+        }
+      }
+    }
+  },
+  "position_control": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/whole_body_controller/position_controller/pd.py (JointPositionController)",
+    "_doc": "Day-1 pure PD (sim torque path). kp/kd default to 'servo' \u2014 inherited PER JOINT from the MuJoCo actuator gainprm/biasprm, NOT a scalar; the real-robot per-joint numbers are arm.gains above. tau_limit inherits each actuator's |forcerange|; joints with no forcerange fall back to tau_fallback.",
+    "kp": "servo",
+    "kd": "servo",
+    "tau_limit": "servo",
+    "tau_fallback": 40.0,
+    "neutralize_servos": true,
+    "feedforward": null
+  },
+  "gravity_compensation": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/whole_body_controller/gravity_compensation/gravity_comp.py (GravityCompController)",
+    "_doc": "WBC-region gravity/bias feedforward for the sim torque runtime (distinct from arm.gravity_feedforward, which is the real-robot raw-frame arm law). Cancels g(q) so only a light joint damper remains; the operator/IK then commands motion against near-zero gravity load.",
+    "damping": 0.6,
+    "lazy_damping": 12.0,
+    "use_bias": true,
+    "neutralize_servos": true
+  },
+  "collision_avoidance": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/config.py (SC_* constants); read via None-fallback by controller/mabel/whole_body_controller/collision_avoidance/capsule_guard.py",
+    "_doc": "Capsule self-collision guard \u2014 the SOLE arm-arm defense (the MJCF disables arm-arm contacts). ON by default. Two laws: 'stop' = Faverjon-Tournassoud velocity damper (decelerate to a stop AT the margin along the intended path \u2014 feels like a wall); 'cbf' = tracking-QP with a control barrier (slides around obstacles \u2014 'force field' feel). alpha is the control-barrier gain: allowed approach rate \u1e0b >= -alpha*(d - margin). The torque-domain 'soft wall' (barrier_kv/kp) brakes closing velocity and springs back out when a dragged arm reaches the margin.",
+    "enable": true,
+    "method": "stop",
+    "influence_m": 0.06,
+    "margin_m": 0.025,
+    "alpha_barrier": 6.0,
+    "stop_decel": 2.0,
+    "posture_reg": 0.001,
+    "qp_vel_cap": 4.0,
+    "joint_limit_gain": 8.0,
+    "adjacency_hops": 1,
+    "barrier_kv": 40.0,
+    "barrier_kp": 600.0,
+    "capsule_radii_m": {
+      "forearm": 0.035,
+      "hand": 0.055,
+      "torso": 0.09,
+      "head": 0.12
+    }
+  },
+  "admittance": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/config.py (ADMIT_*, DRAG_*); read via None-fallback by controller/mabel/whole_body_controller/admittance/base_admittance.py",
+    "_doc": "Whole-body force compliance: the base behaves as a virtual planar mass with viscous + Coulomb 'virtual friction' driven by the external drag wrench, so an operator can push the robot around by the arm. A small comfort box (drag_box, referenced to the neutral hand pose) makes the base engage quickly so the arm never reaches its limit and tips the body. NOTE: WBCEngine constructs BaseAdmittance with the two engine_overrides below instead of the config defaults.",
+    "virtual_mass_kg": 4.5,
+    "virtual_inertia_kg_m2": 2.5,
+    "lin_damping": 22.0,
+    "ang_damping": 18.0,
+    "f_static_N": 3.0,
+    "m_static_Nm": 8.0,
+    "v_stop": 0.02,
+    "w_stop": 0.05,
+    "drag_box_m": 0.03,
+    "drag_box_ramp_m": 0.04,
+    "engine_overrides": {
+      "_doc": "controller/mabel/whole_body_controller/engine.py builds BaseAdmittance(ang_damping=7.0, m_static=2.5) \u2014 a one-hand push then yaws more freely than the standalone config default.",
+      "ang_damping": 7.0,
+      "m_static": 2.5
+    },
+    "wrench_estimation": {
+      "_source": "MIRROR",
+      "_authoritative": "controller/mabel/whole_body_controller/admittance/wrench_estimation.py (hardcoded defaults)",
+      "_doc": "External-wrench estimation + contact localization feeding the admittance base. lam is the DLS regularizer on the Jacobian pseudo-inverse; gain is the momentum-observer bandwidth; confirm/hold debounce a contact before it is trusted.",
+      "friction_v_eps": 0.02,
+      "friction_deadband": 1.0,
+      "friction_ramp": 0.4,
+      "limit_margin": 0.03,
+      "estimate_lam": 0.03,
+      "localize_tau_thresh": 0.3,
+      "localize_f_min": 1.5,
+      "localize_prefer_margin": 1.25,
+      "wrench_gain": 25.0,
+      "contact_gain": 35.0,
+      "contact_tau_thresh": 0.6,
+      "contact_res_tau": 0.03,
+      "contact_blend": 0.5,
+      "contact_confirm": 4,
+      "contact_hold": 30
+    }
+  },
+  "compliance": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/whole_body_controller/compliance/compliance.py (ComplianceController); engine.py; config.py (DRAG_*, LAZY_*)",
+    "_doc": "Region-selectable compliance runtime. compliant_damping is the residual joint damper left after gravity cancellation (low = soft); lazy_damping holds the slow torso/lift joints. The workspace_box below is what makes the MOBILE BASE move: when the hand centroid leaves this comfort box (robot-local frame, chassis-centre origin), the lazy base follower translates/yaws so the arms never reach their kinematic limit and pull the body over.",
+    "compliant_damping": 0.6,
+    "lazy_damping": 12.0,
+    "manage_lift": true,
+    "workspace_box": {
+      "_doc": "Hand-centroid comfort box in the robot frame. e_fwd is measured from the chassis centre (under the torso), so e_fwd==0 is the body line; the base retreats the instant a wrist crosses behind the torso. drag_box is the tighter force-compliance box (hand excursion from neutral before the base follows).",
+      "fwd_min_m": 0.0,
+      "fwd_max_m": 0.8,
+      "left_halfspan_m": 0.25,
+      "yaw_deadband_rad": 0.3,
+      "kp_lin": 1.5,
+      "kp_ang": 1.5,
+      "cmd_eps_m": 0.00015,
+      "drag_box_m": 0.03,
+      "drag_box_ramp_m": 0.04
+    }
+  },
+  "whole_body_ik": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/config.py (IK_* constants); read by controller/mabel/whole_body_controller/ik.py",
+    "_doc": "Bimanual SE(3) differential IK \u2014 weighted damped-least-squares with null-space posture. kp_pos/kp_rot are the end-effector task gains; damping is the DLS lambda; posture_gain pulls the null space toward the rest pose; weight_lift/torso make those DOFs 'lazy' (higher = the solver uses them less). Deadbands ignore sub-threshold EE error so the arm does not chase gravity sag.",
+    "kp_pos": 6.0,
+    "kp_rot": 2.0,
+    "dls_damping": 0.05,
+    "posture_gain": 0.5,
+    "vel_cap": 1.5,
+    "angvel_cap": 3.0,
+    "pos_deadband_m": 0.002,
+    "rot_deadband_rad": 0.0087,
+    "settle_steps": 800,
+    "weight_lift": 50.0,
+    "weight_torso": 2.0,
+    "neck_dls_lam": 0.05
+  },
+  "base": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/motion_model/tip_over.py (re-exported by config.py) + config.py (WHEEL_RADIUS, STEER_DEADBAND, MODULE_*, NAV_*); hardware_bridge/mabel_hw/config.py (BASE)",
+    "_doc": "3-module delta swerve base. Every base twist MUST pass through config.safe_base_step(...) (the tip-over ZMP limiter) BEFORE swerve_ik \u2014 a raw hard-stop or turn-while-driving can tip the robot. The tip-over constants (levers, CoM, safety factors, stop times) are MEASURED from the chassis support polygon and re-derived from the MJCF by experiments/wbc_stability.py (E4); re-measure on any mass/geometry change.",
+    "wheel_radius_m": 0.0381,
+    "steer_deadband_rad": 0.52,
+    "module_positions_m": {
+      "fl": [
+        -0.17,
+        -0.17
+      ],
+      "fr": [
+        -0.17,
+        0.17
+      ],
+      "b": [
+        0.15,
+        0.0
+      ]
+    },
+    "twist_limits": {
+      "max_lin_speed": 0.8,
+      "max_ang_speed": 2.0,
+      "max_lin_accel": 2.0,
+      "max_ang_accel": 5.0
+    },
+    "tip_over": {
+      "_doc": "MJCF-measured; do not hand-tune without re-running experiments/wbc_stability.py (E4). tip_lever_* are the horizontal distances from the CoM ground-projection to each support edge; tip_sf_* are safety factors; stop_time_* are the assumed decel windows; com_* are the CoM height model (z0 + dz/dlift * lift).",
+      "gravity": 9.81,
+      "tip_lever_fwd_m": 0.078,
+      "tip_lever_lat_m": 0.108,
+      "tip_lever_back_m": 0.241,
+      "tip_sf_fwd": 2.0,
+      "tip_sf_agile": 1.2,
+      "stop_time_fwd_s": 0.8,
+      "stop_time_agile_s": 0.55,
+      "com_z0_m": 0.369,
+      "com_dz_dlift": 0.451,
+      "com_xy_m": [
+        -0.076,
+        -0.001
+      ],
+      "v_speed_floor": 0.15,
+      "v_agile_ceil": 1.5
+    },
+    "navigation": {
+      "_doc": "Drone-style virtual joysticks (apps navigation mode). Full-deflection magnitudes.",
+      "max_vx": 0.8,
+      "max_vy": 0.8,
+      "max_omega": 1.2,
+      "max_lift": 0.06,
+      "deadzone": 0.08
+    },
+    "hardware": {
+      "_source": "PLACEHOLDER",
+      "_doc": "Base hardware limits from hardware_bridge/mabel_hw/config.py (BASE). drive_gain is pinned at 1.0: the SPARK drive velocity loop under-reaches to ~50% of commanded (kF=0) and COLLAPSES above ~1.5 m/s \u2014 the real fix is the SPARK kFF + current limit in REV Hardware Client, not this gain.",
+      "teensy_ip": "192.168.124.10",
+      "port": 5800,
+      "stream_hz": 200,
+      "cmd_timeout_s": 0.5,
+      "drive_gain": 1.0,
+      "pad_vmax": 1.0,
+      "pad_wmax": 2.0
+    }
+  },
+  "neck": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/config.py (NECK_* constants); read by controller/mabel/whole_body_retargeting/neck.py",
+    "_doc": "3-DOF neck look-at (decoupled from the body). kp is the pointing gain; the gaze ray starts ray_offset ahead of the head to clear the body, uses fallback_dist when no scene hit is found, and treats hits closer than min_hit_dist as self-hits.",
+    "kp": 4.0,
+    "fallback_dist_m": 1.5,
+    "ray_offset_m": 0.2,
+    "min_hit_dist_m": 0.25,
+    "dls_lam": 0.05,
+    "hardware": {
+      "_source": "PLACEHOLDER",
+      "_doc": "DaMiao neck (yaw/pitch/roll), MIT mode, shares the arms' DaMiao protocol. Motor map + torque are configured in hardware_bridge/mabel_hw/config.py (BODY); the neck is not yet fully brought up (BODY enabled=false by default).",
+      "kp_default": 30.0,
+      "kd_default": 1.0,
+      "p_max": 12.5,
+      "v_max": 30.0,
+      "t_max": 10.0
+    }
+  },
+  "hands": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/hand_retargeting/keypoint_ik.py, vector.py; config.py (PINCH_*, CLUTCH_*, FINGER_RETARGET, HAND_SOLVER)",
+    "_doc": "ORCA hands (position control, decoupled from the body). The finger-joint servo kp/kd live in the MJCF (position-servo actuators) \u2014 the retargeter only writes ctrl TARGETS, so there is no Python PD gain for the fingers here; the real Feetech/DaMiao hand gains are set on the servos (see hardware). The tunables below are the RETARGETER cost weights + the pinch/grasp thresholds.",
+    "retargeter": "keypoint",
+    "solver": "gn",
+    "pinch": {
+      "open_dist_m": 0.08,
+      "close_dist_m": 0.02,
+      "dist_thresh_norm": 0.55,
+      "power_grasp_pairs": 3
+    },
+    "keypoint_weights": {
+      "w_shape": 15.0,
+      "w_dir": 30.0,
+      "w_pinch_low": 0.0,
+      "w_pinch_high": 50.0,
+      "w_smooth": 1.0,
+      "w_reg": 0.05,
+      "gn_iters": 4,
+      "gn_damping": 0.01,
+      "solve_period_s": 0.05,
+      "tip_extrapolate": 0.85
+    },
+    "slsqp_weights": {
+      "w_cosine": 20.0,
+      "w_relative": 150.0,
+      "w_smooth": 0.5,
+      "w_reg": 0.02,
+      "iters": 5
+    },
+    "vector_weights": {
+      "w_flex": 30.0,
+      "w_pinch_low": 4.0,
+      "w_pinch_high": 50.0,
+      "w_pinch_thresh": 0.55,
+      "w_smooth": 1.0,
+      "w_reg": 0.05,
+      "iters": 4,
+      "damping": 0.01
+    },
+    "clutch": {
+      "_doc": "Double-pinch either hand to FREEZE/recenter the whole body; single pinch is left free for grasping (hysteresis on/off avoids chatter).",
+      "pinch_on_m": 0.03,
+      "pinch_off_m": 0.055,
+      "double_window_s": 0.6,
+      "cooldown_s": 0.8
+    },
+    "hardware": {
+      "_source": "PLACEHOLDER",
+      "_doc": "ORCA hand on Feetech STS/SCS servos over TTL serial. Per-servo PD/current limits are set in the servo registers via the firmware GUI (end-stop calibration lives on that bus, not in this file). Fill in the realized servo gains here once the hands are characterized on the robot."
+    }
+  },
+  "lift": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/motion_model/tip_over.py (LIFT_RANGE, LIFT_HW_MAX_SPEED); config.py (LAZY_LIFT_*); hardware_bridge/mabel_hw/config.py (LIFT)",
+    "_doc": "Vertical lift column (cascaded tendon; actuator units [0, 0.635] m). In manipulation mode the lift is NOT part of the fast IK \u2014 the lazy follower creeps it to keep the hand centroid near a comfortable height. hw_max_speed is the firmware 60 mm/s ceiling.",
+    "range_m": [
+      0.0,
+      0.635
+    ],
+    "hw_max_speed_mps": 0.06,
+    "lazy_follower": {
+      "ref_height_m": 0.63,
+      "halfspan_m": 0.12,
+      "kp": 1.2,
+      "max_speed_mps": 0.06
+    },
+    "hardware": {
+      "_source": "PLACEHOLDER",
+      "_doc": "BTS7960 DC motor + quadrature encoder, closed-loop on a Pico over USB serial. The position loop lives on the Pico; max_pos is updated by on-Pico calibration. LIFT enabled=false by default until a Pico is on the port.",
+      "max_pos_m": 0.5
+    }
+  },
+  "torso": {
+    "_source": "MIRROR",
+    "_authoritative": "controller/mabel/config.py (LAZY_TORSO_*); hardware_bridge/mabel_hw/config.py (BODY)",
+    "_doc": "Torso pitch hinge (range [-1.047, 0.262] rad; negative = lean forward). The lazy follower leans the body forward for moderate forward reach before the base has to translate.",
+    "range_rad": [
+      -1.047,
+      0.262
+    ],
+    "lazy_follower": {
+      "fwd_max_m": 0.45,
+      "kp": 1.5,
+      "max_speed_rad_s": 0.8
+    },
+    "gravity_feedforward": {
+      "_source": "LIVE",
+      "_doc": "Trim on the POSTURE-AWARE torso gravity feedforward: tau_ff = scale * tau_mjcf(theta, q_arms) + offset_nm. tau_mjcf is the arm-pose-aware MJCF prediction (arm_control.ArmGravityCompensator with 'torso' in the pose dict, hand mass per HandsConfig); this trim calibrates it onto the real DM-J10422P, fitted by hardware_bridge/experiments/exp_torso_gravity_sysid.py (hold-and-measure sweep at the live arm pose; down-then-up so friction cancels). Read LIVE by controller/mabel/torso_control/gravity.py::ff_trim(). Fitted 2026-07-29 (arms parked, no hands): 13 holds over [-42\u00b0, +5\u00b0], residual rms 1.99 N\u00b7m ~= the stiction band (vs 3.82 for the old sinusoid, 4.16 untrimmed); scale 0.70 matches the arm sysid's l_j2 mass trim 0.72. Re-run at an extended arm pose and refit jointly to pin the arm-dependent term.",
+      "_consumers": [
+        "controller/mabel/torso_control/gravity.py (posture_tau)",
+        "server/plant.py ROSPlant (-> /body/command.effort)"
+      ],
+      "scale": 0.7021,
+      "offset_nm": -0.717
+    },
+    "hardware": {
+      "_source": "MIRROR",
+      "_authoritative": "hardware_bridge/mabel_hw/config.py (TORSO: kp/kd/slew/p_max/v_max/t_max/wire_t_max; env TORSO_KP/TORSO_KD override)",
+      "_doc": "DaMiao DM-J10422P on the arms Teensy CAN bus 3 (backend 'openarm'), MIT mode. Compliant tune 2026-07-29: the posture-aware feedforward carries gravity, PD only tracks + fights friction, so kp drops 150 -> 90. Measured accuracy (settled worst / moving max): kp 60 -> 2.1/4.0 deg, 90 -> 1.2/3.2, 120 -> 0.7/2.7; all smooth. Residual = the +/-2 N.m rest-friction band over kp.",
+      "kp_default": 90.0,
+      "kd_default": 4.0,
+      "p_max": 12.5,
+      "v_max": 30.0,
+      "t_max": 10.0,
+      "wire_t_max": 500.0
+    }
+  },
+  "body": {
+    "_source": "PLACEHOLDER",
+    "_authoritative": "hardware_bridge/mabel_hw/config.py (BODY)",
+    "_doc": "The DaMiao 'body' bus groups the torso + 3-DOF neck on one CAN bus (MIT mode, same protocol as the arms). Control-law gains for these joints are the torso/neck blocks above; this block records the shared bus defaults. Configure joint_motors as e.g. 'torso:can0:1, neck_yaw:can0:2, neck_pitch:can0:3, neck_roll:can0:4' and set MABEL_HW_BODY=true to bring it up.",
+    "enabled": false,
+    "kp_default": 30.0,
+    "kd_default": 1.0,
+    "p_max": 12.5,
+    "v_max": 30.0,
+    "t_max": 10.0
+  }
+}

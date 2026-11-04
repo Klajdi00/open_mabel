@@ -1,0 +1,24 @@
+{
+  "motor": "DM-J4310",
+  "model": "stribeck",
+  "n_levels": 24,
+  "friction_rms_Nm": 0.00931001159449335,
+  "friction_rms_inlier_Nm": 0.007321726107479865,
+  "friction_r2": 0.9932977982117221,
+  "gravity_split_tau_g_Nm": 0.0,
+  "params": {
+    "Fc_pos": 0.07907932719297597,
+    "Fc_neg": 0.08664811114173464,
+    "Fv": 0.019760180198470645,
+    "Fs_pos": 0.10777504448151877,
+    "Fs_neg": 0.12858383865622355,
+    "v_s": 0.27850501979597386,
+    "delta": 2.0,
+    "J": 0.0
+  },
+  "mujoco": {
+    "frictionloss": 0.082864,
+    "damping": 0.01976,
+    "armature": 0.0
+  }
+}

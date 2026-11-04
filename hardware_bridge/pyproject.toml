@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mabel-hw"
+version = "0.1.0"
+description = "MABEL hardware access layer: typed drivers, write-lease arbitration, calibration store, and the DDS bridge adapters. The ONE process that touches devices."
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.21",
+    "pyserial>=3.5",
+    "PyYAML>=5.4",
+    "protobuf>=5.28,<7",
+]
+
+[project.optional-dependencies]
+# arms/neck/torso socketcan fallback backend (CanLink); Teensy-Ethernet needs nothing extra
+can = ["python-can>=4.0"]
+# rclpy / pyrealsense2 / pyzed are environment-provided (RoboStack conda env on thor,
+# vendor SDK builds) — never pip-installed from here.
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mabel_hw*"]
+
+[tool.setuptools.package-data]
+"mabel_hw" = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

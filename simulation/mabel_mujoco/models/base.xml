@@ -1,0 +1,126 @@
+<mujoco model="mabel_mobile_base">
+
+  <default>
+    <mesh scale="0.001 0.001 0.001"/>
+    <default class="sw_visual">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="sw_collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="1" material="invisible"/>
+    </default>
+    <default class="sw_steer">
+      <joint type="hinge" axis="0 0 1" limited="false" armature="0.05" damping="0.1" frictionloss="0.05"/>
+    </default>
+    <default class="sw_drive">
+      <joint type="hinge" axis="0 0 1" limited="false" armature="0.01" damping="0.005" frictionloss="0.01"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh file="../assets/meshes/base/mobile_base.stl"    name="m_chassis"/>
+    <mesh file="../assets/meshes/swerve_drive/wheel_to_base.stl"  name="m_housing"/>
+    <mesh file="../assets/meshes/swerve_drive/steering_motor.stl" name="m_steer_motor"/>
+    <mesh file="../assets/meshes/swerve_drive/drive_motor.stl"    name="m_drive_motor"/>
+
+    <material name="chassis_mat"     rgba="0.8 0.8 0.8 1"/>
+    <material name="housing_mat"     rgba="0.25 0.25 0.28 1"/>
+    <material name="steer_motor_mat" rgba="0.10 0.35 0.75 1"/>
+    <material name="drive_motor_mat" rgba="0.75 0.20 0.20 1"/>
+    <material name="invisible"       rgba="1 1 1 0"/>
+  </asset>
+
+  <worldbody>
+    <body name="mabel_chassis" pos="0 0 0.07775">
+      
+      <freejoint name="base_root"/>
+      
+      <geom class="sw_visual"    mesh="m_chassis" material="chassis_mat"/>
+      <geom class="sw_collision" mesh="m_chassis" mass="15.0"/> 
+
+      <body name="fl_swerve_housing" pos="-0.17 -0.17 -0.00" euler="0 0 1.570795">
+        <geom class="sw_visual" mesh="m_housing" material="housing_mat"/>
+        <geom class="sw_collision" mesh="m_housing"/>
+        <body name="fl_steer_body" pos="0 0 0">
+          <joint name="fl_steer" class="sw_steer"/>
+          <geom class="sw_visual" mesh="m_steer_motor" material="steer_motor_mat"/>
+          <geom class="sw_collision" mesh="m_steer_motor"/>
+          <body name="fl_wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+            <joint name="fl_drive" class="sw_drive"/>
+            <geom class="sw_visual" mesh="m_drive_motor" material="drive_motor_mat"/>
+            <geom class="sw_collision" mesh="m_drive_motor" friction="1.2 0.01 0.001" mass="0.8"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="fr_swerve_housing" pos="-0.17 0.17 -0.00" euler="0 0 0">
+        <geom class="sw_visual" mesh="m_housing" material="housing_mat"/>
+        <geom class="sw_collision" mesh="m_housing"/>
+        <body name="fr_steer_body" pos="0 0 0">
+          <joint name="fr_steer" class="sw_steer"/>
+          <geom class="sw_visual" mesh="m_steer_motor" material="steer_motor_mat"/>
+          <geom class="sw_collision" mesh="m_steer_motor"/>
+          <body name="fr_wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+            <joint name="fr_drive" class="sw_drive"/>
+            <geom class="sw_visual" mesh="m_drive_motor" material="drive_motor_mat"/>
+            <geom class="sw_collision" mesh="m_drive_motor" friction="1.2 0.01 0.001" mass="0.8"/>
+          </body>
+        </body>
+      </body>
+
+      <body name="b_swerve_housing" pos="0.15 0 -0.00" euler="0 0 3.9269926">
+        <geom class="sw_visual" mesh="m_housing" material="housing_mat"/>
+        <geom class="sw_collision" mesh="m_housing"/>
+        <body name="b_steer_body" pos="0 0 0">
+          <joint name="b_steer" class="sw_steer"/>
+          <geom class="sw_visual" mesh="m_steer_motor" material="steer_motor_mat"/>
+          <geom class="sw_collision" mesh="m_steer_motor"/>
+          <body name="b_wheel" pos="0 0 -0.040" xyaxes="0 0 1 0 1 0">
+            <joint name="b_drive" class="sw_drive"/>
+            <geom class="sw_visual" mesh="m_drive_motor" material="drive_motor_mat"/>
+            <geom class="sw_collision" mesh="m_drive_motor" friction="1.2 0.01 0.001" mass="0.8"/>
+          </body>
+        </body>
+      </body>
+
+    </body> 
+  </worldbody>
+
+  <contact>
+    <exclude body1="fl_swerve_housing" body2="fl_steer_body"/>
+    <exclude body1="fl_swerve_housing" body2="fl_wheel"/>
+    <exclude body1="fl_steer_body"     body2="fl_wheel"/>
+    <exclude body1="mabel_chassis"     body2="fl_steer_body"/>
+    <exclude body1="mabel_chassis"     body2="fl_wheel"/>
+
+    <exclude body1="fr_swerve_housing" body2="fr_steer_body"/>
+    <exclude body1="fr_swerve_housing" body2="fr_wheel"/>
+    <exclude body1="fr_steer_body"     body2="fr_wheel"/>
+    <exclude body1="mabel_chassis"     body2="fr_steer_body"/>
+    <exclude body1="mabel_chassis"     body2="fr_wheel"/>
+
+    <exclude body1="b_swerve_housing"  body2="b_steer_body"/>
+    <exclude body1="b_swerve_housing"  body2="b_wheel"/>
+    <exclude body1="b_steer_body"      body2="b_wheel"/>
+    <exclude body1="mabel_chassis"     body2="b_steer_body"/>
+    <exclude body1="mabel_chassis"     body2="b_wheel"/>
+  </contact>
+
+  <actuator>
+    <position name="fl_act_steer" joint="fl_steer" kp="50" kv="4.5" forcerange="-45 45" ctrlrange="-6.283 6.283" ctrllimited="true"/>
+    <velocity name="fl_act_drive" joint="fl_drive" kv="2"   forcerange="-15 15" ctrlrange="-120 120"   ctrllimited="true"/>
+    <position name="fr_act_steer" joint="fr_steer" kp="50" kv="4.5" forcerange="-45 45" ctrlrange="-6.283 6.283" ctrllimited="true"/>
+    <velocity name="fr_act_drive" joint="fr_drive" kv="2"   forcerange="-15 15" ctrlrange="-120 120"   ctrllimited="true"/>
+    <position name="b_act_steer"  joint="b_steer"  kp="50" kv="4.5" forcerange="-45 45" ctrlrange="-6.283 6.283" ctrllimited="true"/>
+    <velocity name="b_act_drive"  joint="b_drive"  kv="2"   forcerange="-15 15" ctrlrange="-120 120"   ctrllimited="true"/>
+  </actuator>
+
+  <sensor>
+    <jointpos name="fl_steer_pos" joint="fl_steer"/>
+    <jointpos name="fr_steer_pos" joint="fr_steer"/>
+    <jointpos name="b_steer_pos"  joint="b_steer"/>
+    <jointvel name="fl_drive_vel" joint="fl_drive"/>
+    <jointvel name="fr_drive_vel" joint="fr_drive"/>
+    <jointvel name="b_drive_vel"  joint="b_drive"/>
+  </sensor>
+
+</mujoco>

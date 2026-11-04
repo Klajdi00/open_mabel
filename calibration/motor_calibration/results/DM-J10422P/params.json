@@ -1,0 +1,26 @@
+{
+  "motor": "DM-J10422P",
+  "model": "stribeck",
+  "n_levels": 16,
+  "friction_rms_Nm": 0.08330003504684713,
+  "friction_rms_inlier_Nm": 0.08330003504684713,
+  "friction_r2": 0.9998781776593036,
+  "gravity_split_tau_g_Nm": 0.0,
+  "params": {
+    "Fc_pos": 6.111473353252291,
+    "Fc_neg": 6.3117512952796,
+    "Fv": 2.087849963704716,
+    "Fs_pos": 6.125372725483107,
+    "Fs_neg": 8.051273913265874,
+    "v_s": 0.1020900040788357,
+    "delta": 2.0,
+    "J": 0.2952540507418959
+  },
+  "mujoco": {
+    "frictionloss": 6.211612,
+    "damping": 2.08785,
+    "armature": 0.29525405
+  },
+  "inertia_J_kgm2": 0.2952540507418959,
+  "inertia_rms_Nm": 7.2889656272997625
+}

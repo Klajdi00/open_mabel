@@ -1,0 +1,28 @@
+# MABEL ROS 2 workspace -- Python (pip) dependencies
+# ===================================================
+# These are the THIRD-PARTY Python packages imported by the nodes in
+# ros/src. ROS packages themselves (rclpy, cv_bridge, tf2_ros, the
+# sensor_msgs family, etc.) are NOT here -- those come from apt via rosdep
+# (see SETUP.md, step 2). Install with:
+#
+#     pip install -r requirements.txt
+#
+# NOTE: this covers the ROS workspace only. The controller/, server/,
+# calibration/ and simulation/tools/ subtrees ship their own requirements.txt.
+
+numpy>=1.24             # used everywhere
+mujoco>=3.0             # mabel_sim MuJoCo<->ROS bridge (system-python install; see memory note)
+numpy-quaternion>=2022  # `import quaternion` -- pose math in the sim/teleop nodes
+trimesh>=4.0            # mesh handling (mabel_description rig/asset tooling)
+paho-mqtt>=1.6          # `import paho` -- camera MQTT bridge nodes (mabel_sensors)
+pynput>=1.7             # mabel_teleop keyboard_teleop (termios/null fallback if headless)
+pyserial>=3.5           # `import serial` -- base/hand/neck serial drivers
+requests>=2.28          # realsense-ros helper scripts + misc HTTP
+tqdm>=4.64              # progress bars in helper scripts
+
+# pyrealsense2 -- Python bindings for librealsense. NOT pip-installed here:
+# this machine builds librealsense from source in /usr/local (build it with
+# -DBUILD_PYTHON_BINDINGS=true:bool=true to get pyrealsense2). Uncomment ONLY if
+# you want the pip wheel instead of the source bindings (version must match the
+# source librealsense, or the two will clash):
+# pyrealsense2==2.57.*

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mabel_control</name>
+  <version>0.1.0</version>
+  <description>
+    ROS 2 control layer for MABEL: thin wrappers over the standalone whole-body
+    teleoperation controller library (the `mabel` package in controller/). Hosts the
+    controller against a MuJoCo kinematic mirror on the real robot and republishes its
+    decision on the canonical command contract (the same topics the sim consumes), so
+    sim and hardware share one control kernel. Provides the contract command extractor
+    and the ROS plant adapter used by mabel_gateway.
+  </description>
+  <maintainer email="maintainers@example.com">MABEL Authors</maintainer>
+  <license>MIT</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>mabel_interfaces</exec_depend>
+  <!-- mabel_sim provides the canonical interface_config contract (topics + name maps).
+       mabel (the controller library in controller/) is a plain Python dependency made
+       importable on the PYTHONPATH; it is not an ament package, so it is not listed
+       here. See command_extract.py / the package README. -->
+  <exec_depend>mabel_sim</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

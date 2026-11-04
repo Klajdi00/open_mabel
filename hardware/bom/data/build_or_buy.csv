@@ -1,0 +1,10 @@
+category,option,spec,both_usd,per_unit_usd,is_mabel,source
+Arms,"MABEL, built from source motors","7 DOF/arm, 6.0 kg peak, DAMIAO 8009P + 4340 + 4310",2622.24,1311.12,yes,This BOM
+Arms,"OpenArm 2.0 assembled, delivered US","Same arm, same motors: $6,000 kit + $480 air freight",6480.00,3240.00,no,"Licensed manufacturer product page, July 2026"
+Arms,OpenArm 2.0 online + ZED top camera,"Card checkout price, camera package included",7300.00,3650.00,no,"Licensed manufacturer product page, July 2026"
+Arms,AgileX PiPER x2,"6 DOF/arm, 1.5 kg payload, $2,499 each",4998.00,2499.00,no,AgileX press coverage
+Hands,"MABEL, Feetech bus servos","34 servos + driver boards; actuators and electronics only",1194.61,597.30,yes,This BOM
+Hands,"ORCA hand, self-built to the ETH BOM","17 DOF/hand, full material cost, under CHF 2,000 each",4915.00,2457.50,no,"ORCA, IROS 2025 (arXiv 2504.04259)"
+Hands,"orcahand, ORCA Dexterity","17 DOF/hand, assembled, $3,500 each",7000.00,3500.00,no,"ORCA Dexterity, March 2026 launch"
+Hands,"orcahand touch, ORCA Dexterity","17 DOF/hand, tactile on all five digits, from $6,100 each",12200.00,6100.00,no,"ORCA Dexterity, March 2026 launch"
+Hands,Allegro Hand,"16 DOF/hand, direct-drive, about CHF 15,000 each",36861.00,18430.50,no,ORCA paper related-work discussion

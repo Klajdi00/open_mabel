@@ -14,10 +14,10 @@ hardware → bring up the real robot.** You can stop after any step; steps 1–5
 Project page: <https://robotmabel.github.io/website/>
 
 <table><tr>
-<td><img src=".github/media/fridge.jpg" alt="Opening a fridge"></td>
-<td><img src=".github/media/kitchen.jpg" alt="Kitchen"></td>
-<td><img src=".github/media/laundry.jpg" alt="Laundry"></td>
-<td><img src=".github/media/livingroom.jpg" alt="Living room"></td>
+<td><img src=".github/media/fridge.gif" alt="Opening a fridge"></td>
+<td><img src=".github/media/kitchen.gif" alt="Kitchen"></td>
+<td><img src=".github/media/laundry.gif" alt="Laundry"></td>
+<td><img src=".github/media/livingroom.gif" alt="Living room"></td>
 </tr></table>
 
 ---

@@ -1,0 +1,19 @@
+# Proposed by Robotheca for this repository. Every line is yours to
+# change: check it before merging.
+
+format_version: "1.0"
+name: MABEL
+summary: An open-source mobile robot with a swerve base, a lift and two arms with hands, for household tasks.
+category: home
+difficulty: advanced
+license:
+  hardware: CERN-OHL-S-2.0
+  software: Apache-2.0
+  documentation: CC-BY-4.0
+source:
+  repository: https://github.com/robotmabel/open_mabel
+tools:
+  - 3D printer
+  - Soldering iron
+files:
+  cad: hardware/cad/
